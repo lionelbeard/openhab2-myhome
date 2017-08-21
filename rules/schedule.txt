@@ -1,0 +1,29 @@
+** Manuel
+Aucune action automatique
+
+** Semaine de travail
+Chambres toujours à 19°
+Pour le salon:
+Lundi-Mardi-Vendredi = 
+	6h30-8h30 => 21°
+	8h30-17h30 => 19°
+	17h30-23h30 => 21°
+	23h30 => 19°
+Mercredi =
+	6h30-8h30 => 21°
+	8h30-12h30 => 19°
+	12h30-23h30 => 21°
+	23h30 => 19°
+Jeudi-Samedi-Dimanche =
+	7h-23h30 => 21°		
+	23h30 => 19°
+
+** Toujours présent
+Chambres toujours à 19°
+Pour le salon:
+Lundi à Dimanche =
+	7h-23h30 => 21°
+	23h30 => 19°
+
+** Absence
+Toutes les pièces à 17°

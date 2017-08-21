@@ -1,0 +1,1962 @@
+// Garde en mémoire l'ancienne valeur du registre lu pour éviter de mettre à jour les items
+// si la valeur lue sur le bus modbus n'a pas été modifiée
+var Integer AZ_OpMode_lastvalue = -1
+var Integer AZ_ConfRegister_lastvalue = -1
+var Integer AZ_salon_OpMode_lastvalue = -1
+var Integer AZ_bureau_OpMode_lastvalue = -1
+var Integer AZ_parents_OpMode_lastvalue = -1
+var Integer AZ_thomas_OpMode_lastvalue = -1
+var Integer AZ_filles_OpMode_lastvalue = -1
+var Integer AZ_ami_OpMode_lastvalue = -1
+var Integer AZ_salon_status_register_lastvalue = -1
+var Integer AZ_bureau_status_register_lastvalue = -1
+var Integer AZ_parents_status_register_lastvalue = -1
+var Integer AZ_ami_status_register_lastvalue = -1
+var Integer AZ_thomas_status_register_lastvalue = -1
+var Integer AZ_filles_status_register_lastvalue = -1
+
+// Température de consigne
+var Integer chambres_present = 18
+var Integer chambres_absent = 17
+var Integer chambres_nuit = 19
+var Integer chambres_absence_prolongee = 17
+var Integer salon_present = 20
+var Integer salon_absent = 17
+var Integer salon_nuit = 18
+var Integer salon_absence_prolongee = 17
+var Integer bureau_present = 19
+var Integer bureau_absent = 17
+var Integer bureau_nuit = 17
+var Integer bureau_absence_prolongee = 17
+
+// VMC
+var Integer VMC_auto_allowed = 1
+ 
+// Piscine
+var DateTime filtration_time_start
+var DateTime filtration_time_end
+var Timer Tfiltration_start
+var Timer Tfiltration_end
+var Timer Tfiltration_force
+
+// Ouverture fenetre
+var Timer TsalonFenetreDroite
+
+
+/***************************************** */
+/* Rapport quotidien			   */
+/***************************************** */
+
+rule "daily_report"
+when
+        Time cron "0 0 08 * * ?"   // Every day @ 08am, on envoie un rapport
+then
+	var Integer prog = (Programmation.state as DecimalType).intValue
+	var String prog_str
+	var Integer mode = (Mode.state as DecimalType).intValue
+	var String mode_str
+	var String piscine_auto_str
+
+	if (prog == 0)
+		prog_str = "Aucune"
+	if (prog == 1)
+		prog_str = "Semaine de travail"
+	if (prog == 2)
+		prog_str = "Toujours présent"
+	if (prog == 3)
+		prog_str = "Absence prolongée"
+
+	if (mode == 0)
+		mode_str = "Off"
+	if (mode == 1)
+		mode_str = "Froid"
+	if (mode == 3)
+		mode_str = "Ventilation"
+	if (mode == 4)
+		mode_str = "Chaud"
+	if (mode == 6)
+		mode_str = "Déshumidification"
+
+	if (Filtration_piscine_auto.state == 0)
+		piscine_auto_str = "OFF"
+	else
+		piscine_auto_str = "ON"
+
+        sendMail("lionel@beard.fr", "[Domobeyou] Rapport quotidien", "CHAUFFAGE\nMode: ".concat(mode_str).concat("\nProgrammation: ").concat(prog_str).concat("\n\nPISCINE\nFiltration automatique: ").concat(piscine_auto_str).concat("\nHeure de début: ").concat(Filtration_heuredebut.state.toString).concat("\nHeure de fin: ").concat(Filtration_heurefin.state.toString))
+end
+
+
+/***************************************** */
+/* Gestion des paramètres généraux Airzone */
+/***************************************** */
+
+
+
+/* SYSTEM: System operation mode, register #0
+ * Bit 0 à 8 = Operation mode
+ * Bit 9 et 10 = Vitesse de ventilation => Ne fonctionne pas, uniquement water system d'après doc anglaise
+ */
+rule "az_operation_mode_dispatch"
+when
+	System started or
+	Item AZ_OpMode received update
+then
+	var Integer entire_value = 0
+	var Integer mode_value = 0
+	// var Integer fanspeed_value = 0
+	entire_value = (AZ_OpMode.state as DecimalType).intValue
+	
+	if(entire_value.compareTo(AZ_OpMode_lastvalue) != 0)
+	{
+		mode_value = entire_value.bitwiseAnd(511) // bit 0 à 8
+		// fanspeed_value = entire_value.operator_doubleGreaterThan(9).bitwiseAnd(3) // bit 9 et 10
+		postUpdate(Mode, mode_value)
+		// postUpdate(Fanspeed, fanspeed_value)
+		AZ_OpMode_lastvalue = entire_value
+	}
+end
+
+rule "az_mode_update"
+when
+	Item Mode received command
+then
+    // On prend la valeur du registre (lastvalue)
+    // On fait un AND avec un octet dont les bits concernés par l'item sont à zéro, et tous les autres sont à un
+    // On prend la valeur de l'item, et on le décale pour que les bits sont bien positionnés par rapport au registre
+    // Et puis on fait un OR entre la valeur de l'item shifté et le résultat du AND précédent
+    var Integer item_value = (Mode.state as DecimalType).intValue
+    //println("az_mode_update/item_value = "+ item_value)
+	var Integer AND_result = AZ_OpMode_lastvalue.bitwiseAnd(65024) // 1111111000000000
+	//println("az_mode_update/AND_result = "+ AND_result)
+    var Integer new_register_value = item_value.bitwiseOr(AND_result)
+  	//println("az_mode_update/new_register_value = "+ new_register_value)  
+
+	sendCommand(AZ_OpMode, new_register_value)
+end
+
+/*
+rule "az_fanspeed_update"
+when
+	Item Fanspeed received command
+then
+	// On prend la valeur du registre (lastvalue)
+	// On fait un AND avec un octet dont les bits concernés par l'item sont à zéro, et tous les autres sont à un
+	// On prend la valeur de l'item, et on le décale pour que les bits sont bien positionnés par rapport au registre
+	// Et puis on fait un OR entre la valeur de l'item shifté et le résultat du AND précédent
+	var Integer item_value = (Fanspeed.state as DecimalType).intValue
+	println("az_fanspeed_update/item_value = "+ item_value)
+	println("az_fanspeed_update/AZ_OpMode_lastvalue = "+ AZ_OpMode_lastvalue)	
+	var Integer AND_result = AZ_OpMode_lastvalue.bitwiseAnd(63999) // 1111100111111111
+	println("az_fanspeed_update/AND_result = "+ AND_result)
+	var Integer item_shifted = item_value.operator_doubleLessThan(9)
+	println("az_fanspeed_update/item_shifted = "+ item_shifted)
+	var Integer new_register_value = item_shifted.bitwiseOr(AND_result)
+	println("az_fanspeed_update/new_register_value = "+ new_register_value)
+		
+	sendCommand(AZ_OpMode, new_register_value)
+end
+*/
+
+
+/* SYSTEM: Configuration register, resgiter #3
+ * Bit 0 et 1 = QAdapt
+ * Bit 2 à 4 = Eco-Adapt
+ */
+rule "az_conf_register_dispatch"
+when
+	System started or
+	Item AZ_ConfRegister received update
+then
+	var Integer entire_value = 0
+	var Integer qadapt_value = 0
+	var Integer ecoadapt_value = 0
+	
+	entire_value = (AZ_ConfRegister.state as DecimalType).intValue
+	//println("az_conf_register_dispatch/entire_value = "+ entire_value)
+	
+	if(entire_value.compareTo(AZ_ConfRegister_lastvalue) != 0)
+	{
+		qadapt_value = entire_value.bitwiseAnd(3) // bit 0 et 1
+		ecoadapt_value = entire_value.operator_doubleGreaterThan(2).bitwiseAnd(7) // bit 2 à 4
+		postUpdate(QAdapt, qadapt_value)
+//		postUpdate(EcoAdapt, ecoadapt_value)
+		AZ_ConfRegister_lastvalue = entire_value
+	}
+end
+
+rule "az_qadapt_update"
+when
+	Item QAdapt received command
+then
+/* 	// On prend la valeur du registre
+	// on fait un OR avec la valeur de l'item
+	// puis un AND entre la résultat du OR et la valeur de l'item
+	// on obtient la nouvelle valeur du registre à transmettre sur le bus modbus
+	var Integer item_value = (QAdapt.state as DecimalType).intValue
+	var Integer OR_result = AZ_ConfRegister_lastvalue.bitwiseOr(item_value)
+	var Integer AND_result = OR_result.bitwiseAnd(item_value)
+*/
+
+    // On prend la valeur du registre (lastvalue)
+    // On fait un AND avec un octet dont les bits concernés par l'item sont à zéro, et tous les autres sont à un
+    // On prend la valeur de l'item, et on le décale pour que les bits sont bien positionnés par rapport au registre
+    // Et puis on fait un OR entre la valeur de l'item shifté et le résultat du AND précédent
+    var Integer item_value = (QAdapt.state as DecimalType).intValue
+	var Integer AND_result = AZ_ConfRegister_lastvalue.bitwiseAnd(65532) // 1111111111111100
+    var Integer new_register_value = item_value.bitwiseOr(AND_result) 
+  		
+	sendCommand(AZ_ConfRegister, new_register_value)
+end
+/* EcoAdapt nécessite un blueface pour fonctionner
+rule "az_ecoadapt_update"
+when
+	Item EcoAdapt received command
+then
+    // On prend la valeur du registre (lastvalue)
+    // On fait un AND avec un octet dont les bits concernés par l'item sont à zéro, et tous les autres sont à un
+    // On prend la valeur de l'item, et on le décale pour que les bits sont bien positionnés par rapport au registre
+    // Et puis on fait un OR entre la valeur de l'item shifté et le résultat du AND précédent
+    var Integer item_value = (EcoAdapt.state as DecimalType).intValue
+	//println("az_ecoadapt_update/item_value = "+ item_value)
+	//println("az_ecoadapt_update/AZ_ConfRegister_lastvalue = "+ AZ_OpMode_lastvalue)	    
+	var Integer AND_result = AZ_ConfRegister_lastvalue.bitwiseAnd(65507) // 1111111111100011
+	//println("az_ecoadapt_update/AND_result = "+ AND_result)	
+	var Integer item_shifted = item_value.operator_doubleLessThan(2)
+	//println("az_ecoadapt_update/item_shifted = "+ item_shifted)	
+    var Integer new_register_value = item_shifted.bitwiseOr(AND_result) 
+	//println("az_ecoadapt_update/new_register_value = "+ new_register_value)
+	  		
+	sendCommand(AZ_ConfRegister, new_register_value)
+end
+*/
+
+/******************************************* */
+/* Scénarii de programmation du chauffage    */
+/******************************************* */
+
+/*
+**Aucune
+Aucune action automatique
+
+** Semaine de travail
+Chambres toujours à 19°
+Pour le salon:
+Lundi-Mardi-Vendredi = 
+	6h30-8h30 => salon_present
+	8h30-17h30 => salon_absent
+	17h30-22h30 => salon_present
+	22h30 => salon_nuit
+##Mercredi =
+##	6h30-8h30 => salon_present
+##	8h30-12h30 => salon_absent
+##	12h30-22h30 => salon_present
+##	22h30 => salon_nuit
+Mercredi-Jeudi-Samedi-Dimanche =
+	7h30-22h30 => salon_present		
+	22h30 => salon_nuit
+
+** Toujours présent
+Chambres à 19° de 19h à 8h30, et à 18° le reste du temps (sauf si chambre bébé)
+Pour le salon et bureau/salle de jeu:
+Lundi à Dimanche =
+	7h30-22h30 => salon_present
+	22h30 => salon_nuit
+
+** Absence
+Toutes les pièces à 17°
+*/
+
+/* Il n'y a aucun contrôle sur l'initialisation du système
+ * les règles peuvent être chargées avant que la persistence ait été initialisée,
+ * des résultats inattendus peuvent apparaître à l'initialisation des items persistés.
+ * Un switch est positionné à ON au bout de 15s, et l'initialisation des items persistés est lancée lorsque ce switch passe à ON
+ */
+rule "Tempo init persistence"
+when 
+	System started
+then
+	createTimer(now.plusSeconds(60)) [|
+		sendCommand(Tempo_init_persist, ON)
+	]
+end
+
+/* Initialisation de la programmation et des exclusions au démarrage du système */
+rule "Programmation - default"
+when
+	Item Tempo_init_persist received command
+then
+	postUpdate(Programmation, Programmation.previousState.state)
+	postUpdate(Zone_salon_outofschedule, Zone_salon_outofschedule.previousState.state)
+	postUpdate(Zone_bureau_outofschedule, Zone_bureau_outofschedule.previousState.state)
+	postUpdate(Zone_parents_outofschedule, Zone_parents_outofschedule.previousState.state)
+	postUpdate(Zone_ami_outofschedule, Zone_ami_outofschedule.previousState.state)
+	postUpdate(Zone_thomas_outofschedule, Zone_thomas_outofschedule.previousState.state)
+	postUpdate(Zone_filles_outofschedule, Zone_filles_outofschedule.previousState.state)
+	postUpdate(VMC_rapide, VMC_rapide.previousState.state)
+	postUpdate(VMC_auto, VMC_auto.previousState.state)
+	postUpdate(High_hum_sallebain, High_hum_sallebain.previousState.state)
+	postUpdate(High_hum_salledeau, High_hum_salledeau.previousState.state)
+	postUpdate(Filtration_piscine_auto, Filtration_piscine_auto.previousState.state)
+end
+
+/* Mettre l'item Programmation_phase à vide si la programmation a été enlevée */
+rule "Programmation modifiee"
+when
+	Item Programmation changed
+then
+	var Integer prog = (Programmation.state as DecimalType).intValue
+	if (prog == 0) //programmation = aucune
+		postUpdate(Programmation_phase, "")
+end
+
+
+/* Semaine de travail */
+rule "Semaine de travail - MON,TUE,FRI - 6h30"
+when
+	Time cron "0 30 06 ? * MON,TUE,FRI"
+then
+	var Integer prog = (Programmation.state as DecimalType).intValue
+	if(prog == 1) // uniquement pour le programme "Semaine de travail"
+	{
+		if(Zone_salon_outofschedule.state == OFF)
+			sendCommand(Temp_salon_setpoint_global, salon_present)
+		if(Zone_bureau_outofschedule.state == OFF)
+ 			sendCommand(Temp_bureau_setpoint, bureau_nuit) // pas besoin de chauffer la salle de jeu le matin
+/*		if(Zone_parents_outofschedule.state == OFF)
+			sendCommand(Temp_parents_setpoint, chambres_present)
+		if(Zone_ami_outofschedule.state == OFF)
+			sendCommand(Temp_ami_setpoint, chambres_present)
+		if(Zone_thomas_outofschedule.state == OFF)
+			sendCommand(Temp_thomas_setpoint, chambres_present)
+		if(Zone_filles_outofschedule.state == OFF)
+			sendCommand(Temp_filles_setpoint, chambres_present)*/
+		postUpdate(Programmation_phase, "6h30-8h30: salon à " + salon_present.toString() + "°C")
+	}
+end
+
+rule "Semaine de travail - WED,THU,SAT,SUN - 7h30"
+when
+	Time cron "0 30 07 ? * WED,THU,SAT,SUN"
+then
+	var Integer prog = (Programmation.state as DecimalType).intValue
+	if(prog == 1) // uniquement pour le programme "Semaine de travail"
+	{
+		if(Zone_salon_outofschedule.state == OFF)
+			sendCommand(Temp_salon_setpoint_global, salon_present)
+		if(Zone_bureau_outofschedule.state == OFF)
+ 			sendCommand(Temp_bureau_setpoint, bureau_present)
+		if(Zone_parents_outofschedule.state == OFF)
+			sendCommand(Temp_parents_setpoint, chambres_present)
+		if(Zone_ami_outofschedule.state == OFF)
+			sendCommand(Temp_ami_setpoint, chambres_present)
+		if(Zone_thomas_outofschedule.state == OFF)
+			sendCommand(Temp_thomas_setpoint, chambres_present)
+/*		if(Zone_filles_outofschedule.state == OFF)
+			sendCommand(Temp_filles_setpoint, chambres_present)*/
+		postUpdate(Programmation_phase, "7h30-22h30: salon à " + salon_present.toString() + "°C")
+	}
+end
+
+rule "Semaine de travail - MON,TUE,FRI - 8h30"
+when
+	Time cron "0 30 08 ? * MON,TUE,FRI"
+then
+	var Integer prog = (Programmation.state as DecimalType).intValue
+	if(prog == 1) // uniquement pour le programme "Semaine de travail"
+	{
+		if(Zone_salon_outofschedule.state == OFF)
+			sendCommand(Temp_salon_setpoint_global, salon_absent)
+		if(Zone_bureau_outofschedule.state == OFF)
+ 			sendCommand(Temp_bureau_setpoint, bureau_absent) // pas besoin de chauffer la salle de jeu le matin
+		if(Zone_parents_outofschedule.state == OFF)
+			sendCommand(Temp_parents_setpoint, chambres_absent)
+		if(Zone_ami_outofschedule.state == OFF)
+			sendCommand(Temp_ami_setpoint, chambres_absent)
+		if(Zone_thomas_outofschedule.state == OFF)
+			sendCommand(Temp_thomas_setpoint, chambres_absent)
+		if(Zone_filles_outofschedule.state == OFF)
+			sendCommand(Temp_filles_setpoint, chambres_absent)
+		if(now.getDayOfWeek == 3) // Mercredi
+			postUpdate(Programmation_phase, "8h30-12h30: salon à " + salon_absent.toString() + "°C")
+		else
+			postUpdate(Programmation_phase, "8h30-17h30: salon à " + salon_absent.toString() + "°C")		
+	}
+end
+
+rule "Semaine de travail - MON,TUE,FRI - 17h30"
+when
+	Time cron "0 30 17 ? * MON,TUE,FRI"
+then
+	var Integer prog = (Programmation.state as DecimalType).intValue
+	if(prog == 1) // uniquement pour le programme "Semaine de travail"
+	{
+		if(Zone_salon_outofschedule.state == OFF)
+			sendCommand(Temp_salon_setpoint_global, salon_present)
+		if(Zone_bureau_outofschedule.state == OFF)
+ 			sendCommand(Temp_bureau_setpoint, bureau_present)
+		if(Zone_parents_outofschedule.state == OFF)
+			sendCommand(Temp_parents_setpoint, chambres_nuit)
+		if(Zone_ami_outofschedule.state == OFF)
+			sendCommand(Temp_ami_setpoint, chambres_nuit)
+		if(Zone_thomas_outofschedule.state == OFF)
+			sendCommand(Temp_thomas_setpoint, chambres_nuit)
+		if(Zone_filles_outofschedule.state == OFF)
+			sendCommand(Temp_filles_setpoint, chambres_nuit)
+		postUpdate(Programmation_phase, "17h30-22h30: salon à " + salon_present.toString() + "°C")	
+	}
+end
+
+rule "Semaine de travail - WED,THU,SAT,SUN - 19h"
+when
+        Time cron "0 00 19 ? * WED,THU,SAT,SUN"
+then
+        var Integer prog = (Programmation.state as DecimalType).intValue
+        if(prog == 1) // uniquement pour le programme "Semaine de travail"
+        {
+                if(Zone_parents_outofschedule.state == OFF)
+                        sendCommand(Temp_parents_setpoint, chambres_nuit)
+                if(Zone_ami_outofschedule.state == OFF)
+                        sendCommand(Temp_ami_setpoint, chambres_nuit)
+                if(Zone_thomas_outofschedule.state == OFF)
+                        sendCommand(Temp_thomas_setpoint, chambres_nuit)
+                if(Zone_filles_outofschedule.state == OFF)
+                        sendCommand(Temp_filles_setpoint, chambres_nuit)
+        }
+end
+
+/*
+rule "Semaine de travail - WED - 12h30"
+when
+	Time cron "0 30 12 ? * WED"
+then
+	var Integer prog = (Programmation.state as DecimalType).intValue
+	if(prog == 1) // uniquement pour le programme "Semaine de travail"
+	{
+		if(Zone_salon_outofschedule.state == OFF)
+			sendCommand(Temp_salon_setpoint_global, salon_present)
+		if(Zone_bureau_outofschedule.state == OFF)
+ 			sendCommand(Temp_bureau_setpoint, bureau_present)
+		if(Zone_parents_outofschedule.state == OFF)
+			sendCommand(Temp_parents_setpoint, chambres_present)
+		if(Zone_ami_outofschedule.state == OFF)
+			sendCommand(Temp_ami_setpoint, chambres_present)
+		if(Zone_thomas_outofschedule.state == OFF)
+			sendCommand(Temp_thomas_setpoint, chambres_present)
+		if(Zone_filles_outofschedule.state == OFF)
+			sendCommand(Temp_filles_setpoint, chambres_nuit)
+		postUpdate(Programmation_phase, "12h30-22h30: salon à " + salon_present.toString() + "°C")	
+	}
+end
+*/
+
+rule "Semaine de travail - EVERY DAYS - 22h30"
+when
+	Time cron "0 30 22 ? * *"
+then
+	var Integer prog = (Programmation.state as DecimalType).intValue
+	if(prog == 1) // uniquement pour le programme "Semaine de travail"
+	{
+		if(Zone_salon_outofschedule.state == OFF)
+			sendCommand(Temp_salon_setpoint_global, salon_nuit)
+		if(Zone_bureau_outofschedule.state == OFF)
+ 			sendCommand(Temp_bureau_setpoint, bureau_nuit)
+		if(Zone_parents_outofschedule.state == OFF)
+			sendCommand(Temp_parents_setpoint, chambres_nuit)
+		if(Zone_ami_outofschedule.state == OFF)
+			sendCommand(Temp_ami_setpoint, chambres_nuit)
+		if(Zone_thomas_outofschedule.state == OFF)
+			sendCommand(Temp_thomas_setpoint, chambres_nuit)
+		if(Zone_filles_outofschedule.state == OFF)
+			sendCommand(Temp_filles_setpoint, chambres_nuit)
+		postUpdate(Programmation_phase, "22h30-matin: salon à " + salon_nuit.toString() + "°C")		
+	}
+end
+
+/* Toujours présent */
+rule "Toujours présent - EVERY DAYS - 7h30"
+when
+	Time cron "0 30 07 ? * *"
+then
+	var Integer prog = (Programmation.state as DecimalType).intValue
+	if(prog == 2) // uniquement pour le programme "Toujours présent"
+	{
+		if(Zone_salon_outofschedule.state == OFF)
+			sendCommand(Temp_salon_setpoint_global, salon_present)
+		if(Zone_bureau_outofschedule.state == OFF)
+ 			sendCommand(Temp_bureau_setpoint, bureau_present)
+		postUpdate(Programmation_phase, "7h30-22h30: salon à " + salon_present.toString() + "°C")
+	}
+end
+
+rule "Toujours présent - EVERY DAYS - 8h30"
+when
+	Time cron "0 30 08 ? * *"
+then
+	var Integer prog = (Programmation.state as DecimalType).intValue
+	if(prog == 2) // uniquement pour le programme "Toujours présent"
+	{
+		if(Zone_parents_outofschedule.state == OFF)
+			sendCommand(Temp_parents_setpoint, chambres_present)
+		if(Zone_ami_outofschedule.state == OFF)
+			sendCommand(Temp_ami_setpoint, chambres_present)
+		if(Zone_thomas_outofschedule.state == OFF)
+			sendCommand(Temp_thomas_setpoint, chambres_present)
+		/* Pas tant qu'elles font toujours la sieste
+		 * if(Zone_filles_outofschedule.state == OFF)
+			sendCommand(Temp_filles_setpoint, chambres_present)*/
+	}
+end
+
+rule "Toujours présent - EVERY DAYS - 19h"
+when
+	Time cron "0 00 19 ? * *"
+then
+	var Integer prog = (Programmation.state as DecimalType).intValue
+	if(prog == 2) // uniquement pour le programme "Toujours présent"
+	{
+		if(Zone_parents_outofschedule.state == OFF)
+			sendCommand(Temp_parents_setpoint, chambres_nuit)
+		if(Zone_ami_outofschedule.state == OFF)
+			sendCommand(Temp_ami_setpoint, chambres_nuit)
+		if(Zone_thomas_outofschedule.state == OFF)
+			sendCommand(Temp_thomas_setpoint, chambres_nuit)
+		if(Zone_filles_outofschedule.state == OFF)
+			sendCommand(Temp_filles_setpoint, chambres_nuit)
+	}
+end
+
+rule "Toujours présent - EVERY DAYS - 22h30"
+when
+	Time cron "0 30 22 ? * *"
+then
+	var Integer prog = (Programmation.state as DecimalType).intValue
+	if(prog == 2) // uniquement pour le programme "Toujours présent"
+	{
+		if(Zone_salon_outofschedule.state == OFF)
+			sendCommand(Temp_salon_setpoint_global, salon_nuit)
+		if(Zone_bureau_outofschedule.state == OFF)
+ 			sendCommand(Temp_bureau_setpoint, bureau_nuit)
+		postUpdate(Programmation_phase, "22h30-7h30: salon à " + salon_nuit.toString() + "°C")		
+	}
+end
+
+/* Absence prolongée */
+/* Dans ce mode, les températures de consigne sont positionnées
+ * tous les jours à 6h30
+ */
+rule "Absence prolongée - EVERY DAYS - 6h30"
+when
+	Time cron "0 30 06 ? * *"
+then
+	var Integer prog = (Programmation.state as DecimalType).intValue
+	if(prog == 3) // uniquement pour le programme "Absence prolongée"
+	{
+		if(Zone_salon_outofschedule.state == OFF)
+			sendCommand(Temp_salon_setpoint_global, salon_absence_prolongee)
+		if(Zone_bureau_outofschedule.state == OFF)
+ 			sendCommand(Temp_bureau_setpoint, bureau_absence_prolongee)
+		if(Zone_parents_outofschedule.state == OFF)
+			sendCommand(Temp_parents_setpoint, chambres_absence_prolongee)
+		if(Zone_ami_outofschedule.state == OFF)
+			sendCommand(Temp_ami_setpoint, chambres_absence_prolongee)
+		if(Zone_thomas_outofschedule.state == OFF)
+			sendCommand(Temp_thomas_setpoint, chambres_absence_prolongee)
+		if(Zone_filles_outofschedule.state == OFF)
+			sendCommand(Temp_filles_setpoint, chambres_absence_prolongee)
+		postUpdate(Programmation_phase, "Toutes les pièces à " + salon_absence_prolongee.toString() + "°C")		
+	}
+end 
+ 
+/******************************************* */
+/* Gestion des sondes de temperature Airzone  */
+/******************************************* */
+
+rule "az_temp_reprise_display"
+
+when
+	System started or
+	Item AZ_temp_reprise_tenths changed
+	
+then
+
+    var Number temp = 0
+    if(AZ_temp_reprise_tenths.state instanceof DecimalType) 
+    	temp = AZ_temp_reprise_tenths.state as DecimalType
+    postUpdate(Temp_reprise, temp / 10.0)
+end
+
+
+rule "az_temp_salon_display"
+
+when
+	System started or
+	Item AZ_temp_salon_tenths changed
+	
+then
+
+    var Number temp = 0
+    if(AZ_temp_salon_tenths.state instanceof DecimalType) 
+    	temp = AZ_temp_salon_tenths.state as DecimalType
+    postUpdate(Temp_salon, temp / 10.0)
+end
+
+
+rule "az_temp_bureau_display"
+
+when
+	System started or
+        Item AZ_temp_bureau_tenths changed
+
+then
+
+    var Number temp = 0
+    if(AZ_temp_bureau_tenths.state instanceof DecimalType)
+        temp = AZ_temp_bureau_tenths.state as DecimalType
+    postUpdate(Temp_bureau, temp / 10.0)
+end
+
+
+rule "az_temp_chparents_display"
+
+when
+	System started or
+        Item AZ_temp_chparents_tenths changed
+
+then
+
+    var Number temp = 0
+    if(AZ_temp_chparents_tenths.state instanceof DecimalType)
+        temp = AZ_temp_chparents_tenths.state as DecimalType
+    postUpdate(Temp_chparents, temp / 10.0)
+end
+
+
+rule "az_temp_chami_display"
+
+when
+	System started or
+        Item AZ_temp_chami_tenths changed
+
+then
+
+    var Number temp = 0
+    if(AZ_temp_chami_tenths.state instanceof DecimalType)
+        temp = AZ_temp_chami_tenths.state as DecimalType
+    postUpdate(Temp_chami, temp / 10.0)
+end
+
+
+rule "az_temp_chthomas_display"
+
+when
+	System started or
+        Item AZ_temp_chthomas_tenths changed
+
+then
+
+    var Number temp = 0
+    if(AZ_temp_chthomas_tenths.state instanceof DecimalType)
+        temp = AZ_temp_chthomas_tenths.state as DecimalType
+    postUpdate(Temp_chthomas, temp / 10.0)
+end
+
+
+rule "az_temp_chfilles_display"
+
+when
+	System started or
+        Item AZ_temp_chfilles_tenths changed
+
+then
+
+    var Number temp = 0
+    if(AZ_temp_chfilles_tenths.state instanceof DecimalType)
+        temp = AZ_temp_chfilles_tenths.state as DecimalType
+    postUpdate(Temp_chfilles, temp / 10.0)
+end
+
+
+
+
+/******************************************* */
+/* Gestion de l'activation des zones Airzone */
+/******************************************* */
+
+
+/* Zone: Zone operation mode, register #0
+ * Bit 2 = Zone On/off status
+*/
+rule "az_salon_operation_mode_dispatch"
+when
+	System started or
+	Item AZ_salon_OpMode received update
+then
+	var Integer entire_value = 0
+	var Integer onoff_value = 0
+
+	entire_value = (AZ_salon_OpMode.state as DecimalType).intValue
+	
+	if(entire_value.compareTo(AZ_salon_OpMode_lastvalue) != 0)
+	{
+		onoff_value = entire_value.operator_doubleGreaterThan(2).bitwiseAnd(1) // bit 2
+		if(onoff_value == 0)
+			postUpdate(Zone_salon_OnOff, OFF)
+		else
+			postUpdate(Zone_salon_OnOff, ON);
+		AZ_salon_OpMode_lastvalue = entire_value
+	}
+end
+
+rule "az_salon_onoff_update"
+when
+	Item Zone_salon_OnOff received command
+then
+    // On prend la valeur du registre (lastvalue)
+    // On fait un AND avec un octet dont les bits concernés par l'item sont à zéro, et tous les autres sont à un
+    // On prend la valeur de l'item, et on le décale pour que les bits sont bien positionnés par rapport au registre
+    // Et puis on fait un OR entre la valeur de l'item shifté et le résultat du AND précédent
+    var Integer item_value = 0
+    if (Zone_salon_OnOff.state == ON)
+    	item_value = 1
+    else
+    	item_value = 0
+	var Integer AND_result = AZ_salon_OpMode_lastvalue.bitwiseAnd(65531) // 1111111111111011
+    var Integer new_register_value = item_value.operator_doubleLessThan(2).bitwiseOr(AND_result)
+
+	sendCommand(AZ_salon_OpMode, new_register_value)
+
+    // Gestion du chauffage electrique
+    if (Zone_salon_OnOff.state == ON)
+        // On envoie une "fausse" commande afin de provoquer la réinitialisation du chauffage
+	sendCommand(Temp_salon_setpoint_global, (Temp_salon_setpoint_global.state as DecimalType))
+    else
+	// on eteint
+ 	sendCommand(ChauffElec_salon_command, 0)
+end
+
+rule "az_bureau_operation_mode_dispatch"
+when
+	System started or
+	Item AZ_bureau_OpMode received update
+then
+	var Integer entire_value = 0
+	var Integer onoff_value = 0
+
+	entire_value = (AZ_bureau_OpMode.state as DecimalType).intValue
+	
+	if(entire_value.compareTo(AZ_bureau_OpMode_lastvalue) != 0)
+	{
+		onoff_value = entire_value.operator_doubleGreaterThan(2).bitwiseAnd(1) // bit 2
+		if(onoff_value == 0)
+			postUpdate(Zone_bureau_OnOff, OFF)
+		else
+			postUpdate(Zone_bureau_OnOff, ON);
+		AZ_bureau_OpMode_lastvalue = entire_value
+	}
+end
+
+rule "az_bureau_onoff_update"
+when
+	Item Zone_bureau_OnOff received command
+then
+    // On prend la valeur du registre (lastvalue)
+    // On fait un AND avec un octet dont les bits concernés par l'item sont à zéro, et tous les autres sont à un
+    // On prend la valeur de l'item, et on le décale pour que les bits sont bien positionnés par rapport au registre
+    // Et puis on fait un OR entre la valeur de l'item shifté et le résultat du AND précédent
+    var Integer item_value = 0
+    if (Zone_bureau_OnOff.state == ON)
+    	item_value = 1
+    else
+    	item_value = 0
+	var Integer AND_result = AZ_bureau_OpMode_lastvalue.bitwiseAnd(65531) // 1111111111111011
+    var Integer new_register_value = item_value.operator_doubleLessThan(2).bitwiseOr(AND_result)
+
+	sendCommand(AZ_bureau_OpMode, new_register_value)
+end
+
+rule "az_parents_operation_mode_dispatch"
+when
+	System started or
+	Item AZ_parents_OpMode received update
+then
+	var Integer entire_value = 0
+	var Integer onoff_value = 0
+
+	entire_value = (AZ_parents_OpMode.state as DecimalType).intValue
+	
+	if(entire_value.compareTo(AZ_parents_OpMode_lastvalue) != 0)
+	{
+		onoff_value = entire_value.operator_doubleGreaterThan(2).bitwiseAnd(1) // bit 2
+		if(onoff_value == 0)
+			postUpdate(Zone_parents_OnOff, OFF)
+		else
+			postUpdate(Zone_parents_OnOff, ON);
+		AZ_parents_OpMode_lastvalue = entire_value
+	}
+end
+
+rule "az_parents_onoff_update"
+when
+	Item Zone_parents_OnOff received command
+then
+    // On prend la valeur du registre (lastvalue)
+    // On fait un AND avec un octet dont les bits concernés par l'item sont à zéro, et tous les autres sont à un
+    // On prend la valeur de l'item, et on le décale pour que les bits sont bien positionnés par rapport au registre
+    // Et puis on fait un OR entre la valeur de l'item shifté et le résultat du AND précédent
+    var Integer item_value = 0
+    if (Zone_parents_OnOff.state == ON)
+    	item_value = 1
+    else
+    	item_value = 0
+	var Integer AND_result = AZ_parents_OpMode_lastvalue.bitwiseAnd(65531) // 1111111111111011
+    var Integer new_register_value = item_value.operator_doubleLessThan(2).bitwiseOr(AND_result)
+
+	sendCommand(AZ_parents_OpMode, new_register_value)
+end
+
+rule "az_thomas_operation_mode_dispatch"
+when
+	System started or
+	Item AZ_thomas_OpMode received update
+then
+	var Integer entire_value = 0
+	var Integer onoff_value = 0
+
+	entire_value = (AZ_thomas_OpMode.state as DecimalType).intValue
+	
+	if(entire_value.compareTo(AZ_thomas_OpMode_lastvalue) != 0)
+	{
+		onoff_value = entire_value.operator_doubleGreaterThan(2).bitwiseAnd(1) // bit 2
+		if(onoff_value == 0)
+			postUpdate(Zone_thomas_OnOff, OFF)
+		else
+			postUpdate(Zone_thomas_OnOff, ON);
+		AZ_thomas_OpMode_lastvalue = entire_value
+	}
+end
+
+rule "az_thomas_onoff_update"
+when
+	Item Zone_thomas_OnOff received command
+then
+    // On prend la valeur du registre (lastvalue)
+    // On fait un AND avec un octet dont les bits concernés par l'item sont à zéro, et tous les autres sont à un
+    // On prend la valeur de l'item, et on le décale pour que les bits sont bien positionnés par rapport au registre
+    // Et puis on fait un OR entre la valeur de l'item shifté et le résultat du AND précédent
+    var Integer item_value = 0
+    if (Zone_thomas_OnOff.state == ON)
+    	item_value = 1
+    else
+    	item_value = 0
+	var Integer AND_result = AZ_thomas_OpMode_lastvalue.bitwiseAnd(65531) // 1111111111111011
+    var Integer new_register_value = item_value.operator_doubleLessThan(2).bitwiseOr(AND_result)
+
+	sendCommand(AZ_thomas_OpMode, new_register_value)
+end
+
+rule "az_filles_operation_mode_dispatch"
+when
+	System started or
+	Item AZ_filles_OpMode received update
+then
+	var Integer entire_value = 0
+	var Integer onoff_value = 0
+
+	entire_value = (AZ_filles_OpMode.state as DecimalType).intValue
+	
+	if(entire_value.compareTo(AZ_filles_OpMode_lastvalue) != 0)
+	{
+		onoff_value = entire_value.operator_doubleGreaterThan(2).bitwiseAnd(1) // bit 2
+		if(onoff_value == 0)
+			postUpdate(Zone_filles_OnOff, OFF)
+		else
+			postUpdate(Zone_filles_OnOff, ON);
+		AZ_filles_OpMode_lastvalue = entire_value
+	}
+end
+
+rule "az_filles_onoff_update"
+when
+	Item Zone_filles_OnOff received command
+then
+    // On prend la valeur du registre (lastvalue)
+    // On fait un AND avec un octet dont les bits concernés par l'item sont à zéro, et tous les autres sont à un
+    // On prend la valeur de l'item, et on le décale pour que les bits sont bien positionnés par rapport au registre
+    // Et puis on fait un OR entre la valeur de l'item shifté et le résultat du AND précédent
+    var Integer item_value = 0
+    if (Zone_filles_OnOff.state == ON)
+    	item_value = 1
+    else
+    	item_value = 0
+	var Integer AND_result = AZ_filles_OpMode_lastvalue.bitwiseAnd(65531) // 1111111111111011
+    var Integer new_register_value = item_value.operator_doubleLessThan(2).bitwiseOr(AND_result)
+
+	sendCommand(AZ_filles_OpMode, new_register_value)
+end
+
+rule "az_ami_operation_mode_dispatch"
+when
+//	System started or
+	Item AZ_ami_OpMode received update
+then
+	var Integer entire_value = 0
+	var Integer onoff_value = 0
+
+	entire_value = (AZ_ami_OpMode.state as DecimalType).intValue
+	
+	if(entire_value.compareTo(AZ_ami_OpMode_lastvalue) != 0)
+	{
+		onoff_value = entire_value.operator_doubleGreaterThan(2).bitwiseAnd(1) // bit 2
+		if(onoff_value == 0)
+			postUpdate(Zone_ami_OnOff, OFF)
+		else
+			postUpdate(Zone_ami_OnOff, ON);
+		AZ_ami_OpMode_lastvalue = entire_value
+	}
+end
+
+rule "az_ami_onoff_update"
+when
+	Item Zone_ami_OnOff received command
+then
+    // On prend la valeur du registre (lastvalue)
+    // On fait un AND avec un octet dont les bits concernés par l'item sont à zéro, et tous les autres sont à un
+    // On prend la valeur de l'item, et on le décale pour que les bits sont bien positionnés par rapport au registre
+    // Et puis on fait un OR entre la valeur de l'item shifté et le résultat du AND précédent
+    var Integer item_value = 0
+    if (Zone_ami_OnOff.state == ON)
+    	item_value = 1
+    else
+    	item_value = 0
+	var Integer AND_result = AZ_ami_OpMode_lastvalue.bitwiseAnd(65531) // 1111111111111011
+    var Integer new_register_value = item_value.operator_doubleLessThan(2).bitwiseOr(AND_result)
+
+	sendCommand(AZ_ami_OpMode, new_register_value)
+end
+
+
+/********************************************* */
+/* Gestion des températures désirées des zones */
+/********************************************* */
+
+/** Chauffage electrique:
+- creer un autre setpoint 'Temp_salon_setpoint_global' et rendre Temp_salon_setpoint invisible
+- si le mode elec est activé, Temp_salon_setpoint est bloqué à la temp limite demandée à la PAC, sinon Temp_salon_setpoint = Temp_salon_setpoint_global
+- si le mode elec est activé, écouter l'item Temp_salon et agir sur les chauffages elec suivant la consigne Temp_salon_setpoint_global
+- la programmation doit agir sur Temp_salon_setpoint_global au lieu de Temp_salon_setpoint
+!! Attention à gérer l'extinction du chauff elec si la PAC n'est pas en mode chaud
+**/
+
+/* Pas nécessaire
+rule "chauffelec_mode_auto"
+when
+        Item ChauffElec_salon_auto changed
+then
+        var Integer pac_mode = Mode.state as DecimalType
+
+        if ((ChauffElec_salon_auto.state == ON) && (pac_mode != 4))
+                sendCommand(ChauffElec_salon_auto, OFF)
+end
+*/
+
+rule "temp_salon_setpoint_update"
+when
+	Item Temp_salon_setpoint_global received command
+then
+	var Float PAC_temp_limite = (Temp_PAC_salon.state as DecimalType).floatValue
+	var Float Temp_setpoint = (Temp_salon_setpoint_global.state as DecimalType).floatValue
+        var Float Temp_salon_var = (Temp_salon.state as DecimalType).floatValue
+
+        var Integer pac_mode = (Mode.state as DecimalType).intValue
+ 
+	logInfo("radiateurs","Setpoint="+Temp_setpoint.toString)
+        logInfo("radiateurs","Temp="+Temp_salon_var.toString)
+        logInfo("radiateurs","Command="+ChauffElec_salon_command.state.toString)
+	logInfo("radiateurs","pac_mode="+pac_mode)
+	logInfo("radiateurs","Zone_salon_OnOff="+Zone_salon_OnOff.state.toString)
+
+	if ((ChauffElec_salon_auto.state == ON) && (pac_mode.compareTo(4) == 0) && (Zone_salon_OnOff.state == ON))
+	{
+		logInfo("radiateurs","AUTO = ON")
+		if (Temp_setpoint > PAC_temp_limite)
+		{
+			logInfo("radiateurs", "Temp_setpoint > PAC_temp_limite")
+		        // Requested beyond current temp, starting radiators
+        		if ((Temp_setpoint > Temp_salon_var) && (ChauffElec_salon_command.state != 100))
+			{
+				logInfo("radiateurs", "Allumage radiateurs")
+                		sendCommand(ChauffElec_salon_command, 100)
+			}
+			// Requested below current temp, stopping radiators
+			if ((Temp_setpoint <= Temp_salon_var) && (ChauffElec_salon_command.state != 0))
+			{
+				logInfo("radiateurs", "Extinction radiateurs")
+                	        sendCommand(ChauffElec_salon_command, 0)
+			}
+                        // Fix PAC temperature
+                        Temp_setpoint = PAC_temp_limite
+		}
+		else if (ChauffElec_salon_command.state != 0)
+		{
+                	logInfo("radiateurs", "Extinction radiateurs")
+                        sendCommand(ChauffElec_salon_command, 0)
+		}
+	}
+	// Set PAC requested temperature
+	sendCommand(Temp_salon_setpoint, Temp_setpoint)
+end
+
+rule "chauffelec_control"
+when
+	Item Tempo_init_persist received command or
+	Item Temp_salon changed
+then
+	var Number PAC_temp_limite = Temp_PAC_salon.state as DecimalType
+        var Number Temp_setpoint = Temp_salon_setpoint_global.state as DecimalType
+	var Number Temp_salon_var = Temp_salon.state as DecimalType
+
+        var Integer pac_mode = (Mode.state as DecimalType).intValue
+
+	if ((pac_mode.compareTo(4) == 0) && (Zone_salon_OnOff.state == ON)) //PAC en mode chauffage et zone activée
+	{
+		logInfo("radiateurs", "Entering chauff control")
+		logInfo("radiateurs", "=> ChauffElec_salon_auto.state="+ChauffElec_salon_auto.state.toString)
+        	logInfo("radiateurs", "=> Setpoint="+Temp_setpoint.toString)
+        	logInfo("radiateurs", "=> PAC_temp_limite="+PAC_temp_limite.toString)
+
+		if ((ChauffElec_salon_auto.state == ON) && (Temp_setpoint > PAC_temp_limite))
+		{
+			logInfo("radiateurs","Setpoint="+Temp_setpoint.toString)
+	        	logInfo("radiateurs","Temp="+Temp_salon_var.toString)
+        		logInfo("radiateurs","Command="+ChauffElec_salon_command.state.toString)
+
+			if ((Temp_salon_var <= (Temp_setpoint - 0.1)) && (ChauffElec_salon_command.state != 100))
+			{
+                        	logInfo("radiateurs", "Allumage radiateurs")
+				sendCommand(ChauffElec_salon_command, 100)
+			}	
+
+			if ((Temp_salon_var >= Temp_setpoint) && (ChauffElec_salon_command.state != 0))
+			{
+                       		logInfo("radiateurs", "Extinction radiateurs")
+				sendCommand(ChauffElec_salon_command, 0)
+			}
+		}
+	}
+end
+
+rule "az_temp_setpoint_salon_display"
+when
+	System started or
+	Item AZ_temp_setpoint_salon_tenths changed
+then
+
+    var Number temp = 0
+    if(AZ_temp_setpoint_salon_tenths.state instanceof DecimalType) 
+    	temp = AZ_temp_setpoint_salon_tenths.state as DecimalType
+    postUpdate(Temp_salon_setpoint, temp / 10.0)
+end
+
+rule "az_temp_salon_setpoint_update"
+when
+	Item Temp_salon_setpoint received command
+then
+	sendCommand(AZ_temp_setpoint_salon_tenths, (Temp_salon_setpoint.state as DecimalType) * 10)
+end
+
+rule "az_temp_setpoint_bureau_display"
+when
+	System started or
+	Item AZ_temp_setpoint_bureau_tenths changed
+then
+
+    var Number temp = 0
+    if(AZ_temp_setpoint_bureau_tenths.state instanceof DecimalType) 
+    	temp = AZ_temp_setpoint_bureau_tenths.state as DecimalType
+    postUpdate(Temp_bureau_setpoint, temp / 10.0)
+end
+
+rule "az_temp_bureau_setpoint_update"
+when
+	Item Temp_bureau_setpoint received command
+then
+	sendCommand(AZ_temp_setpoint_bureau_tenths, (Temp_bureau_setpoint.state as DecimalType) * 10)
+end
+
+rule "az_temp_setpoint_parents_display"
+when
+	System started or
+	Item AZ_temp_setpoint_parents_tenths changed
+then
+
+    var Number temp = 0
+    if(AZ_temp_setpoint_parents_tenths.state instanceof DecimalType) 
+    	temp = AZ_temp_setpoint_parents_tenths.state as DecimalType
+    postUpdate(Temp_parents_setpoint, temp / 10.0)
+end
+
+rule "az_temp_parents_setpoint_update"
+when
+	Item Temp_parents_setpoint received command
+then
+	sendCommand(AZ_temp_setpoint_parents_tenths, (Temp_parents_setpoint.state as DecimalType) * 10)
+end
+
+rule "az_temp_setpoint_ami_display"
+when
+	System started or
+	Item AZ_temp_setpoint_ami_tenths changed
+then
+
+    var Number temp = 0
+    if(AZ_temp_setpoint_ami_tenths.state instanceof DecimalType) 
+    	temp = AZ_temp_setpoint_ami_tenths.state as DecimalType
+    postUpdate(Temp_ami_setpoint, temp / 10.0)
+end
+
+rule "az_temp_ami_setpoint_update"
+when
+	Item Temp_ami_setpoint received command
+then
+	sendCommand(AZ_temp_setpoint_ami_tenths, (Temp_ami_setpoint.state as DecimalType) * 10)
+end
+
+rule "az_temp_setpoint_thomas_display"
+when
+	System started or
+	Item AZ_temp_setpoint_thomas_tenths changed
+then
+
+    var Number temp = 0
+    if(AZ_temp_setpoint_thomas_tenths.state instanceof DecimalType) 
+    	temp = AZ_temp_setpoint_thomas_tenths.state as DecimalType
+    postUpdate(Temp_thomas_setpoint, temp / 10.0)
+end
+
+rule "az_temp_thomas_setpoint_update"
+when
+	Item Temp_thomas_setpoint received command
+then
+	sendCommand(AZ_temp_setpoint_thomas_tenths, (Temp_thomas_setpoint.state as DecimalType) * 10)
+end
+
+rule "az_temp_setpoint_filles_display"
+when
+	System started or
+	Item AZ_temp_setpoint_filles_tenths changed
+then
+
+    var Number temp = 0
+    if(AZ_temp_setpoint_filles_tenths.state instanceof DecimalType) 
+    	temp = AZ_temp_setpoint_filles_tenths.state as DecimalType
+    postUpdate(Temp_filles_setpoint, temp / 10.0)
+end
+
+rule "az_temp_filles_setpoint_update"
+when
+	Item Temp_filles_setpoint received command
+then
+	sendCommand(AZ_temp_setpoint_filles_tenths, (Temp_filles_setpoint.state as DecimalType) * 10)
+end
+
+
+
+/********************************************* */
+/* Statut d'ouverture des grilles			   */
+/********************************************* */
+
+rule "az_salon_status_register_dispatch"
+when
+//	System started or
+	Item AZ_salon_status_register received update
+then
+	var Integer entire_value = 0
+	var Integer grille_value = 0
+
+	entire_value = (AZ_salon_status_register.state as DecimalType).intValue
+	
+	if(entire_value.compareTo(AZ_salon_status_register_lastvalue) != 0)
+	{
+		grille_value = entire_value.bitwiseAnd(1) // bit 0
+		if(grille_value == 0)
+			postUpdate(Zone_salon_volet_status, "Fermée")
+		else
+			postUpdate(Zone_salon_volet_status, "Ouverte");
+		AZ_salon_status_register_lastvalue = entire_value
+	}
+end
+
+rule "az_bureau_status_register_dispatch"
+when
+//	System started or
+	Item AZ_bureau_status_register received update
+then
+	var Integer entire_value = 0
+	var Integer grille_value = 0
+
+	entire_value = (AZ_bureau_status_register.state as DecimalType).intValue
+	
+	if(entire_value.compareTo(AZ_bureau_status_register_lastvalue) != 0)
+	{
+		grille_value = entire_value.bitwiseAnd(1) // bit 0
+		if(grille_value == 0)
+			postUpdate(Zone_bureau_volet_status, "Fermée")
+		else
+			postUpdate(Zone_bureau_volet_status, "Ouverte");
+		AZ_bureau_status_register_lastvalue = entire_value
+	}
+end
+
+rule "az_parents_status_register_dispatch"
+when
+//	System started or
+	Item AZ_parents_status_register received update
+then
+	var Integer entire_value = 0
+	var Integer grille_value = 0
+
+	entire_value = (AZ_parents_status_register.state as DecimalType).intValue
+	
+	if(entire_value.compareTo(AZ_parents_status_register_lastvalue) != 0)
+	{
+		grille_value = entire_value.bitwiseAnd(1) // bit 0
+		if(grille_value == 0)
+			postUpdate(Zone_parents_volet_status, "Fermée")
+		else
+			postUpdate(Zone_parents_volet_status, "Ouverte");
+		AZ_parents_status_register_lastvalue = entire_value
+	}
+end
+
+rule "az_ami_status_register_dispatch"
+when
+//	System started or
+	Item AZ_ami_status_register received update
+then
+	var Integer entire_value = 0
+	var Integer grille_value = 0
+
+	entire_value = (AZ_ami_status_register.state as DecimalType).intValue
+	
+	if(entire_value.compareTo(AZ_ami_status_register_lastvalue) != 0)
+	{
+		grille_value = entire_value.bitwiseAnd(1) // bit 0
+		if(grille_value == 0)
+			postUpdate(Zone_ami_volet_status, "Fermée")
+		else
+			postUpdate(Zone_ami_volet_status, "Ouverte");
+		AZ_ami_status_register_lastvalue = entire_value
+	}
+end
+
+rule "az_thomas_status_register_dispatch"
+when
+//	System started or
+	Item AZ_thomas_status_register received update
+then
+	var Integer entire_value = 0
+	var Integer grille_value = 0
+
+	entire_value = (AZ_thomas_status_register.state as DecimalType).intValue
+	
+	if(entire_value.compareTo(AZ_thomas_status_register_lastvalue) != 0)
+	{
+		grille_value = entire_value.bitwiseAnd(1) // bit 0
+		if(grille_value == 0)
+			postUpdate(Zone_thomas_volet_status, "Fermée")
+		else
+			postUpdate(Zone_thomas_volet_status, "Ouverte");
+		AZ_thomas_status_register_lastvalue = entire_value
+	}
+end
+
+rule "az_filles_status_register_dispatch"
+when
+//	System started or
+	Item AZ_filles_status_register received update
+then
+	var Integer entire_value = 0
+	var Integer grille_value = 0
+
+	entire_value = (AZ_filles_status_register.state as DecimalType).intValue
+	
+	if(entire_value.compareTo(AZ_filles_status_register_lastvalue) != 0)
+	{
+		grille_value = entire_value.bitwiseAnd(1) // bit 0
+		if(grille_value == 0)
+			postUpdate(Zone_filles_volet_status, "Fermée")
+		else
+			postUpdate(Zone_filles_volet_status, "Ouverte");
+		AZ_filles_status_register_lastvalue = entire_value
+	}
+end
+
+
+
+/********************************************* */
+/* Mode automatique VMC                        */
+/********************************************* */
+
+// On veut éviter que la VMC se déclenche automatiquement la nuit
+rule "VMC auto autorise - EVERY DAYS - 7h"
+when
+	Time cron "0 00 07 ? * *"
+then
+	VMC_auto_allowed = 1
+end
+
+rule "VMC auto defendu - EVERY DAYS - minuit"
+when
+	Time cron "0 00 00 ? * *"
+then
+	VMC_auto_allowed = 0
+	if(VMC_rapide.state == ON)
+		sendCommand(VMC_rapide, OFF)
+end
+
+rule "vmc_mode_auto_indoor_update"
+when
+	Item Hygro_sallebain changed or
+	Item Hygro_salledeau changed
+then
+	var Integer hygro_sallebain_value = 0
+	var Integer hygro_salledeau_value = 0
+	var Integer hygro_outside_value = 0
+	var Integer temp_salledeau_value = 0
+	var Integer temp_sallebain_value = 0
+	var String hygro_abs_salledeau_str
+	var String hygro_abs_sallebain_str
+	var Float hygro_abs_salledeau_number
+	var Float hygro_abs_sallebain_number
+	var Float hygro_abs_outside_number
+	
+	hygro_sallebain_value = (Hygro_sallebain.state as DecimalType).intValue
+	hygro_salledeau_value = (Hygro_salledeau.state as DecimalType).intValue
+	hygro_outside_value = (Hygro_outside.state as DecimalType).intValue
+	
+	temp_sallebain_value = (Temp_sallebain.state as DecimalType).intValue
+	temp_salledeau_value = (Temp_salledeau.state as DecimalType).intValue
+	hygro_abs_salledeau_str = transform("JS", "absolute_humidity.js", String::valueOf(hygro_salledeau_value).concat(" ").concat(String::valueOf(temp_salledeau_value)))
+	hygro_abs_sallebain_str = transform("JS", "absolute_humidity.js", String::valueOf(hygro_sallebain_value).concat(" ").concat(String::valueOf(temp_sallebain_value)))
+	postUpdate(Hygro_abs_sallebain, hygro_abs_sallebain_str)
+	postUpdate(Hygro_abs_salledeau, hygro_abs_salledeau_str)
+
+	hygro_abs_salledeau_number = (Hygro_abs_salledeau.state as DecimalType).floatValue
+	hygro_abs_sallebain_number = (Hygro_abs_sallebain.state as DecimalType).floatValue
+	hygro_abs_outside_number = (Hygro_abs_outside.state as DecimalType).floatValue * 1.2 //marge de 20%
+	
+	if((VMC_auto.state == ON) && (VMC_auto_allowed == 1))
+	// mode automatique, plage horaire autorisé
+	{
+		// ne déclencher que si l'humidité absolue extérieure est inférieure
+		if(VMC_rapide.state == OFF) {
+		//	if((hygro_sallebain_value >= 70) && (hygro_abs_outside_number < hygro_abs_sallebain_number)) {
+			if((hygro_abs_sallebain_number >= 16) && (hygro_sallebain_value >= 70) && (hygro_abs_outside_number < hygro_abs_sallebain_number)) {
+//				logInfo("vmc", "Salle de bain too high")
+				postUpdate(High_hum_sallebain, "OUI")
+				sendCommand(VMC_rapide, ON)
+			}
+//			else if((hygro_salledeau_value >= 70) && (hygro_abs_outside_number < hygro_abs_salledeau_number)) {
+			else if((hygro_abs_salledeau_number >= 16) && (hygro_salledeau_value >= 70) && (hygro_abs_outside_number < hygro_abs_salledeau_number)) {
+//				logInfo("vmc", "Salle d'eau too high")
+				postUpdate(High_hum_salledeau, "OUI")
+				sendCommand(VMC_rapide, ON)
+			}
+		} 
+		else {
+//			if((hygro_sallebain_value <= 68) && (hygro_salledeau_value <= 68)) {
+			if(((hygro_abs_sallebain_number <= 15)||(hygro_abs_outside_number >= hygro_abs_sallebain_number)||(hygro_sallebain_value <= 68)) && ((hygro_abs_salledeau_number <= 15)||(hygro_abs_outside_number >= hygro_abs_salledeau_number)||(hygro_salledeau_value <= 68))) {
+//				logInfo("vmc","Back to normal")
+				postUpdate(High_hum_sallebain,"NON")
+				postUpdate(High_hum_salledeau,"NON")
+				sendCommand(VMC_rapide, OFF)
+			}
+		}
+	}
+end
+
+rule "vmc_mode_auto_outdoor_update"
+when
+	Item Hygro_outside changed
+then
+	var Integer hygro_sallebain_value = 0
+	var Integer hygro_salledeau_value = 0
+	var Integer hygro_outside_value = 0
+	var Integer temp_outside_value = 0
+	var String hygro_abs_outside_value
+    var Float hygro_abs_salledeau_number
+    var Float hygro_abs_sallebain_number
+    var Float hygro_abs_outside_number
+	
+	
+	hygro_sallebain_value = (Hygro_sallebain.state as DecimalType).intValue
+	hygro_salledeau_value = (Hygro_salledeau.state as DecimalType).intValue
+	hygro_outside_value = (Hygro_outside.state as DecimalType).intValue
+	
+	temp_outside_value = (Temp_outside.state as DecimalType).intValue
+	hygro_abs_outside_value = transform("JS", "absolute_humidity.js", String::valueOf(hygro_outside_value).concat(" ").concat(String::valueOf(temp_outside_value)))
+	postUpdate(Hygro_abs_outside, hygro_abs_outside_value)
+
+    hygro_abs_salledeau_number = (Hygro_abs_salledeau.state as DecimalType).floatValue
+    hygro_abs_sallebain_number = (Hygro_abs_sallebain.state as DecimalType).floatValue
+    hygro_abs_outside_number = (Hygro_abs_outside.state as DecimalType).floatValue * 1.2 // marge de 20%
+
+	if((VMC_auto.state == ON) && (VMC_rapide.state == ON))
+	{
+ 		if((hygro_abs_outside_number > hygro_abs_sallebain_number) && (hygro_abs_outside_number > hygro_abs_salledeau_number))
+		{
+			postUpdate(High_hum_sallebain,"NON")
+			postUpdate(High_hum_salledeau,"NON")
+			sendCommand(VMC_rapide, OFF)
+		}
+	}
+end
+
+
+/********************************************* */
+/* Piscine                                     */
+/********************************************* */
+
+// Règle de filtration:
+// Si t<10° => 2h par jour, de 4h à 6h
+// Si t<=15° => temp de l'eau / 3, à partir de 12h
+// Si t>15° => temp de l'eau / 2, à partir de 10h
+   	
+rule "piscine_create_daily_timers"
+when
+	Time cron "0 0 03 * * ?"   // Every day @ 03am, on calcule les heures et on crée les timers pour la filtration
+then
+	var year   = now.getYear
+	var month  = now.getMonthOfYear
+    var day    = now.getDayOfMonth
+    var Integer duree
+    var Integer heurefin	
+	var Integer temp_eau_moy
+	
+	logInfo("piscine", "Begin piscine_create_daily_timers rule...")
+	// on prend la t° max sur les 15 dernières heures (depuis la veille à midi)
+	temp_eau_moy = (Temp_eau_piscine.maximumSince(now.minusHours(15)).state as DecimalType).intValue
+    logInfo("piscine", temp_eau_moy.toString)
+
+   	if(temp_eau_moy < 10)
+   	{
+   		filtration_time_start = parse(year + "-" + month + "-" + day + "T" + "04:00:00")
+		filtration_time_end = parse(year + "-" + month + "-" + day + "T" + "06:00:00")
+		postUpdate(Filtration_heuredebut, "04h00")
+		postUpdate(Filtration_heurefin, "06h00")
+   	}
+   	else
+   		if(temp_eau_moy <= 15)
+   		{
+   			filtration_time_start = parse(year + "-" + month + "-" + day + "T" + "12:00:00")
+   			duree = temp_eau_moy / 3
+   			heurefin = 12 + duree
+   			filtration_time_end = parse(year + "-" + month + "-" + day + "T" + heurefin + ":00:00")
+   			postUpdate(Filtration_heuredebut, "12h00")
+			postUpdate(Filtration_heurefin, heurefin + "h00")
+   		}
+   		else
+   		{
+   			filtration_time_start = parse(year + "-" + month + "-" + day + "T" + "10:00:00")
+   			duree = temp_eau_moy / 2
+   			heurefin = 10 + duree
+   			if(heurefin >= 24) //cas rare, si t° eau >= 30°, mais on ne sait jamais...
+   			{
+   				day = now.plusDays(1).getDayOfMonth
+   				heurefin = 24 - heurefin
+   			}
+   			filtration_time_end = parse(year + "-" + month + "-" + day + "T" + heurefin + ":00:00")
+   			postUpdate(Filtration_heuredebut, "10h00")
+			postUpdate(Filtration_heurefin, heurefin + "h00")   							
+   		}
+   		
+   		postUpdate(Filtration_heuredebut_joda, filtration_time_start.toString)
+   		postUpdate(Filtration_heurefin_joda, filtration_time_end.toString)
+
+	    logInfo("piscine", Filtration_heuredebut_joda.toString)
+	    logInfo("piscine", Filtration_heurefin_joda.toString)	    
+
+		Tfiltration_start = createTimer(filtration_time_start) [| sendCommand(Filtration_piscine, ON)]
+        Tfiltration_end = createTimer(filtration_time_end) [| if ((Filtration_piscine_force.state as DecimalType).intValue == 0) sendCommand(Filtration_piscine, OFF)]
+        
+        logInfo("piscine", "End piscine_create_daily_timers rule.")
+        //sendMail("lionel@beard.fr", "[Piscine] Horaires de filtration", filtration_time_start.toString.concat(" ").concat(filtration_time_end.toString))
+
+end
+
+/* créer règle pour démarrage openhab:
+ * - faire de filtration_time_start et filtration_time_end des items non visibles
+ * - mettre de la persistence
+ * - au dméarrage, créer les timers nécessaires suivant où on est dans le temps (cf ci-dessous)
+ */ 
+rule "piscine_init_on_start"
+when
+	Item Tempo_init_persist received command
+then
+
+        logInfo("piscine", "Begin piscine_init_on_start rule...")
+
+		filtration_time_start = parse((Filtration_heuredebut_joda.state as StringType).toString)
+		filtration_time_end = parse((Filtration_heurefin_joda.state as StringType).toString)
+
+	    logInfo("piscine", filtration_time_start.toString)
+	    logInfo("piscine", filtration_time_end.toString)
+	
+		if(filtration_time_start.afterNow)
+		{
+			// on est avant l'heure de début => on crée les deux timers
+			Tfiltration_start = createTimer(filtration_time_start) [| sendCommand(Filtration_piscine, ON)]
+			Tfiltration_end = createTimer(filtration_time_end) [| if ((Filtration_piscine_force.state as DecimalType).intValue == 0) sendCommand(Filtration_piscine, OFF)]
+		}
+		else if((filtration_time_start.beforeNow) && (filtration_time_end.afterNow))
+		{
+			// on est entre les deux dates => on lance la filtration si besoin et on crée le timer de fin
+			if(Filtration_piscine.state == OFF)
+			{
+				sendCommand(Filtration_piscine, ON)
+			}
+			Tfiltration_start = null
+			Tfiltration_end = createTimer(filtration_time_end) [| if ((Filtration_piscine_force.state as DecimalType).intValue == 0) sendCommand(Filtration_piscine, OFF)]
+		}
+		else
+		{
+			// on est après la date de fin => on arrête la pompe si besoin
+			if((Filtration_piscine.state == ON) && ((Filtration_piscine_force.state as DecimalType).intValue == 0))
+			{
+				sendCommand(Filtration_piscine, OFF)
+			}
+			Tfiltration_start = null
+			Tfiltration_end = null
+		}
+	
+        logInfo("piscine", "End piscine_init_on_start rule.")
+
+end
+
+rule "piscine_auto_mode_changed"
+when
+	Item Filtration_piscine_auto changed
+then
+
+        var Integer force_state = (Filtration_piscine_force.state as DecimalType).intValue
+
+	// si on quitte le mode auto, on annule les timers
+	if(Filtration_piscine_auto.state == OFF)
+	{
+		if(Tfiltration_start != null)
+		{
+			Tfiltration_start.cancel
+			Tfiltration_start = null
+		}
+		if(Tfiltration_end != null)
+		{
+			Tfiltration_end.cancel
+			Tfiltration_end = null
+		}
+		
+		// Si la filtration est en marche lorsqu'on enlève le mode auto
+		// il faut passer le swith à ON pour refléter l'état actuel de la filtration (et ne pas la modifier)
+		if((Filtration_piscine.state == ON) && (force_state == 0))
+			sendCommand(Filtration_piscine_force, 99)
+	}
+	
+	// Si le mode auto est enclenché, on crée les timers
+	if(Filtration_piscine_auto.state == ON)
+	{
+		if(filtration_time_start.afterNow)
+		{
+			// on est avant l'heure de début => on crée les deux timers
+			Tfiltration_start = createTimer(filtration_time_start) [| sendCommand(Filtration_piscine, ON)]
+			Tfiltration_end = createTimer(filtration_time_end) [| if ((Filtration_piscine_force.state as DecimalType).intValue == 0) sendCommand(Filtration_piscine, OFF)]
+		}
+		else if((filtration_time_start.beforeNow) && (filtration_time_end.afterNow))
+		{
+			// on est entre les deux dates => on lance la filtration si besoin et on crée le timer de fin
+			if(Filtration_piscine.state == OFF)
+			{
+				sendCommand(Filtration_piscine, ON)
+			}
+			Tfiltration_start = null
+			Tfiltration_end = createTimer(filtration_time_end) [| if ((Filtration_piscine_force.state as DecimalType).intValue == 0) sendCommand(Filtration_piscine, OFF)]
+		}
+		else
+		{
+			// on est après la date de fin => on arrête la pompe si besoin
+			if((Filtration_piscine.state == ON) && ((Filtration_piscine_force.state as DecimalType).intValue == 0))
+			{
+				sendCommand(Filtration_piscine, OFF)
+			}
+			Tfiltration_start = null
+			Tfiltration_end = null
+		}
+	}
+end
+
+rule "piscine_force_filtration"
+when
+	Item Filtration_piscine_force received command
+then
+	// On joue sur le switch filtration auto
+	// Si force=ON: on démarre le moteur si besoin, on sauvegarde l'état du mode auto dans un item persistant et on désactive le mode auto si besoin
+	// Si force=OFF: on rétablit l'état de la filtration auto à partir de l'item persistant de sauvegarde. Si dernier état était OFF, on éteint le moteur
+
+	var Integer force_state = (Filtration_piscine_force.state as DecimalType).intValue
+
+	if (force_state != 0)
+	{
+		// On force le démarrage du moteur si besoin
+		if(Filtration_piscine.state == OFF)
+			sendCommand(Filtration_piscine, ON)
+			
+		// On sauvegarde l'état du mode auto
+		//!!!! Si on switche entre les différents modes de force sans passer par off, l'$état sauvegardé n'est plus l'initial!!!!
+		// on ne sauvegarde que si l'état précédent de l'item était OFF
+		if ((Filtration_piscine_force.previousState.state as DecimalType).intValue == 0)
+			sendCommand(Filtration_etat_auto_avant_force, Filtration_piscine_auto.state.toString)
+		
+		// On désactive le mode auto si ON => désactivation des timers
+		if(Filtration_piscine_auto.state == ON)
+			sendCommand(Filtration_piscine_auto, OFF)	
+
+                // On cree le timer si durée définie
+		//!!!!! il faut sauvegarder le timer pour le supprimer si le mode de force est modifié avant expiration du timer!!!
+		if(force_state != 99)
+		{
+               		Tfiltration_force = createTimer(now.plusHours(force_state)) [|
+                                sendCommand(Filtration_piscine_force, 0)]
+		}
+	}
+	else // OFF
+	{
+		// On rétablit l'état du mode auto, les timers sont rétablis si besoin
+		sendCommand(Filtration_piscine_auto, Filtration_etat_auto_avant_force.state.toString)
+	
+		// Si mode auto était positionné à OFF, on éteint le moteur
+		if (Filtration_etat_auto_avant_force.state == OFF)
+			sendCommand(Filtration_piscine, OFF)
+
+                // On annule le timer si besoin
+                if (Tfiltration_force != null)
+                {
+                        Tfiltration_force.cancel
+                        Tfiltration_force = null
+                }
+	}
+end
+
+// hors-gel (meilleure idée?) : si t°<X, mettre le switch force à ON. 
+rule "piscine_hors_gel"
+when
+	Item Temp_exterieur_piscine changed
+then
+	var Float temp_air
+	temp_air = (Temp_exterieur_piscine.state as DecimalType).floatValue
+
+	// On passe en anti-gel si le force n'est pas déjà à ON (et que le moteur tourne déjà), afin d'éviter
+	// l'arrêt du moteur lors de la sortie du mode anti-gel alors qu'il avait été forcé manuellement précédemment
+	if((temp_air <= -2.5) && (Filtration_anti_gel.state == OFF) && ((Filtration_piscine_force.state as DecimalType).intValue == 0))
+	{
+		logInfo("piscine", "Enter anti-frozen mode")
+                pushover("Mode anti-gel enclenché", -1)
+                sendMail("lionel@beard.fr", "[Piscine] Début anti-gel", "Mode anti-gel enclenché")
+
+		sendCommand(Filtration_anti_gel, ON)
+		sendCommand(Filtration_piscine_force, 99)
+	}
+	
+	if((temp_air >= -1.5) && (Filtration_anti_gel.state == ON))
+	{
+		logInfo("piscine", "Leave anti-frozen mode")
+                pushover("Mode anti-gel stoppé", -1)
+                sendMail("lionel@beard.fr", "[Piscine] Fin anti-gel", "Mode anti-gel stoppé")
+
+		sendCommand(Filtration_piscine_force, 0)
+		sendCommand(Filtration_anti_gel, OFF)
+	}
+end
+
+
+/* Alarmes Inondation */
+rule "garage_alarme_inondation"
+when
+	Item Inondation_garage_alarm received update
+then
+	if (Inondation_garage_alarm.state == ON)
+	{
+		notifyMyAndroid("ALARME INONDATION", "Fuite d'eau dans le garage!")
+                pushover("ALARME INONDATION: Fuite d'eau dans le garage!", 2)
+	}
+end
+
+rule "garage_alarme_intrusion"
+when
+	Item Inondation_garage_intrusion received update
+then
+	if (Inondation_garage_intrusion.state == OPEN)
+	{
+		notifyMyAndroid("ALARME INONDATION", "Capteur du garage déplacé!")
+                pushover("ALARME INONDATION: Capteur du garage déplacé!", 0)
+	}
+end
+
+rule "cuisine_alarme_inondation"
+when
+	Item Inondation_cuisine_alarm received update
+then
+	if (Inondation_cuisine_alarm.state == ON)
+	{
+		notifyMyAndroid("ALARME INONDATION", "Fuite d'eau dans la cuisine!")
+                pushover("ALARME INONDATION: Fuite d'eau dans la cuisine!", 2)
+	}
+end
+
+rule "cuisine_alarme_intrusion"
+when
+	Item Inondation_cuisine_intrusion received update
+then
+	if (Inondation_cuisine_intrusion.state == ON)
+	{
+		notifyMyAndroid("ALARME INONDATION", "Capteur de la cuisine déplacé!")
+                pushover("ALARME INONDATION: Capteur de la cuisine déplacé!", 0)
+	}
+end
+
+
+/* Alarmes incendie */
+rule "arriere-cuisine_alarme_incendie"
+when
+	Item ACuisine_FGSD_Smoke received update
+then
+	if (ACuisine_FGSD_Smoke.state == OPEN)
+	{
+		notifyMyAndroid("ALARME INCENDIE", "Fumée détectée dans l'arrière-cuisine!")
+                pushover("ALARME INCENDIE: Fumée détectée dans l'arrière-cuisine!", 2)
+                sendMail("lionel@beard.fr", "[ArrCuisine] URGENT: ALARME INCENDIE!!!", "Fumée détectée dans l'arrière-cuisine!")
+	}
+end
+
+rule "arriere-cuisine_alarme_chaleur"
+when
+	Item ACuisine_FGSD_Heat received update
+then
+	if (ACuisine_FGSD_Heat.state == OPEN)
+	{
+		notifyMyAndroid("ALARME INCENDIE", "Chaleur excessive dans l'arrière-cuisine!")
+                pushover("ALARME INCENDIE: Chaleur excessive dans l'arrière-cuisine!", 2)
+                sendMail("lionel@beard.fr", "[ArrCuisine] URGENT: ALARME INCENDIE!!!", "Chaleur excessive dans l'arrière-cuisine!")
+	}
+end
+
+rule "arriere-cuisine_alarme_intrusion"
+when
+	Item ACuisine_FGSD_Tamper received update
+then
+	if (ACuisine_FGSD_Tamper.state == OPEN)
+	{
+		notifyMyAndroid("ALARME INCENDIE", "Capteur dans l'arrière-cuisine ouvert!")
+                pushover("ALARME INCENDIE: Capteur dans l'arrière-cuisine ouvert!", 0)
+                sendMail("lionel@beard.fr", "[ArrCuisine] ALARME INCENDIE", "Capteur dans l'arrière-cuisine ouvert!")
+	}
+end
+
+
+rule "ch_parents_alarme_incendie"
+when
+	Item ChParents_FGSD_Smoke received update
+then
+	if (ChParents_FGSD_Smoke.state == OPEN)
+	{
+		notifyMyAndroid("ALARME INCENDIE", "Fumée détectée dans la chambre parentale!")
+                pushover("ALARME INCENDIE: Fumée détectée dans la chambre parentale!", 2)
+                sendMail("lionel@beard.fr", "[ChParents] URGENT: ALARME INCENDIE!!!", "Fumée détectée dans la chambre parentale!")
+	}
+end
+
+rule "ch_parents_alarme_chaleur"
+when
+	Item ChParents_FGSD_Heat received update
+then
+	if (ChParents_FGSD_Heat.state == OPEN)
+	{
+		notifyMyAndroid("ALARME INCENDIE", "Chaleur excessive dans la chambre parentale!")
+		pushover("ALARME INCENDIE: Chaleur excessive dans la chambre parentale!", 2)
+                sendMail("lionel@beard.fr", "[ChParents] URGENT: ALARME INCENDIE!!!", "Chaleur excessive dans la chambre parentale!")
+	}
+end
+
+rule "ch_parents_alarme_intrusion"
+when
+	Item ChParents_FGSD_Tamper received update
+then
+	if (ChParents_FGSD_Tamper.state == OPEN)
+	{
+		notifyMyAndroid("ALARME INCENDIE", "Capteur dans la chambre parentale ouvert!")
+		pushover("ALARME INCENDIE: Capteur dans la chambre parentale ouvert!", 0)
+		sendMail("lionel@beard.fr", "[ChParents] ALARME INCENDIE", "Capteur dans la chambre parentale ouvert!")
+	}
+end
+
+
+rule "ch_thomas_alarme_incendie"
+when
+        Item ChThomas_FGSD_Smoke received update
+then
+        if (ChThomas_FGSD_Smoke.state == OPEN)
+        {
+                notifyMyAndroid("ALARME INCENDIE", "Fumée détectée dans la chambre de Thomas!")
+                pushover("ALARME INCENDIE: Fumée détectée dans la chambre de Thomas!", 2)
+                sendMail("lionel@beard.fr", "[ChParents] URGENT: ALARME INCENDIE!!!", "Fumée détectée dans la chambre de Thomas!")
+        }
+end
+
+rule "ch_thomas_alarme_chaleur"
+when
+        Item ChThomas_FGSD_Heat received update
+then
+        if (ChThomas_FGSD_Heat.state == OPEN)
+        {
+                notifyMyAndroid("ALARME INCENDIE", "Chaleur excessive dans la chambre de Thomas!")
+                pushover("ALARME INCENDIE: Chaleur excessive dans la chambre de Thomas!", 2)
+                sendMail("lionel@beard.fr", "[ChParents] URGENT: ALARME INCENDIE!!!", "Chaleur excessive dans la chambre de Thomas!")
+        }
+end
+
+rule "ch_thomas_alarme_intrusion"
+when
+        Item ChThomas_FGSD_Tamper received update
+then
+        if (ChThomas_FGSD_Tamper.state == OPEN)
+        {
+                notifyMyAndroid("ALARME INCENDIE", "Capteur dans la chambre de Thomas ouvert!")
+                pushover("ALARME INCENDIE: Capteur dans la chambre de Thomas ouvert!", 0)
+                sendMail("lionel@beard.fr", "[ChParents] ALARME INCENDIE", "Capteur dans la chambre de Thomas ouvert!")
+        }
+end
+
+
+rule "ch_filles_alarme_incendie"
+when
+        Item ChFilles_FGSD_Smoke received update
+then
+        if (ChFilles_FGSD_Smoke.state == OPEN)
+        {
+                notifyMyAndroid("ALARME INCENDIE", "Fumée détectée dans la chambre des filles!")
+                pushover("ALARME INCENDIE: Fumée détectée dans la chambre des filles!", 2)
+                sendMail("lionel@beard.fr", "[ChParents] URGENT: ALARME INCENDIE!!!", "Fumée détectée dans la chambre des filles!")
+        }
+end
+
+rule "ch_filles_alarme_chaleur"
+when
+        Item ChFilles_FGSD_Heat received update
+then
+        if (ChFilles_FGSD_Heat.state == OPEN)
+        {
+                notifyMyAndroid("ALARME INCENDIE", "Chaleur excessive dans la chambre des filles!")
+                pushover("ALARME INCENDIE: Chaleur excessive dans la chambre des filles!", 2)
+                sendMail("lionel@beard.fr", "[ChParents] URGENT: ALARME INCENDIE!!!", "Chaleur excessive dans la chambre des filles!")
+        }
+end
+
+rule "ch_filles_alarme_intrusion"
+when
+        Item ChFilles_FGSD_Tamper received update
+then
+        if (ChFilles_FGSD_Tamper.state == OPEN)
+        {
+                notifyMyAndroid("ALARME INCENDIE", "Capteur dans la chambre des filles ouvert!")
+                pushover("ALARME INCENDIE: Capteur dans la chambre des filles ouvert!", 0)
+                sendMail("lionel@beard.fr", "[ChParents] ALARME INCENDIE", "Capteur dans la chambre des filles ouvert!")
+        }
+end
+
+
+rule "ch_ami_alarme_incendie"
+when
+        Item ChAmi_FGSD_Smoke received update
+then
+        if (ChAmi_FGSD_Smoke.state == OPEN)
+        {
+                notifyMyAndroid("ALARME INCENDIE", "Fumée détectée dans la chambre d'ami!")
+                pushover("ALARME INCENDIE: Fumée détectée dans la chambre d'ami!", 2)
+                sendMail("lionel@beard.fr", "[ChParents] URGENT: ALARME INCENDIE!!!", "Fumée détectée dans la chambre d'ami!")
+        }
+end
+
+rule "ch_ami_alarme_chaleur"
+when
+        Item ChAmi_FGSD_Heat received update
+then
+        if (ChAmi_FGSD_Heat.state == OPEN)
+        {
+                notifyMyAndroid("ALARME INCENDIE", "Chaleur excessive dans la chambre d'ami!")
+                pushover("ALARME INCENDIE: Chaleur excessive dans la chambre d'ami!", 2)
+                sendMail("lionel@beard.fr", "[ChParents] URGENT: ALARME INCENDIE!!!", "Chaleur excessive dans la chambre d'ami!")
+        }
+end
+
+rule "ch_ami_alarme_intrusion"
+when
+        Item ChAmi_FGSD_Tamper received update
+then
+        if (ChAmi_FGSD_Tamper.state == OPEN)
+        {
+                notifyMyAndroid("ALARME INCENDIE", "Capteur dans la chambre d'ami ouvert!")
+                pushover("ALARME INCENDIE: Capteur dans la chambre d'ami ouvert!", 0)
+                sendMail("lionel@beard.fr", "[ChParents] ALARME INCENDIE", "Capteur dans la chambre d'ami ouvert!")
+        }
+end
+
+/* Détecteur ouverture fenêtre */
+rule "salon_fenetre_droite_ouverture"
+when
+        Item FenetreDroite received update
+then
+        if (FenetreDroite.state == OPEN)
+        {
+              // temporaire
+                pushover("Ouverture fenêtre droite du salon", -1)
+                sendMail("lionel@beard.fr", "[Salon] Ouverture de la fenêtre droite", "")
+
+              // crée un timer pour couper la zone au bout de 3 min
+//            Zone_salon_OnOff.persist
+//            TsalonFenetreDroite = createTimer(now.plusMinutes(3)) [| sendCommand(Zone_salon_OnOff, OFF)]
+        }
+/*    else
+      {
+              // annule le timer si en cours
+              if (TsalonFenetreDroite != null)
+              {
+                      TsalonFenetreDroite.cancel
+                      TsalonFenetreDroite = null
+              }
+              else
+              {
+                      // restaure l'état précédent de la zone
+                      sendCommand(Zone_salon_OnOff, Zone_salon_OnOff.previousState.state)
+              }
+      }*/
+end
+
+/* Feu tricolore */
+/*rule "feu_auto"
+when
+	Item Feu_auto changed
+then
+
+	while (Feu_auto.state == ON)
+	{
+		sendCommand(Feu_rouge,ON)
+		Thread::sleep(5000)
+		sendCommand(Feu_rouge,OFF)
+		Thread::sleep(100)
+		sendCommand(Feu_vert, ON)
+		Thread::sleep(15000)
+		sendCommand(Feu_vert,OFF)
+		Thread::sleep(100)
+		sendCommand(Feu_orange,ON)
+		Thread::sleep(1000)
+		sendCommand(Feu_orange,OFF)
+	}
+end
+*/

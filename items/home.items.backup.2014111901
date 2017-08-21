@@ -1,0 +1,37 @@
+Group gReglages		(All)
+Group gSalleBain	(All)
+Group gSalleEau		(All)
+
+Group gPiscine		(All)
+
+/* 2eme niveau de menu */
+Group gReglages_PAC "Chauffage/Clim" <heating> (gReglages)
+Group gReglages_VMC "VMC" <wind> (gReglages)
+
+/* Salon */
+Number Temp_salon_tenths {modbus="slaveZone1:8"}
+Number Temp_salon
+
+/* Bureau */
+Number Temp_bureau_tenths {modbus="slaveZone1:8"}
+Number Temp_bureau
+
+/* Ch Parents */
+Number Temp_chparents_tenths {modbus="slaveZone1:8"}
+Number Temp_chparents
+
+/* Ch ami */
+Number Temp_chami_tenths {modbus="slaveZone1:8"}
+Number Temp_chami
+
+/* Ch Thomas */
+Number Temp_chthomas_tenths {modbus="slaveZone1:8"}
+Number Temp_chthomas
+
+/* Ch Jumelles */
+Number Temp_chfilles_tenths {modbus="slaveZone1:8"}
+Number Temp_chfilles
+
+
+Number Temp_outside "Température [%.1f °C]" <temperature>
+

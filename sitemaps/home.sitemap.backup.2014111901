@@ -1,0 +1,36 @@
+sitemap home label="La Maison"
+{
+    Frame label="Intérieur" {
+    	Group item=gReglages label="Réglages généraux" icon="settings"
+	Text label="Salon" icon="sofa" {
+		Text item=Temp_salon_tenths visibility=[<0]
+		Text item=Temp_salon label="Temperature [%.1f °C]" icon="temperature"
+	}
+	Text label="Bureau" icon="office" {
+                Text item=Temp_bureau_tenths visibility=[<0]
+                Text item=Temp_bureau label="Temperature [%.1f °C]" icon="temperature"
+        }       
+	Text label="Chambre des parents" icon="parents"	{
+                Text item=Temp_chparents_tenths visibility=[<0]
+                Text item=Temp_chparents label="Temperature [%.1f °C]" icon="temperature"
+        }
+    	Text label="Chambre de Thomas" icon="bedroom" {
+                Text item=Temp_chthomas_tenths visibility=[<0]
+                Text item=Temp_chthomas label="Temperature [%.1f °C]" icon="temperature"
+        }
+	Text label="Chambre des filles" icon="bedroom" {
+                Text item=Temp_chfilles_tenths visibility=[<0]
+                Text item=Temp_chfilles label="Temperature [%.1f °C]" icon="temperature"
+        }
+	Text label="Chambre d'ami" icon="bedroom" {
+                Text item=Temp_chami_tenths visibility=[<0]
+                Text item=Temp_chami label="Temperature [%.1f °C]" icon="temperature"
+        }
+	Group item=gSalleBain label="Salle de bains" icon="bath" 
+	Group item=gSalleEau label="Salle d'eau" icon="bath" 
+    }
+    Frame label="Extérieur" {
+    	Text item=Temp_outside label="Température [%.1f °C]" icon="temperature"
+    	Group item=gPiscine label="Piscine" icon="garden"
+    }
+} 

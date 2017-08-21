@@ -1,0 +1,13 @@
+Strategies {
+	everyHour : "0 0 * * * ?"
+	every15min : "0 0/15 * * * ?"
+	default = everyChange
+}
+
+Items {
+	Programmation, Zone_salon_outofschedule, Zone_bureau_outofschedule, Zone_parents_outofschedule, Zone_ami_outofschedule, Zone_thomas_outofschedule, Zone_filles_outofschedule, VMC_rapide, VMC_auto, High_hum_sallebain, High_hum_salledeau, Filtration_piscine_auto, Filtration_heuredebut, Filtration_heurefin, Filtration_heuredebut_joda, Filtration_heurefin_joda, Filtration_piscine_force, Filtration_etat_auto_avant_force, Filtration_anti_gel, ChauffElec_salon_auto, Temp_PAC_salon, Temp_salon_setpoint_global, ChauffElec_salon_command : strategy = everyChange, restoreOnStartup
+	
+	Temp_salon, Temp_bureau, Temp_chparents, Temp_chami, Temp_chthomas, Temp_chfilles, Temp_sallebain, Temp_salledeau, Temp_outside, Temp_eau_piscine, Temp_exterieur_piscine : strategy = everyHour
+	
+	Hygro_sallebain, Hygro_salledeau, Hygro_outside : strategy = every15min
+}

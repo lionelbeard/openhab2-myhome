@@ -1,0 +1,90 @@
+import org.openhab.core.library.types.*
+
+rule "az_temp_salon_display"
+
+when
+
+	Item Temp_salon_tenths changed
+	
+then
+
+    var Number temp = 0
+    if(Temp_salon_tenths.state instanceof DecimalType) 
+    	temp = Temp_salon_tenths.state as DecimalType
+    postUpdate(Temp_salon, temp / 10.0)
+end
+
+
+rule "az_temp_bureau_display"
+
+when
+
+        Item Temp_bureau_tenths changed
+
+then
+
+    var Number temp = 0
+    if(Temp_bureau_tenths.state instanceof DecimalType)
+        temp = Temp_bureau_tenths.state as DecimalType
+    postUpdate(Temp_bureau, temp / 10.0)
+end
+
+
+rule "az_temp_chparents_display"
+
+when
+
+        Item Temp_chparents_tenths changed
+
+then
+
+    var Number temp = 0
+    if(Temp_chparents_tenths.state instanceof DecimalType)
+        temp = Temp_chparents_tenths.state as DecimalType
+    postUpdate(Temp_chparents, temp / 10.0)
+end
+
+
+rule "az_temp_chami_display"
+
+when
+
+        Item Temp_chami_tenths changed
+
+then
+
+    var Number temp = 0
+    if(Temp_chami_tenths.state instanceof DecimalType)
+        temp = Temp_chami_tenths.state as DecimalType
+    postUpdate(Temp_chami, temp / 10.0)
+end
+
+
+rule "az_temp_chthomas_display"
+
+when
+
+        Item Temp_chthomas_tenths changed
+
+then
+
+    var Number temp = 0
+    if(Temp_chthomas_tenths.state instanceof DecimalType)
+        temp = Temp_chthomas_tenths.state as DecimalType
+    postUpdate(Temp_chthomas, temp / 10.0)
+end
+
+
+rule "az_temp_chfilles_display"
+
+when
+
+        Item Temp_chfilles_tenths changed
+
+then
+
+    var Number temp = 0
+    if(Temp_chfilles_tenths.state instanceof DecimalType)
+        temp = Temp_chfilles_tenths.state as DecimalType
+    postUpdate(Temp_chfilles, temp / 10.0)
+end
