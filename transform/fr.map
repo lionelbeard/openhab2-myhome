@@ -1,4 +1,4 @@
-CLOSED=Eteinte
-OPEN=ACTIVEE
+OFF=Eteinte
+ON=ACTIVEE
 undefined=Inconnue
 -=Inconnue 
