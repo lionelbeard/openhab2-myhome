@@ -1167,7 +1167,7 @@ end
 
 rule "az_salon_status_register_dispatch"
 when
-//	System started or
+	System started or
 	Item AZ_salon_status_register received update
 then
 	var Integer entire_value = 0
@@ -1188,7 +1188,7 @@ end
 
 rule "az_bureau_status_register_dispatch"
 when
-//	System started or
+	System started or
 	Item AZ_bureau_status_register received update
 then
 	var Integer entire_value = 0
@@ -1209,7 +1209,7 @@ end
 
 rule "az_parents_status_register_dispatch"
 when
-//	System started or
+	System started or
 	Item AZ_parents_status_register received update
 then
 	var Integer entire_value = 0
@@ -1230,7 +1230,7 @@ end
 
 rule "az_ami_status_register_dispatch"
 when
-//	System started or
+	System started or
 	Item AZ_ami_status_register received update
 then
 	var Integer entire_value = 0
@@ -1251,7 +1251,7 @@ end
 
 rule "az_thomas_status_register_dispatch"
 when
-//	System started or
+	System started or
 	Item AZ_thomas_status_register received update
 then
 	var Integer entire_value = 0
@@ -1272,7 +1272,7 @@ end
 
 rule "az_filles_status_register_dispatch"
 when
-//	System started or
+	System started or
 	Item AZ_filles_status_register received update
 then
 	var Integer entire_value = 0
@@ -1314,103 +1314,100 @@ then
 		sendCommand(VMC_rapide, OFF)
 end
 
-rule "vmc_mode_auto_indoor_update"
+rule "vmc_mode_auto_sallebain_update"
 when
-	Item Hygro_sallebain changed or
-	Item Hygro_salledeau changed
+	Item HumStat_sallebain changed
 then
-	var Integer hygro_sallebain_value = 0
-	var Integer hygro_salledeau_value = 0
-	var Integer hygro_outside_value = 0
-	var Integer temp_salledeau_value = 0
-	var Integer temp_sallebain_value = 0
-	var String hygro_abs_salledeau_str
-	var String hygro_abs_sallebain_str
-	var Float hygro_abs_salledeau_number
-	var Float hygro_abs_sallebain_number
-	var Float hygro_abs_outside_number
-	
-	hygro_sallebain_value = (Hygro_sallebain.state as DecimalType).intValue
-	hygro_salledeau_value = (Hygro_salledeau.state as DecimalType).intValue
-	hygro_outside_value = (Hygro_outside.state as DecimalType).intValue
-	
-	temp_sallebain_value = (Temp_sallebain.state as DecimalType).intValue
-	temp_salledeau_value = (Temp_salledeau.state as DecimalType).intValue
-	hygro_abs_salledeau_str = transform("JS", "absolute_humidity.js", String::valueOf(hygro_salledeau_value).concat(" ").concat(String::valueOf(temp_salledeau_value)))
-	hygro_abs_sallebain_str = transform("JS", "absolute_humidity.js", String::valueOf(hygro_sallebain_value).concat(" ").concat(String::valueOf(temp_sallebain_value)))
-	postUpdate(Hygro_abs_sallebain, hygro_abs_sallebain_str)
-	postUpdate(Hygro_abs_salledeau, hygro_abs_salledeau_str)
-
-	hygro_abs_salledeau_number = (Hygro_abs_salledeau.state as DecimalType).floatValue
-	hygro_abs_sallebain_number = (Hygro_abs_sallebain.state as DecimalType).floatValue
-	hygro_abs_outside_number = (Hygro_abs_outside.state as DecimalType).floatValue * 1.2 //marge de 20%
-	
-	if((VMC_auto.state == ON) && (VMC_auto_allowed == 1))
-	// mode automatique, plage horaire autorisé
+	if(VMC_auto_allowed == 1)
 	{
-		// ne déclencher que si l'humidité absolue extérieure est inférieure
-		if(VMC_rapide.state == OFF) {
-		//	if((hygro_sallebain_value >= 70) && (hygro_abs_outside_number < hygro_abs_sallebain_number)) {
-			if((hygro_abs_sallebain_number >= 16) && (hygro_sallebain_value >= 70) && (hygro_abs_outside_number < hygro_abs_sallebain_number)) {
-//				logInfo("vmc", "Salle de bain too high")
-				postUpdate(High_hum_sallebain, "OUI")
-				sendCommand(VMC_rapide, ON)
-			}
-//			else if((hygro_salledeau_value >= 70) && (hygro_abs_outside_number < hygro_abs_salledeau_number)) {
-			else if((hygro_abs_salledeau_number >= 16) && (hygro_salledeau_value >= 70) && (hygro_abs_outside_number < hygro_abs_salledeau_number)) {
-//				logInfo("vmc", "Salle d'eau too high")
-				postUpdate(High_hum_salledeau, "OUI")
-				sendCommand(VMC_rapide, ON)
-			}
-		} 
-		else {
-//			if((hygro_sallebain_value <= 68) && (hygro_salledeau_value <= 68)) {
-			if(((hygro_abs_sallebain_number <= 15)||(hygro_abs_outside_number >= hygro_abs_sallebain_number)||(hygro_sallebain_value <= 68)) && ((hygro_abs_salledeau_number <= 15)||(hygro_abs_outside_number >= hygro_abs_salledeau_number)||(hygro_salledeau_value <= 68))) {
-//				logInfo("vmc","Back to normal")
-				postUpdate(High_hum_sallebain,"NON")
-				postUpdate(High_hum_salledeau,"NON")
-				sendCommand(VMC_rapide, OFF)
-			}
-		}
+	  if(VMC_rapide.state == OFF) {
+            if((HumStat_sallebain.state.toString == "WET") && (HumStat_outside.state.toString != "WET")) {
+              postUpdate(High_hum_sallebain, "OUI")
+	      if(VMC_auto.state == ON) {
+                pushover("VMC (salle de bain): passage en mode rapide", -1)
+                sendCommand(VMC_rapide, ON)
+	      }
+            }
+	  }
+	  else {
+            if(HumStat_sallebain.state.toString != "WET") {
+              postUpdate(High_hum_sallebain,"NON")
+              if(VMC_auto.state == ON) {
+		pushover("VMC (salle de bain): passage en mode lent", -1)
+              	sendCommand(VMC_rapide, OFF)
+	      }
+            }
+	  }
 	}
+end
+
+rule "vmc_mode_auto_salledeau_update"
+when
+        Item HumStat_salledeau changed
+then
+        if(VMC_auto_allowed == 1)
+        {
+          if(VMC_rapide.state == OFF) {
+            if((HumStat_salledeau.state.toString == "WET") && (HumStat_outside.state.toString != "WET")) {
+              postUpdate(High_hum_salledeau, "OUI")
+              if(VMC_auto.state == ON) {
+	        pushover("VMC (salle d'eau): passage en mode rapide", -1)
+                sendCommand(VMC_rapide, ON)
+	      }
+            }
+          }
+          else {
+            if(HumStat_salledeau.state.toString != "WET") {
+              postUpdate(High_hum_salledeau,"NON")
+              if(VMC_auto.state == ON) {
+                pushover("VMC (salle d'eau): passage en mode lent", -1)
+                sendCommand(VMC_rapide, OFF)
+	      }
+            }
+          }
+        }
 end
 
 rule "vmc_mode_auto_outdoor_update"
 when
-	Item Hygro_outside changed
+	Item HumStat_outside changed
 then
-	var Integer hygro_sallebain_value = 0
-	var Integer hygro_salledeau_value = 0
-	var Integer hygro_outside_value = 0
-	var Integer temp_outside_value = 0
-	var String hygro_abs_outside_value
-    var Float hygro_abs_salledeau_number
-    var Float hygro_abs_sallebain_number
-    var Float hygro_abs_outside_number
-	
-	
-	hygro_sallebain_value = (Hygro_sallebain.state as DecimalType).intValue
-	hygro_salledeau_value = (Hygro_salledeau.state as DecimalType).intValue
-	hygro_outside_value = (Hygro_outside.state as DecimalType).intValue
-	
-	temp_outside_value = (Temp_outside.state as DecimalType).intValue
-	hygro_abs_outside_value = transform("JS", "absolute_humidity.js", String::valueOf(hygro_outside_value).concat(" ").concat(String::valueOf(temp_outside_value)))
-	postUpdate(Hygro_abs_outside, hygro_abs_outside_value)
-
-    hygro_abs_salledeau_number = (Hygro_abs_salledeau.state as DecimalType).floatValue
-    hygro_abs_sallebain_number = (Hygro_abs_sallebain.state as DecimalType).floatValue
-    hygro_abs_outside_number = (Hygro_abs_outside.state as DecimalType).floatValue * 1.2 // marge de 20%
-
-	if((VMC_auto.state == ON) && (VMC_rapide.state == ON))
-	{
- 		if((hygro_abs_outside_number > hygro_abs_sallebain_number) && (hygro_abs_outside_number > hygro_abs_salledeau_number))
+	if(VMC_auto_allowed == 1)
+	{	
+          if(VMC_rapide.state == ON)
+          {
+                if(HumStat_outside.state.toString == "WET")
+                {
+                        postUpdate(High_hum_sallebain,"NON")
+                        postUpdate(High_hum_salledeau,"NON")
+	                if(VMC_auto.state == ON) {
+			  pushover("VMC: passage en mode lent", -1)
+                          sendCommand(VMC_rapide, OFF)
+			}
+                }
+          } else {
+		if(HumStat_outside.state.toString != "WET")
 		{
-			postUpdate(High_hum_sallebain,"NON")
-			postUpdate(High_hum_salledeau,"NON")
-			sendCommand(VMC_rapide, OFF)
-		}
+		  if(HumStat_sallebain.state.toString == "WET") {
+                    postUpdate(High_hum_sallebain,"OUI")
+                    if(VMC_auto.state == ON) {
+                      pushover("VMC (salle de bain): passage en mode rapide", -1)
+                      sendCommand(VMC_rapide, ON)
+		    }
+                  }
+		  else
+                    if(HumStat_salledeau.state.toString == "WET") {
+                      postUpdate(High_hum_salledeau,"OUI")
+                      if(VMC_auto.state == ON) {
+			pushover("VMC en mode rapide", -1)
+                        sendCommand(VMC_rapide, ON)
+		      }
+                    }
+        	}
+	  }
 	}
 end
+
 
 
 /********************************************* */
