@@ -43,7 +43,8 @@ String Zone_salon_volet_status "Etat de la grille [%s]"
 
 Switch ChauffElec_salon_auto
 Number Temp_PAC_salon
-Dimmer ChauffElec_salon_command {zwave="14:command=switch_multilevel"}
+//Dimmer ChauffElec_salon_command {zwave="14:command=switch_multilevel"}
+Dimmer ChauffElec_salon_command {channel="zwave:device:15f0d1da9dc:node33:switch_dimmer"}
 
 Contact     FenetreDroite {zwave="17:command=basic,respond_to_basic=true"}
 Number      FenetreDroiteBatterie {zwave="17:command=BATTERY"}
