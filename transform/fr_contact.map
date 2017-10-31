@@ -1,4 +1,4 @@
-CLOSED=Fermée
-OPEN=Ouverte
+OFF=Fermée
+ON=Ouverte
 undefined=Inconnue
 -=Inconnue 
