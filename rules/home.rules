@@ -1540,12 +1540,12 @@ then
 	// si on quitte le mode auto, on annule les timers
 	if(Filtration_piscine_auto.state == OFF)
 	{
-		if(Tfiltration_start != null)
+		if(Tfiltration_start !== null)
 		{
 			Tfiltration_start.cancel
 			Tfiltration_start = null
 		}
-		if(Tfiltration_end != null)
+		if(Tfiltration_end !== null)
 		{
 			Tfiltration_end.cancel
 			Tfiltration_end = null
@@ -1633,7 +1633,7 @@ then
 			sendCommand(Filtration_piscine, OFF)
 
                 // On annule le timer si besoin
-                if (Tfiltration_force != null)
+                if (Tfiltration_force !== null)
                 {
                         Tfiltration_force.cancel
                         Tfiltration_force = null
@@ -1688,7 +1688,7 @@ rule "garage_alarme_intrusion"
 when
 	Item Inondation_garage_intrusion received update
 then
-	if (Inondation_garage_intrusion.state == OPEN)
+	if (Inondation_garage_intrusion.state == ON)
 	{
                 pushover("ALARME INONDATION: Capteur du garage déplacé!", 0)
 	}
@@ -1720,7 +1720,7 @@ rule "arriere-cuisine_alarme_incendie"
 when
 	Item ACuisine_FGSD_Smoke received update
 then
-	if (ACuisine_FGSD_Smoke.state == OPEN)
+	if (ACuisine_FGSD_Smoke.state == ON)
 	{
                 pushover("ALARME INCENDIE: Fumée détectée dans l'arrière-cuisine!", 2)
                 sendMail("lionel@beard.fr", "[ArrCuisine] URGENT: ALARME INCENDIE!!!", "Fumée détectée dans l'arrière-cuisine!")
@@ -1731,7 +1731,7 @@ rule "arriere-cuisine_alarme_chaleur"
 when
 	Item ACuisine_FGSD_Heat received update
 then
-	if (ACuisine_FGSD_Heat.state == OPEN)
+	if (ACuisine_FGSD_Heat.state == ON)
 	{
                 pushover("ALARME INCENDIE: Chaleur excessive dans l'arrière-cuisine!", 2)
                 sendMail("lionel@beard.fr", "[ArrCuisine] URGENT: ALARME INCENDIE!!!", "Chaleur excessive dans l'arrière-cuisine!")
@@ -1742,7 +1742,7 @@ rule "arriere-cuisine_alarme_intrusion"
 when
 	Item ACuisine_FGSD_Tamper received update
 then
-	if (ACuisine_FGSD_Tamper.state == OPEN)
+	if (ACuisine_FGSD_Tamper.state == ON)
 	{
                 pushover("ALARME INCENDIE: Capteur dans l'arrière-cuisine ouvert!", 0)
                 sendMail("lionel@beard.fr", "[ArrCuisine] ALARME INCENDIE", "Capteur dans l'arrière-cuisine ouvert!")
@@ -1754,7 +1754,7 @@ rule "ch_parents_alarme_incendie"
 when
 	Item ChParents_FGSD_Smoke received update
 then
-	if (ChParents_FGSD_Smoke.state == OPEN)
+	if (ChParents_FGSD_Smoke.state == ON)
 	{
                 pushover("ALARME INCENDIE: Fumée détectée dans la chambre parentale!", 2)
                 sendMail("lionel@beard.fr", "[ChParents] URGENT: ALARME INCENDIE!!!", "Fumée détectée dans la chambre parentale!")
@@ -1765,7 +1765,7 @@ rule "ch_parents_alarme_chaleur"
 when
 	Item ChParents_FGSD_Heat received update
 then
-	if (ChParents_FGSD_Heat.state == OPEN)
+	if (ChParents_FGSD_Heat.state == ON)
 	{
 		pushover("ALARME INCENDIE: Chaleur excessive dans la chambre parentale!", 2)
                 sendMail("lionel@beard.fr", "[ChParents] URGENT: ALARME INCENDIE!!!", "Chaleur excessive dans la chambre parentale!")
@@ -1776,7 +1776,7 @@ rule "ch_parents_alarme_intrusion"
 when
 	Item ChParents_FGSD_Tamper received update
 then
-	if (ChParents_FGSD_Tamper.state == OPEN)
+	if (ChParents_FGSD_Tamper.state == ON)
 	{
 		pushover("ALARME INCENDIE: Capteur dans la chambre parentale ouvert!", 0)
 		sendMail("lionel@beard.fr", "[ChParents] ALARME INCENDIE", "Capteur dans la chambre parentale ouvert!")
@@ -1788,7 +1788,7 @@ rule "ch_thomas_alarme_incendie"
 when
         Item ChThomas_FGSD_Smoke received update
 then
-        if (ChThomas_FGSD_Smoke.state == OPEN)
+        if (ChThomas_FGSD_Smoke.state == ON)
         {
                 pushover("ALARME INCENDIE: Fumée détectée dans la chambre de Thomas!", 2)
                 sendMail("lionel@beard.fr", "[ChParents] URGENT: ALARME INCENDIE!!!", "Fumée détectée dans la chambre de Thomas!")
@@ -1799,7 +1799,7 @@ rule "ch_thomas_alarme_chaleur"
 when
         Item ChThomas_FGSD_Heat received update
 then
-        if (ChThomas_FGSD_Heat.state == OPEN)
+        if (ChThomas_FGSD_Heat.state == ON)
         {
                 pushover("ALARME INCENDIE: Chaleur excessive dans la chambre de Thomas!", 2)
                 sendMail("lionel@beard.fr", "[ChParents] URGENT: ALARME INCENDIE!!!", "Chaleur excessive dans la chambre de Thomas!")
@@ -1810,7 +1810,7 @@ rule "ch_thomas_alarme_intrusion"
 when
         Item ChThomas_FGSD_Tamper received update
 then
-        if (ChThomas_FGSD_Tamper.state == OPEN)
+        if (ChThomas_FGSD_Tamper.state == ON)
         {
                 pushover("ALARME INCENDIE: Capteur dans la chambre de Thomas ouvert!", 0)
                 sendMail("lionel@beard.fr", "[ChParents] ALARME INCENDIE", "Capteur dans la chambre de Thomas ouvert!")
@@ -1822,7 +1822,7 @@ rule "ch_filles_alarme_incendie"
 when
         Item ChFilles_FGSD_Smoke received update
 then
-        if (ChFilles_FGSD_Smoke.state == OPEN)
+        if (ChFilles_FGSD_Smoke.state == ON)
         {
                 pushover("ALARME INCENDIE: Fumée détectée dans la chambre des filles!", 2)
                 sendMail("lionel@beard.fr", "[ChParents] URGENT: ALARME INCENDIE!!!", "Fumée détectée dans la chambre des filles!")
@@ -1833,7 +1833,7 @@ rule "ch_filles_alarme_chaleur"
 when
         Item ChFilles_FGSD_Heat received update
 then
-        if (ChFilles_FGSD_Heat.state == OPEN)
+        if (ChFilles_FGSD_Heat.state == ON)
         {
                 pushover("ALARME INCENDIE: Chaleur excessive dans la chambre des filles!", 2)
                 sendMail("lionel@beard.fr", "[ChParents] URGENT: ALARME INCENDIE!!!", "Chaleur excessive dans la chambre des filles!")
@@ -1844,7 +1844,7 @@ rule "ch_filles_alarme_intrusion"
 when
         Item ChFilles_FGSD_Tamper received update
 then
-        if (ChFilles_FGSD_Tamper.state == OPEN)
+        if (ChFilles_FGSD_Tamper.state == ON)
         {
                 pushover("ALARME INCENDIE: Capteur dans la chambre des filles ouvert!", 0)
                 sendMail("lionel@beard.fr", "[ChParents] ALARME INCENDIE", "Capteur dans la chambre des filles ouvert!")
@@ -1856,7 +1856,7 @@ rule "ch_ami_alarme_incendie"
 when
         Item ChAmi_FGSD_Smoke received update
 then
-        if (ChAmi_FGSD_Smoke.state == OPEN)
+        if (ChAmi_FGSD_Smoke.state == ON)
         {
                 pushover("ALARME INCENDIE: Fumée détectée dans la chambre d'ami!", 2)
                 sendMail("lionel@beard.fr", "[ChParents] URGENT: ALARME INCENDIE!!!", "Fumée détectée dans la chambre d'ami!")
@@ -1867,7 +1867,7 @@ rule "ch_ami_alarme_chaleur"
 when
         Item ChAmi_FGSD_Heat received update
 then
-        if (ChAmi_FGSD_Heat.state == OPEN)
+        if (ChAmi_FGSD_Heat.state == ON)
         {
                 pushover("ALARME INCENDIE: Chaleur excessive dans la chambre d'ami!", 2)
                 sendMail("lionel@beard.fr", "[ChParents] URGENT: ALARME INCENDIE!!!", "Chaleur excessive dans la chambre d'ami!")
@@ -1878,7 +1878,7 @@ rule "ch_ami_alarme_intrusion"
 when
         Item ChAmi_FGSD_Tamper received update
 then
-        if (ChAmi_FGSD_Tamper.state == OPEN)
+        if (ChAmi_FGSD_Tamper.state == ON)
         {
                 pushover("ALARME INCENDIE: Capteur dans la chambre d'ami ouvert!", 0)
                 sendMail("lionel@beard.fr", "[ChParents] ALARME INCENDIE", "Capteur dans la chambre d'ami ouvert!")
@@ -1890,7 +1890,7 @@ rule "salon_fenetre_droite_ouverture"
 when
         Item FenetreDroite received update
 then
-        if (FenetreDroite.state == OPEN)
+        if (FenetreDroite.state == ON)
         {
               // temporaire
                 pushover("Ouverture fenêtre droite du salon", -1)
@@ -1903,7 +1903,7 @@ then
 /*    else
       {
               // annule le timer si en cours
-              if (TsalonFenetreDroite != null)
+              if (TsalonFenetreDroite !== null)
               {
                       TsalonFenetreDroite.cancel
                       TsalonFenetreDroite = null
