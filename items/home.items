@@ -47,7 +47,7 @@ Number Temp_PAC_salon
 Dimmer ChauffElec_salon_command {channel="zwave:device:15f0d1da9dc:node33:switch_dimmer"}
 
 Switch     FenetreDroite {channel="zwave:device:15f0d1da9dc:node17:alarm_access"}
-Number      FenetreDroiteBatterie {channel="zwave:device:15f0d1da9dc:node17:battery_level"}
+Number      FenetreDroiteBatterie {channel="zwave:device:15f0d1da9dc:node17:battery-level"}
 
 /*
 Contact Salon_FGSD_Smoke {zwave="9:command=sensor_alarm,alarm_type=1,respond_to_basic=true" }
