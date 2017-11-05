@@ -1332,7 +1332,7 @@ then
 	  else {
             if(HumStat_sallebain.state.toString != "WET") {
               postUpdate(High_hum_sallebain,"NON")
-              if(VMC_auto.state == ON) {
+              if((VMC_auto.state == ON) && (HumStat_salledeau.state.toString != "WET")) {
 		pushover("VMC (salle de bain): passage en mode lent", -1)
               	sendCommand(VMC_rapide, OFF)
 	      }
@@ -1359,7 +1359,7 @@ then
           else {
             if(HumStat_salledeau.state.toString != "WET") {
               postUpdate(High_hum_salledeau,"NON")
-              if(VMC_auto.state == ON) {
+              if(VMC_auto.state == ON) && (HumStat_sallebain.state.toString != "WET")) {
                 pushover("VMC (salle d'eau): passage en mode lent", -1)
                 sendCommand(VMC_rapide, OFF)
 	      }
