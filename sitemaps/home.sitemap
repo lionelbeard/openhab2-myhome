@@ -48,7 +48,7 @@ sitemap home
                        Text item=FenetreDroiteBatterie icon="batterie" label="Fenêtre droite - Batterie [%s %%]"
                 }
 
-		Group item=gFreebox label="Freebox" icon="freebox-player2" {
+/*		Group item=gFreebox label="Freebox" icon="freebox-player2" {
 			Group item=gfbCalls label="Appels téléphoniques" icon="phone" {
 				Text item=freebox_call_lastnum
 				Text item=freebox_call_duration
@@ -74,7 +74,7 @@ sitemap home
 				Text item=freebox_cs_bytes_up
 				Text item=freebox_cs_bytes_down
 			}
-		}
+		}*/
 		Chart item=Temp_salon icon="temperature" label="Historique température" period=W refresh=60000		
 		}
 	Text item=Temp_bureau label="Bureau [%.1f °C]" icon="office" valuecolor=[Zone_bureau_OnOff=="OFF"="red", Zone_bureau_volet_status=="Ouverte"="orange", Zone_bureau_volet_status=="Fermée"="green"] {

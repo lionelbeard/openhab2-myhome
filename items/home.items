@@ -141,34 +141,34 @@ Number  ChFilles_FGSD_Battery {channel="zwave:device:15f0d1da9dc:node27:battery-
 Number  ChFilles_FGSD_Temp {channel="zwave:device:15f0d1da9dc:node27:sensor_temperature"}
 
 /* Freebox */
-// Wifi Entries
-//Switch freebox_wifi         "Wifi"                      (gfbCS)  {freebox="wifi_status"}
-
-// Call Entries
-String freebox_call_lastnum     "Dernier appel [%s]"                (gfbCalls) {freebox="call_number"}
-Number freebox_call_duration        "Durée [%d sec]"             (gfbCalls) {freebox="call_duration"}
-DateTime freebox_call_ts        "Date [%1$tA, %1$td.%1$tm.%1$tY]"      (gfbCalls) {freebox="call_timestamp"}
-String freebox_call_status      "Etat [%s]"                   (gfbCalls) {freebox="call_status"}
-
-// Connection Status Items
-String freebox_cs_state         "Etat [%s]"                    (gfbCS) {freebox="line_status"}
-String freebox_cs_ipv4          "Adresse IP [%s]"                     (gfbCS) {freebox="ipv4"}
-Number freebox_cs_rate_up       "Upload rate [%d b/s]"              (gfbCS) {freebox="rate_up"}
-Number freebox_cs_rate_down     "Download rate [%d b/s]"            (gfbCS) {freebox="rate_down"}
-Number freebox_cs_bytes_up      "Uploaded [%d bytes]"               (gfbCS) {freebox="bytes_up"}
-Number freebox_cs_bytes_down        "Downloaded [%d bytes]"             (gfbCS) {freebox="bytes_down"}
-
-// System Items
-String freebox_sys_firmware_version     "Version [%s]"                  (gfbSys) {freebox="fw_version"}
-Switch freebox_reboot           "Reboot freebox"                (gfbSys) {freebox="reboot"}
-Number freebox_sys_uptime       "Uptime [%d sec]"               (gfbSys) {freebox="uptime"}
-Number freebox_sys_temp_cpum        "Temp cpum [%d °C]"        <temperature>   (gfbSys) {freebox="temp_cpum"}
-Number freebox_sys_temp_cpub        "Temp cpub [%d °C]"        <temperature>   (gfbSys) {freebox="temp_cpub"}
-Number freebox_sys_temp_sw          "Temp sw [%d °C]"      <temperature>   (gfbSys) {freebox="temp_sw"}
-Number freebox_sys_fan_rpm          "Fan [%d rpm]"          <fan>       (gfbSys) {freebox="fan"}
-
-// xDSL Status Items
-//String freebox_xdsl_status      "Statut ADSL [%s]"                   (gfbCS) {freebox="xdsl_status"}
+//// Wifi Entries
+////Switch freebox_wifi         "Wifi"                      (gfbCS)  {freebox="wifi_status"}
+//
+//// Call Entries
+//String freebox_call_lastnum     "Dernier appel [%s]"                (gfbCalls) {freebox="call_number"}
+//Number freebox_call_duration        "Durée [%d sec]"             (gfbCalls) {freebox="call_duration"}
+//DateTime freebox_call_ts        "Date [%1$tA, %1$td.%1$tm.%1$tY]"      (gfbCalls) {freebox="call_timestamp"}
+//String freebox_call_status      "Etat [%s]"                   (gfbCalls) {freebox="call_status"}
+//
+//// Connection Status Items
+//String freebox_cs_state         "Etat [%s]"                    (gfbCS) {freebox="line_status"}
+//String freebox_cs_ipv4          "Adresse IP [%s]"                     (gfbCS) {freebox="ipv4"}
+//Number freebox_cs_rate_up       "Upload rate [%d b/s]"              (gfbCS) {freebox="rate_up"}
+//Number freebox_cs_rate_down     "Download rate [%d b/s]"            (gfbCS) {freebox="rate_down"}
+//Number freebox_cs_bytes_up      "Uploaded [%d bytes]"               (gfbCS) {freebox="bytes_up"}
+//Number freebox_cs_bytes_down        "Downloaded [%d bytes]"             (gfbCS) {freebox="bytes_down"}
+//
+//// System Items
+//String freebox_sys_firmware_version     "Version [%s]"                  (gfbSys) {freebox="fw_version"}
+//Switch freebox_reboot           "Reboot freebox"                (gfbSys) {freebox="reboot"}
+//Number freebox_sys_uptime       "Uptime [%d sec]"               (gfbSys) {freebox="uptime"}
+//Number freebox_sys_temp_cpum        "Temp cpum [%d °C]"        <temperature>   (gfbSys) {freebox="temp_cpum"}
+//Number freebox_sys_temp_cpub        "Temp cpub [%d °C]"        <temperature>   (gfbSys) {freebox="temp_cpub"}
+//Number freebox_sys_temp_sw          "Temp sw [%d °C]"      <temperature>   (gfbSys) {freebox="temp_sw"}
+//Number freebox_sys_fan_rpm          "Fan [%d rpm]"          <fan>       (gfbSys) {freebox="fan"}
+//
+//// xDSL Status Items
+////String freebox_xdsl_status      "Statut ADSL [%s]"                   (gfbCS) {freebox="xdsl_status"}
 
 /* Salle de bain */
 Number Temp_sallebain (gSalleBain) {channel="rfxcom:temperaturehumidity:rfxtrx433e:Oregon_sallebain:temperature"}
