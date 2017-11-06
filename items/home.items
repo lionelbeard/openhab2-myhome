@@ -205,8 +205,8 @@ Dimmer	ACuisine_FGD_Dimmer	{channel="zwave:device:15f0d1da9dc:node19:switch_dimm
 Number	ACuisine_FGD_Power {channel="zwave:device:15f0d1da9dc:node19:sensor_power" }
 Number	ACuisine_FGD_Energy {channel="zwave:device:15f0d1da9dc:node19:meter_kwh" }
 
-Contact  ACuisine_FGMS_Movement {channel="zwave:device:15f0d1da9dc:node18:alarm_motion" }
-Contact  ACuisine_FGMS_Alarm    {channel="zwave:device:15f0d1da9dc:node18:alarm_tamper" }
+Switch  ACuisine_FGMS_Movement {channel="zwave:device:15f0d1da9dc:node18:alarm_motion" }
+Switch  ACuisine_FGMS_Alarm    {channel="zwave:device:15f0d1da9dc:node18:alarm_tamper" }
 Number  ACuisine_FGMS_Lux      {channel="zwave:device:15f0d1da9dc:node18:sensor_luminance" }
 Number  ACuisine_FGMS_Bat      {channel="zwave:device:15f0d1da9dc:node18:battery-level"}
 Number  ACuisine_FGMS_Temp     {channel="zwave:device:15f0d1da9dc:node18:sensor_temperature" }
