@@ -172,7 +172,7 @@ sitemap home
 	Text item=Hygro_sallebain label="Salle de bains [%.0f %%]" icon="bath" valuecolor=[High_hum_sallebain=="OUI"="red", High_hum_sallebain=="NON"="green"] {
 		Text item=Temp_sallebain label="Température [%.1f °C]" icon="temperature"
 		Text item=Hygro_sallebain label="Humidité [%.0f %%]" icon="temperature"
-		Text item=Hygro_abs_sallebain label="Humidité absolue [%.2f g/m3]" icon="temperature"
+		//Text item=Hygro_abs_sallebain label="Humidité absolue [%.2f g/m3]" icon="temperature"
                 Text item=HumStat_sallebain label="Niveau d'Humidité [%s]" icon="temperature"
 		Text item=High_hum_sallebain label="Trop humide? [%s]" icon="temperature"
         	Switch item=VMC_rapide label="VMC - Vitesse rapide" icon="fan"
@@ -182,7 +182,7 @@ sitemap home
     Text item=Hygro_salledeau label="Salle d'eau [%.0f %%]" icon="shower" valuecolor=[High_hum_salledeau=="OUI"="red", High_hum_salledeau=="NON"="green"] {
         	Text item=Temp_salledeau label="Température [%.1f °C]" icon="temperature"
 	        Text item=Hygro_salledeau label="Humidité [%.0f %%]" icon="temperature"
-        	Text item=Hygro_abs_salledeau label="Humidité absolue [%.2f g/m3]" icon="temperature"
+        	//Text item=Hygro_abs_salledeau label="Humidité absolue [%.2f g/m3]" icon="temperature"
                 Text item=HumStat_salledeau label="Niveau d'Humidité [%s]" icon="temperature"
 		Text item=High_hum_salledeau label="Trop humide? [%s]" icon="temperature"
 		Switch item=VMC_rapide label="VMC - Vitesse rapide" icon="fan"
@@ -235,7 +235,7 @@ sitemap home
     	}
     	Text item=Temp_outside label="Température [%.1f °C]" icon="temperature"
 		Text item=Hygro_outside label="Humidité [%.0f %%]" icon="temperature"
-		Text item=Hygro_abs_outside label="Humidité absolue [%.2f g/m3]" icon="temperature"
+		//Text item=Hygro_abs_outside label="Humidité absolue [%.2f g/m3]" icon="temperature"
 		Text item=HumStat_outside label="Niveau d'Humidité [%s]" icon="temperature"
 		//Text item=Batt_outside label="Batterie faible [%s]"
 		Chart item=Temp_outside icon="temperature" label="Historique" period=3D refresh=60000
