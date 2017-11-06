@@ -1045,6 +1045,14 @@ then
 	}
 end
 
+rule "chauffelec_temp_max_PAC_update"
+when
+	Item Temp_PAC_salon changed
+then
+        // On envoie une "fausse" commande afin de provoquer la réinitialisation du chauffage
+        sendCommand(Temp_salon_setpoint_global, (Temp_salon_setpoint_global.state as DecimalType))
+end
+
 rule "az_temp_setpoint_salon_display"
 when
 	System started or
@@ -1359,7 +1367,7 @@ then
           else {
             if(HumStat_salledeau.state.toString != "WET") {
               postUpdate(High_hum_salledeau,"NON")
-              if(VMC_auto.state == ON) && (HumStat_sallebain.state.toString != "WET")) {
+              if((VMC_auto.state == ON) && (HumStat_sallebain.state.toString != "WET")) {
                 pushover("VMC (salle d'eau): passage en mode lent", -1)
                 sendCommand(VMC_rapide, OFF)
 	      }
