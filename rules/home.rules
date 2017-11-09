@@ -18,15 +18,15 @@ var Integer AZ_filles_status_register_lastvalue = -1
 // Température de consigne
 var Integer chambres_present = 18
 var Integer chambres_absent = 17
-var Integer chambres_nuit = 19
+var Float chambres_nuit = 19.5
 var Integer chambres_absence_prolongee = 17
-var Integer salon_present = 20
+var Integer salon_present = 21
 var Integer salon_absent = 17
 var Integer salon_nuit = 18
 var Integer salon_absence_prolongee = 17
-var Integer bureau_present = 19
+var Integer bureau_present = 20
 var Integer bureau_absent = 17
-var Integer bureau_nuit = 17
+var Integer bureau_nuit = 18
 var Integer bureau_absence_prolongee = 17
 
 // VMC
@@ -239,28 +239,28 @@ end
 Aucune action automatique
 
 ** Semaine de travail
-Chambres toujours à 19°
+Chambres toujours à chambres_nuit
 Pour le salon:
 Lundi-Mardi-Vendredi = 
-	6h30-8h30 => salon_present
-	8h30-17h30 => salon_absent
-	17h30-22h30 => salon_present
-	22h30 => salon_nuit
+	6h00-8h00 => salon_present
+	8h00-17h30 => salon_absent
+	17h30-23h00 => salon_present
+	23h00 => salon_nuit
 ##Mercredi =
 ##	6h30-8h30 => salon_present
 ##	8h30-12h30 => salon_absent
 ##	12h30-22h30 => salon_present
 ##	22h30 => salon_nuit
 Mercredi-Jeudi-Samedi-Dimanche =
-	7h30-22h30 => salon_present		
-	22h30 => salon_nuit
+	7h00-23h00 => salon_present		
+	23h00 => salon_nuit
 
 ** Toujours présent
-Chambres à 19° de 19h à 8h30, et à 18° le reste du temps (sauf si chambre bébé)
+Chambres à chambres_nuit de 19h à 8h30, et à 18° le reste du temps (sauf si chambre bébé)
 Pour le salon et bureau/salle de jeu:
 Lundi à Dimanche =
-	7h30-22h30 => salon_present
-	22h30 => salon_nuit
+	7h00-23h00 => salon_present
+	23h00 => salon_nuit
 
 ** Absence
 Toutes les pièces à 17°
@@ -311,9 +311,9 @@ end
 
 
 /* Semaine de travail */
-rule "Semaine de travail - MON,TUE,FRI - 6h30"
+rule "Semaine de travail - MON,TUE,FRI - 6h00"
 when
-	Time cron "0 30 06 ? * MON,TUE,FRI"
+	Time cron "0 00 06 ? * MON,TUE,FRI"
 then
 	var Integer prog = (Programmation.state as DecimalType).intValue
 	if(prog == 1) // uniquement pour le programme "Semaine de travail"
@@ -330,13 +330,13 @@ then
 			sendCommand(Temp_thomas_setpoint, chambres_present)
 		if(Zone_filles_outofschedule.state == OFF)
 			sendCommand(Temp_filles_setpoint, chambres_present)*/
-		postUpdate(Programmation_phase, "6h30-8h30: salon à " + salon_present.toString() + "°C")
+		postUpdate(Programmation_phase, "6h-8h: salon à " + salon_present.toString() + "°C")
 	}
 end
 
-rule "Semaine de travail - WED,THU,SAT,SUN - 7h30"
+rule "Semaine de travail - WED,THU,SAT,SUN - 7h00"
 when
-	Time cron "0 30 07 ? * WED,THU,SAT,SUN"
+	Time cron "0 00 07 ? * WED,THU,SAT,SUN"
 then
 	var Integer prog = (Programmation.state as DecimalType).intValue
 	if(prog == 1) // uniquement pour le programme "Semaine de travail"
@@ -353,13 +353,13 @@ then
 			sendCommand(Temp_thomas_setpoint, chambres_present)
 /*		if(Zone_filles_outofschedule.state == OFF)
 			sendCommand(Temp_filles_setpoint, chambres_present)*/
-		postUpdate(Programmation_phase, "7h30-22h30: salon à " + salon_present.toString() + "°C")
+		postUpdate(Programmation_phase, "7h-23h: salon à " + salon_present.toString() + "°C")
 	}
 end
 
-rule "Semaine de travail - MON,TUE,FRI - 8h30"
+rule "Semaine de travail - MON,TUE,FRI - 8h00"
 when
-	Time cron "0 30 08 ? * MON,TUE,FRI"
+	Time cron "0 00 08 ? * MON,TUE,FRI"
 then
 	var Integer prog = (Programmation.state as DecimalType).intValue
 	if(prog == 1) // uniquement pour le programme "Semaine de travail"
@@ -376,10 +376,10 @@ then
 			sendCommand(Temp_thomas_setpoint, chambres_absent)
 		if(Zone_filles_outofschedule.state == OFF)
 			sendCommand(Temp_filles_setpoint, chambres_absent)
-		if(now.getDayOfWeek == 3) // Mercredi
-			postUpdate(Programmation_phase, "8h30-12h30: salon à " + salon_absent.toString() + "°C")
-		else
-			postUpdate(Programmation_phase, "8h30-17h30: salon à " + salon_absent.toString() + "°C")		
+	#	if(now.getDayOfWeek == 3) // Mercredi
+	#		postUpdate(Programmation_phase, "8h30-12h30: salon à " + salon_absent.toString() + "°C")
+	#	else
+			postUpdate(Programmation_phase, "8h-17h30: salon à " + salon_absent.toString() + "°C")		
 	}
 end
 
@@ -402,17 +402,9 @@ then
 			sendCommand(Temp_thomas_setpoint, chambres_nuit)
 		if(Zone_filles_outofschedule.state == OFF)
 			sendCommand(Temp_filles_setpoint, chambres_nuit)
-		postUpdate(Programmation_phase, "17h30-22h30: salon à " + salon_present.toString() + "°C")	
-	}
-end
+		postUpdate(Programmation_phase, "17h30-23h: salon à " + salon_present.toString() + "°C")
 
-rule "Semaine de travail - WED,THU,SAT,SUN - 19h"
-when
-        Time cron "0 00 19 ? * WED,THU,SAT,SUN"
-then
-        var Integer prog = (Programmation.state as DecimalType).intValue
-        if(prog == 1) // uniquement pour le programme "Semaine de travail"
-        {
+		# chambres
                 if(Zone_parents_outofschedule.state == OFF)
                         sendCommand(Temp_parents_setpoint, chambres_nuit)
                 if(Zone_ami_outofschedule.state == OFF)
@@ -421,8 +413,26 @@ then
                         sendCommand(Temp_thomas_setpoint, chambres_nuit)
                 if(Zone_filles_outofschedule.state == OFF)
                         sendCommand(Temp_filles_setpoint, chambres_nuit)
-        }
+	}
 end
+
+#rule "Semaine de travail - WED,THU,SAT,SUN - 19h"
+#when
+#        Time cron "0 00 19 ? * WED,THU,SAT,SUN"
+#then
+#        var Integer prog = (Programmation.state as DecimalType).intValue
+#        if(prog == 1) // uniquement pour le programme "Semaine de travail"
+#        {
+#                if(Zone_parents_outofschedule.state == OFF)
+#                        sendCommand(Temp_parents_setpoint, chambres_nuit)
+#                if(Zone_ami_outofschedule.state == OFF)
+#                        sendCommand(Temp_ami_setpoint, chambres_nuit)
+#                if(Zone_thomas_outofschedule.state == OFF)
+#                        sendCommand(Temp_thomas_setpoint, chambres_nuit)
+#                if(Zone_filles_outofschedule.state == OFF)
+#                        sendCommand(Temp_filles_setpoint, chambres_nuit)
+#        }
+#end
 
 /*
 rule "Semaine de travail - WED - 12h30"
@@ -449,9 +459,9 @@ then
 end
 */
 
-rule "Semaine de travail - EVERY DAYS - 22h30"
+rule "Semaine de travail - EVERY DAYS - 23h00"
 when
-	Time cron "0 30 22 ? * *"
+	Time cron "0 00 23 ? * *"
 then
 	var Integer prog = (Programmation.state as DecimalType).intValue
 	if(prog == 1) // uniquement pour le programme "Semaine de travail"
@@ -473,9 +483,9 @@ then
 end
 
 /* Toujours présent */
-rule "Toujours présent - EVERY DAYS - 7h30"
+rule "Toujours présent - EVERY DAYS - 7h00"
 when
-	Time cron "0 30 07 ? * *"
+	Time cron "0 00 07 ? * *"
 then
 	var Integer prog = (Programmation.state as DecimalType).intValue
 	if(prog == 2) // uniquement pour le programme "Toujours présent"
@@ -507,9 +517,9 @@ then
 	}
 end
 
-rule "Toujours présent - EVERY DAYS - 19h"
+rule "Toujours présent - EVERY DAYS - 17h30"
 when
-	Time cron "0 00 19 ? * *"
+	Time cron "0 30 17 ? * *"
 then
 	var Integer prog = (Programmation.state as DecimalType).intValue
 	if(prog == 2) // uniquement pour le programme "Toujours présent"
@@ -525,9 +535,9 @@ then
 	}
 end
 
-rule "Toujours présent - EVERY DAYS - 22h30"
+rule "Toujours présent - EVERY DAYS - 23h00"
 when
-	Time cron "0 30 22 ? * *"
+	Time cron "0 00 23 ? * *"
 then
 	var Integer prog = (Programmation.state as DecimalType).intValue
 	if(prog == 2) // uniquement pour le programme "Toujours présent"
