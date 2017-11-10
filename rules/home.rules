@@ -376,9 +376,9 @@ then
 			sendCommand(Temp_thomas_setpoint, chambres_absent)
 		if(Zone_filles_outofschedule.state == OFF)
 			sendCommand(Temp_filles_setpoint, chambres_absent)
-	#	if(now.getDayOfWeek == 3) // Mercredi
-	#		postUpdate(Programmation_phase, "8h30-12h30: salon à " + salon_absent.toString() + "°C")
-	#	else
+	/*	if(now.getDayOfWeek == 3) // Mercredi
+			postUpdate(Programmation_phase, "8h30-12h30: salon à " + salon_absent.toString() + "°C")
+		else*/
 			postUpdate(Programmation_phase, "8h-17h30: salon à " + salon_absent.toString() + "°C")		
 	}
 end
@@ -404,7 +404,7 @@ then
 			sendCommand(Temp_filles_setpoint, chambres_nuit)
 		postUpdate(Programmation_phase, "17h30-23h: salon à " + salon_present.toString() + "°C")
 
-		# chambres
+		// chambres
                 if(Zone_parents_outofschedule.state == OFF)
                         sendCommand(Temp_parents_setpoint, chambres_nuit)
                 if(Zone_ami_outofschedule.state == OFF)
@@ -416,23 +416,25 @@ then
 	}
 end
 
-#rule "Semaine de travail - WED,THU,SAT,SUN - 19h"
-#when
-#        Time cron "0 00 19 ? * WED,THU,SAT,SUN"
-#then
-#        var Integer prog = (Programmation.state as DecimalType).intValue
-#        if(prog == 1) // uniquement pour le programme "Semaine de travail"
-#        {
-#                if(Zone_parents_outofschedule.state == OFF)
-#                        sendCommand(Temp_parents_setpoint, chambres_nuit)
-#                if(Zone_ami_outofschedule.state == OFF)
-#                        sendCommand(Temp_ami_setpoint, chambres_nuit)
-#                if(Zone_thomas_outofschedule.state == OFF)
-#                        sendCommand(Temp_thomas_setpoint, chambres_nuit)
-#                if(Zone_filles_outofschedule.state == OFF)
-#                        sendCommand(Temp_filles_setpoint, chambres_nuit)
-#        }
-#end
+/*
+rule "Semaine de travail - WED,THU,SAT,SUN - 19h"
+when
+        Time cron "0 00 19 ? * WED,THU,SAT,SUN"
+then
+        var Integer prog = (Programmation.state as DecimalType).intValue
+        if(prog == 1) // uniquement pour le programme "Semaine de travail"
+        {
+                if(Zone_parents_outofschedule.state == OFF)
+                        sendCommand(Temp_parents_setpoint, chambres_nuit)
+                if(Zone_ami_outofschedule.state == OFF)
+                        sendCommand(Temp_ami_setpoint, chambres_nuit)
+                if(Zone_thomas_outofschedule.state == OFF)
+                        sendCommand(Temp_thomas_setpoint, chambres_nuit)
+                if(Zone_filles_outofschedule.state == OFF)
+                        sendCommand(Temp_filles_setpoint, chambres_nuit)
+        }
+end
+*/
 
 /*
 rule "Semaine de travail - WED - 12h30"
