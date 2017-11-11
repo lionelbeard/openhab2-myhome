@@ -416,10 +416,10 @@ then
 	}
 end
 
-/*
-rule "Semaine de travail - WED,THU,SAT,SUN - 19h"
+
+rule "Semaine de travail - WED,THU,SAT,SUN - 17h30"
 when
-        Time cron "0 00 19 ? * WED,THU,SAT,SUN"
+        Time cron "0 30 17 ? * WED,THU,SAT,SUN"
 then
         var Integer prog = (Programmation.state as DecimalType).intValue
         if(prog == 1) // uniquement pour le programme "Semaine de travail"
@@ -434,7 +434,7 @@ then
                         sendCommand(Temp_filles_setpoint, chambres_nuit)
         }
 end
-*/
+
 
 /*
 rule "Semaine de travail - WED - 12h30"
