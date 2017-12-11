@@ -46,7 +46,7 @@ Number Temp_PAC_salon
 //Dimmer ChauffElec_salon_command {zwave="14:command=switch_multilevel"}
 Dimmer ChauffElec_salon_command {channel="zwave:device:15f0d1da9dc:node33:switch_dimmer"}
 
-Switch     FenetreDroite {channel="zwave:device:15f0d1da9dc:node17:alarm_access"}
+Contact     FenetreDroite {channel="zwave:device:15f0d1da9dc:node17:sensor_door"}
 Number      FenetreDroiteBatterie {channel="zwave:device:15f0d1da9dc:node17:battery-level"}
 
 /*
@@ -187,7 +187,7 @@ String High_hum_salledeau
 //Switch Batt_salledeau {channel="rfxcom:temperaturehumidity:rfxtrx433e:Oregon_salledeau:lowBattery"}
 
 /* Cuisine */
-Switch Inondation_cuisine_alarm {channel="zwave:device:15f0d1da9dc:node6:alarm_flood"}
+Switch Inondation_cuisine_alarm {channel="zwave:device:15f0d1da9dc:node6:sensor_flood"}
 Switch Inondation_cuisine_intrusion {channel="zwave:device:15f0d1da9dc:node6:alarm_general"}
 Number Inondation_cuisine_temperature {channel="zwave:device:15f0d1da9dc:node6:sensor_temperature2"}
 Number Inondation_cuisine_batterie {channel="zwave:device:15f0d1da9dc:node6:battery_level"}
@@ -213,7 +213,7 @@ Number  ACuisine_FGMS_Temp     {channel="zwave:device:15f0d1da9dc:node18:sensor_
 
 /* Garage */
 Switch Inondation_garage_alarm {channel="zwave:device:15f0d1da9dc:node5:alarm_flood"}
-Switch Inondation_garage_intrusion {channel="zwave:device:15f0d1da9dc:node5:alarm_general"}
+Switch Inondation_garage_intrusion {channel="zwave:device:15f0d1da9dc:node5:alarm_tamper2"}
 Number Inondation_garage_temperature {channel="zwave:device:15f0d1da9dc:node5:sensor_temperature2"}
 Number Inondation_garage_batterie {channel="zwave:device:15f0d1da9dc:node5:battery_level"}
 

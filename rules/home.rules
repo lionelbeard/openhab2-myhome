@@ -1910,7 +1910,7 @@ rule "salon_fenetre_droite_ouverture"
 when
         Item FenetreDroite received update
 then
-        if (FenetreDroite.state == ON)
+        if (FenetreDroite.state == OPEN)
         {
               // temporaire
                 pushover("Ouverture fenêtre droite du salon", -1)
