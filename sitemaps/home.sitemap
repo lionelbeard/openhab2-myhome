@@ -233,6 +233,12 @@ sitemap home
 			Text item=Filtration_anti_gel label="Mode anti-gel [%s]" icon="piscine"
 			Chart item=gPiscine icon="temperature" label="Historique" period=W refresh=60000
     	}
+	Text label="Portail"
+	{
+	  Switch item=Portail_button label="Portail" mappings=[0="Fermé", 1="Piéton", 2="Ouvert"]
+	  Switch item=Portail_ouverture_fermeture
+	  Switch item=Portail_ouverture_pieton
+	}
     	Text item=Temp_outside label="Température [%.1f °C]" icon="temperature"
 		Text item=Hygro_outside label="Humidité [%.0f %%]" icon="temperature"
 		//Text item=Hygro_abs_outside label="Humidité absolue [%.2f g/m3]" icon="temperature"

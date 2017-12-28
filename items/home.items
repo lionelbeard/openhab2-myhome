@@ -43,8 +43,7 @@ String Zone_salon_volet_status "Etat de la grille [%s]"
 
 Switch ChauffElec_salon_auto
 Number Temp_PAC_salon
-//Dimmer ChauffElec_salon_command {zwave="14:command=switch_multilevel"}
-Dimmer ChauffElec_salon_command {channel="zwave:device:15f0d1da9dc:node33:switch_dimmer"}
+Dimmer ChauffElec_salon_command {channel="zwave:device:15f0d1da9dc:node2:switch_dimmer"}
 
 Contact     FenetreDroite {channel="zwave:device:15f0d1da9dc:node17:sensor_door"}
 Number      FenetreDroiteBatterie {channel="zwave:device:15f0d1da9dc:node17:battery-level"}
@@ -79,12 +78,12 @@ Number Temp_parents_setpoint
 Number AZ_parents_status_register {modbus="slaveZone3:9"}
 String Zone_parents_volet_status "Etat de la grille [%s]"
 
-Switch ChParents_FGSD_Smoke {channel="zwave:device:15f0d1da9dc:node29:alarm_smoke"}
-Switch ChParents_FGSD_Heat {channel="zwave:device:15f0d1da9dc:node29:alarm_heat"}
-Switch ChParents_FGSD_Tamper {channel="zwave:device:15f0d1da9dc:node29:alarm_tamper"}
-Switch ChParents_FGSD_Battery_Alarm {channel="zwave:device:15f0d1da9dc:node29:alarm_battery"}
-Number  ChParents_FGSD_Battery {channel="zwave:device:15f0d1da9dc:node29:battery-level"}
-Number  ChParents_FGSD_Temp {channel="zwave:device:15f0d1da9dc:node29:sensor_temperature"}
+Switch ChParents_FGSD_Smoke {channel="zwave:device:15f0d1da9dc:node9:alarm_smoke"}
+Switch ChParents_FGSD_Heat {channel="zwave:device:15f0d1da9dc:node9:alarm_heat"}
+Switch ChParents_FGSD_Tamper {channel="zwave:device:15f0d1da9dc:node9:alarm_tamper"}
+Switch ChParents_FGSD_Battery_Alarm {channel="zwave:device:15f0d1da9dc:node9:alarm_battery"}
+Number  ChParents_FGSD_Battery {channel="zwave:device:15f0d1da9dc:node9:battery-level"}
+Number  ChParents_FGSD_Temp {channel="zwave:device:15f0d1da9dc:node9:sensor_temperature"}
 
 /* Ch ami */
 Number AZ_ami_OpMode {modbus="slaveZone4:0"}
@@ -97,12 +96,12 @@ Number Temp_ami_setpoint
 Number AZ_ami_status_register {modbus="slaveZone4:9"}
 String Zone_ami_volet_status "Etat de la grille [%s]"
 
-Switch ChAmi_FGSD_Smoke {channel="zwave:device:15f0d1da9dc:node30:alarm_smoke"}
-Switch ChAmi_FGSD_Heat {channel="zwave:device:15f0d1da9dc:node30:alarm_heat"}
-Switch ChAmi_FGSD_Tamper {channel="zwave:device:15f0d1da9dc:node30:alarm_tamper"}
-Switch ChAmi_FGSD_Battery_Alarm {channel="zwave:device:15f0d1da9dc:node30:alarm_battery"}
-Number  ChAmi_FGSD_Battery {channel="zwave:device:15f0d1da9dc:node30:battery-level"}
-Number  ChAmi_FGSD_Temp {channel="zwave:device:15f0d1da9dc:node30:sensor_temperature"}
+Switch ChAmi_FGSD_Smoke {channel="zwave:device:15f0d1da9dc:node10:alarm_smoke"}
+Switch ChAmi_FGSD_Heat {channel="zwave:device:15f0d1da9dc:node10:alarm_heat"}
+Switch ChAmi_FGSD_Tamper {channel="zwave:device:15f0d1da9dc:node10:alarm_tamper"}
+Switch ChAmi_FGSD_Battery_Alarm {channel="zwave:device:15f0d1da9dc:node10:alarm_battery"}
+Number  ChAmi_FGSD_Battery {channel="zwave:device:15f0d1da9dc:node10:battery-level"}
+Number  ChAmi_FGSD_Temp {channel="zwave:device:15f0d1da9dc:node10:sensor_temperature"}
 
 /* Ch Thomas */
 Number AZ_thomas_OpMode {modbus="slaveZone5:0"}
@@ -115,12 +114,12 @@ Number Temp_thomas_setpoint
 Number AZ_thomas_status_register {modbus="slaveZone5:9"}
 String Zone_thomas_volet_status "Etat de la grille [%s]"
 
-Switch ChThomas_FGSD_Smoke {channel="zwave:device:15f0d1da9dc:node28:alarm_smoke"}
-Switch ChThomas_FGSD_Heat {channel="zwave:device:15f0d1da9dc:node28:alarm_heat"}
-Switch ChThomas_FGSD_Tamper {channel="zwave:device:15f0d1da9dc:node28:alarm_tamper"}
-Switch ChThomas_FGSD_Battery_Alarm {channel="zwave:device:15f0d1da9dc:node28:alarm_battery"}
-Number  ChThomas_FGSD_Battery {channel="zwave:device:15f0d1da9dc:node28:battery-level"}
-Number  ChThomas_FGSD_Temp {channel="zwave:device:15f0d1da9dc:node28:sensor_temperature"}
+Switch ChThomas_FGSD_Smoke {channel="zwave:device:15f0d1da9dc:node6:alarm_smoke"}
+Switch ChThomas_FGSD_Heat {channel="zwave:device:15f0d1da9dc:node6:alarm_heat"}
+Switch ChThomas_FGSD_Tamper {channel="zwave:device:15f0d1da9dc:node6:alarm_tamper"}
+Switch ChThomas_FGSD_Battery_Alarm {channel="zwave:device:15f0d1da9dc:node6:alarm_battery"}
+Number  ChThomas_FGSD_Battery {channel="zwave:device:15f0d1da9dc:node6:battery-level"}
+Number  ChThomas_FGSD_Temp {channel="zwave:device:15f0d1da9dc:node6:sensor_temperature"}
 
 /* Ch Jumelles */
 Number AZ_filles_OpMode {modbus="slaveZone6:0"}
@@ -133,12 +132,12 @@ Number Temp_filles_setpoint
 Number AZ_filles_status_register {modbus="slaveZone6:9"}
 String Zone_filles_volet_status "Etat de la grille [%s]"
 
-Switch ChFilles_FGSD_Smoke {channel="zwave:device:15f0d1da9dc:node27:alarm_smoke"}
-Switch ChFilles_FGSD_Heat {channel="zwave:device:15f0d1da9dc:node27:alarm_heat"}
-Switch ChFilles_FGSD_Tamper {channel="zwave:device:15f0d1da9dc:node27:alarm_tamper"}
-Switch ChFilles_FGSD_Battery_Alarm {channel="zwave:device:15f0d1da9dc:node27:alarm_battery"}
-Number  ChFilles_FGSD_Battery {channel="zwave:device:15f0d1da9dc:node27:battery-level"}
-Number  ChFilles_FGSD_Temp {channel="zwave:device:15f0d1da9dc:node27:sensor_temperature"}
+Switch ChFilles_FGSD_Smoke {channel="zwave:device:15f0d1da9dc:node13:alarm_smoke"}
+Switch ChFilles_FGSD_Heat {channel="zwave:device:15f0d1da9dc:node13:alarm_heat"}
+Switch ChFilles_FGSD_Tamper {channel="zwave:device:15f0d1da9dc:node13:alarm_tamper"}
+Switch ChFilles_FGSD_Battery_Alarm {channel="zwave:device:15f0d1da9dc:node13:alarm_battery"}
+Number  ChFilles_FGSD_Battery {channel="zwave:device:15f0d1da9dc:node13:battery-level"}
+Number  ChFilles_FGSD_Temp {channel="zwave:device:15f0d1da9dc:node13:sensor_temperature"}
 
 /* Freebox */
 //// Wifi Entries
@@ -187,35 +186,34 @@ String High_hum_salledeau
 //Switch Batt_salledeau {channel="rfxcom:temperaturehumidity:rfxtrx433e:Oregon_salledeau:lowBattery"}
 
 /* Cuisine */
-Switch Inondation_cuisine_alarm {channel="zwave:device:15f0d1da9dc:node6:sensor_flood"}
-Switch Inondation_cuisine_intrusion {channel="zwave:device:15f0d1da9dc:node6:alarm_general"}
-Number Inondation_cuisine_temperature {channel="zwave:device:15f0d1da9dc:node6:sensor_temperature2"}
-Number Inondation_cuisine_batterie {channel="zwave:device:15f0d1da9dc:node6:battery_level"}
+Switch Inondation_cuisine_alarm {channel="zwave:device:15f0d1da9dc:node8:sensor_flood"}
+Switch Inondation_cuisine_intrusion {channel="zwave:device:15f0d1da9dc:node8:alarm_general"}
+Number Inondation_cuisine_temperature {channel="zwave:device:15f0d1da9dc:node8:sensor_temperature2"}
+Number Inondation_cuisine_batterie {channel="zwave:device:15f0d1da9dc:node8:battery_level"}
 
 /* Arriere-Cuisine */
-Switch ACuisine_FGSD_Smoke {channel="zwave:device:15f0d1da9dc:node34:alarm_smoke"}
-Switch ACuisine_FGSD_Heat {channel="zwave:device:15f0d1da9dc:node34:alarm_heat"}
-Switch ACuisine_FGSD_Tamper {channel="zwave:device:15f0d1da9dc:node34:alarm_tamper"}
-Switch ACuisine_FGSD_Battery_Alarm {channel="zwave:device:15f0d1da9dc:node34:alarm_battery"}
-Number  ACuisine_FGSD_Battery {channel="zwave:device:15f0d1da9dc:node34:battery-level"}
-Number  ACuisine_FGSD_Temp {channel="zwave:device:15f0d1da9dc:node34:sensor_temperature"}
+Switch ACuisine_FGSD_Smoke {channel="zwave:device:15f0d1da9dc:node3:alarm_smoke"}
+Switch ACuisine_FGSD_Heat {channel="zwave:device:15f0d1da9dc:node3:alarm_heat"}
+Switch ACuisine_FGSD_Tamper {channel="zwave:device:15f0d1da9dc:node3:alarm_tamper"}
+Switch ACuisine_FGSD_Battery_Alarm {channel="zwave:device:15f0d1da9dc:node3:alarm_battery"}
+Number  ACuisine_FGSD_Battery {channel="zwave:device:15f0d1da9dc:node3:battery-level"}
+Number  ACuisine_FGSD_Temp {channel="zwave:device:15f0d1da9dc:node3:sensor_temperature"}
 
-Dimmer	ACuisine_FGD_Dimmer	{channel="zwave:device:15f0d1da9dc:node19:switch_dimmer"}
-//Switch	ACuisine_FGD_Switch	{ zwave="19:command=SWITCH_MULTILEVEL" }
-Number	ACuisine_FGD_Power {channel="zwave:device:15f0d1da9dc:node19:sensor_power" }
-Number	ACuisine_FGD_Energy {channel="zwave:device:15f0d1da9dc:node19:meter_kwh" }
+Dimmer	ACuisine_FGD_Dimmer	{channel="zwave:device:15f0d1da9dc:node4:switch_dimmer"}
+Number	ACuisine_FGD_Power {channel="zwave:device:15f0d1da9dc:node4:sensor_power" }
+Number	ACuisine_FGD_Energy {channel="zwave:device:15f0d1da9dc:node4:meter_kwh" }
 
-Switch  ACuisine_FGMS_Movement {channel="zwave:device:15f0d1da9dc:node18:alarm_motion" }
-Switch  ACuisine_FGMS_Alarm    {channel="zwave:device:15f0d1da9dc:node18:alarm_tamper" }
-Number  ACuisine_FGMS_Lux      {channel="zwave:device:15f0d1da9dc:node18:sensor_luminance" }
-Number  ACuisine_FGMS_Bat      {channel="zwave:device:15f0d1da9dc:node18:battery-level"}
-Number  ACuisine_FGMS_Temp     {channel="zwave:device:15f0d1da9dc:node18:sensor_temperature" }
+Switch  ACuisine_FGMS_Movement {channel="zwave:device:15f0d1da9dc:node5:alarm_motion" }
+Switch  ACuisine_FGMS_Alarm    {channel="zwave:device:15f0d1da9dc:node5:alarm_tamper" }
+Number  ACuisine_FGMS_Lux      {channel="zwave:device:15f0d1da9dc:node5:sensor_luminance" }
+Number  ACuisine_FGMS_Bat      {channel="zwave:device:15f0d1da9dc:node5:battery-level"}
+Number  ACuisine_FGMS_Temp     {channel="zwave:device:15f0d1da9dc:node5:sensor_temperature" }
 
 /* Garage */
-Switch Inondation_garage_alarm {channel="zwave:device:15f0d1da9dc:node5:alarm_flood"}
-Switch Inondation_garage_intrusion {channel="zwave:device:15f0d1da9dc:node5:alarm_tamper2"}
-Number Inondation_garage_temperature {channel="zwave:device:15f0d1da9dc:node5:sensor_temperature2"}
-Number Inondation_garage_batterie {channel="zwave:device:15f0d1da9dc:node5:battery_level"}
+Switch Inondation_garage_alarm {channel="zwave:device:15f0d1da9dc:node7:alarm_flood"}
+Switch Inondation_garage_intrusion {channel="zwave:device:15f0d1da9dc:node7:alarm_tamper2"}
+Number Inondation_garage_temperature {channel="zwave:device:15f0d1da9dc:node7:sensor_temperature2"}
+Number Inondation_garage_batterie {channel="zwave:device:15f0d1da9dc:node7:battery_level"}
 
 /* Extérieur */
 Number Temp_eau_piscine (gPiscine) {onewire="deviceId=eau_piscine;propertyName=temperature;ignore85CPowerOnResetValues"}
@@ -226,17 +224,19 @@ String Filtration_heuredebut
 String Filtration_heurefin
 String Filtration_heuredebut_joda
 String Filtration_heurefin_joda
-//Switch Filtration_piscine {exec=">[OFF:/usr/bin/sudo /usr/bin/ssh pi@pi-stoch /usr/local/bin/relayControl -c 1 /dev/ttyUSB0] >[ON:/usr/bin/sudo /usr/bin/ssh pi@pi-stoch /usr/local/bin/relayControl -o 1 /dev/ttyUSB0] <[/usr/bin/sudo /usr/bin/ssh pi@pi-stoch /usr/local/bin/relayControl -s 1 /dev/ttyUSB0:60000:REGEX((.*?))]"}
 Switch Filtration_piscine {exec=">[OFF:/usr/bin/sudo /usr/bin/ssh pi@pi-stoch /usr/local/bin/relayControl -c 1 /dev/ttyUSB0] >[ON:/usr/bin/sudo /usr/bin/ssh pi@pi-stoch /usr/local/bin/relayControl -o 1 /dev/ttyUSB0] <[/usr/bin/sudo /usr/bin/ssh pi@pi-stoch /usr/local/bin/relayControl -s 1 /dev/ttyUSB0:60000:]"}
 Number Filtration_piscine_force
-//Switch Filtration_piscine_2h
 Switch Filtration_etat_auto_avant_force
 Switch Filtration_anti_gel
 Number Temp_outside (gExterieur) {channel="rfxcom:temperaturehumidity:rfxtrx433e:Oregon_outside:temperature"}
 Number Hygro_outside (gExterieur) {channel="rfxcom:temperaturehumidity:rfxtrx433e:Oregon_outside:humidity"}
 String HumStat_outside (gExterieur) {channel="rfxcom:temperaturehumidity:rfxtrx433e:Oregon_outside:humidityStatus"}
 Number Hygro_abs_outside
-//Switch Batt_outside {channel="rfxcom:temperaturehumidity:rfxtrx433e:Oregon_outside:lowBattery"}
+
+Number Portail_button
+Switch Portail_ouverture_fermeture {channel="zwave:device:15f0d1da9dc:node12:switch_binary"}
+Switch Portail_ouverture_pieton {channel="zwave:device:15f0d1da9dc:node12:switch_binary2"}
+
 
 /* Feu tricolore */
 /*Switch Feu_rouge {exec="OFF:/usr/bin/sudo /usr/local/bin/codesend-startstop.sh 1145678 stop, ON:/usr/bin/sudo /usr/local/bin/codesend-startstop.sh 1145678 start"}

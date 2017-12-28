@@ -1936,6 +1936,21 @@ then
       }*/
 end
 
+
+/** Portail **/
+rule "portail_bouton"
+when
+	Item Portail_button changed
+then
+  if(Portail_button.state == 0)
+	sendCommand(Portail_ouverture_fermeture, ON)
+  if(Portail_button.state == 1)
+	sendCommand(Portail_ouverture_pieton, ON)
+  if(Portail_button.state == 2)
+	sendCommand(Portail_ouverture_fermeture, ON)  
+end
+
+
 /* Feu tricolore */
 /*rule "feu_auto"
 when
