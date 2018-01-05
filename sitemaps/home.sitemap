@@ -110,14 +110,10 @@ sitemap home
 				Chart item=Temp_chparents icon="temperature" label="Historique température" period=W refresh=60000				
 		}
     Text item=Temp_chthomas label="Chambre de Thomas [%.1f °C]" icon="bedroom" valuecolor=[Zone_thomas_OnOff=="OFF"="red", Zone_thomas_volet_status=="Ouverte"="orange", Zone_thomas_volet_status=="Fermée"="green"] {
-    			//Text item=AZ_thomas_OpMode visibility=[<0]
 				Switch item=Zone_thomas_OnOff label="Zone activée"
 				Switch item=Zone_thomas_outofschedule label="Exclure de la programmation" visibility=[Programmation!=0]
-                //Text item=AZ_temp_chthomas_tenths visibility=[<0]
                 Text item=Temp_chthomas label="Température actuelle [%.1f °C]" icon="temperature"
-                //Text item=AZ_temp_setpoint_thomas_tenths visibility=[<0]
 				Setpoint item=Temp_thomas_setpoint label="Température souhaitée [%.1f °C]" icon="temperature" minValue=17 maxValue=28 step=0.5
-				//Text item=AZ_thomas_status_register visibility=[<0]
 				Text item=Zone_thomas_volet_status icon="grille"
                                 Text label="Détecteur d'incendie" icon="incendie" labelcolor=[ChThomas_FGSD_Smoke=="OPEN"="red", ChThomas_FGSD_Heat=="OPEN"="red", ChThomas_FGSD_Tamper=="OPEN"="red", ChThomas_FGSD_Battery<="10"="orange", ChThomas_FGSD_Battery<="2"="red"] {
                                         Text item=ChThomas_FGSD_Smoke icon="incendie" label="Alarme fumée [MAP(fr.map):%s]"

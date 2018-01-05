@@ -403,16 +403,6 @@ then
 		if(Zone_filles_outofschedule.state == OFF)
 			sendCommand(Temp_filles_setpoint, chambres_nuit)
 		postUpdate(Programmation_phase, "17h30-23h: salon à " + salon_present.toString() + "°C")
-
-		// chambres
-                if(Zone_parents_outofschedule.state == OFF)
-                        sendCommand(Temp_parents_setpoint, chambres_nuit)
-                if(Zone_ami_outofschedule.state == OFF)
-                        sendCommand(Temp_ami_setpoint, chambres_nuit)
-                if(Zone_thomas_outofschedule.state == OFF)
-                        sendCommand(Temp_thomas_setpoint, chambres_nuit)
-                if(Zone_filles_outofschedule.state == OFF)
-                        sendCommand(Temp_filles_setpoint, chambres_nuit)
 	}
 end
 
@@ -511,8 +501,10 @@ then
 			sendCommand(Temp_parents_setpoint, chambres_present)
 		if(Zone_ami_outofschedule.state == OFF)
 			sendCommand(Temp_ami_setpoint, chambres_present)
-		if(Zone_thomas_outofschedule.state == OFF)
+		if(Zone_thomas_outofschedule.state == OFF) {
+		        logInfo("airzone","Thomas setpoint demande="+chambres_present.toString)
 			sendCommand(Temp_thomas_setpoint, chambres_present)
+		}
 		/* Pas tant qu'elles font toujours la sieste
 		 * if(Zone_filles_outofschedule.state == OFF)
 			sendCommand(Temp_filles_setpoint, chambres_present)*/
@@ -530,8 +522,10 @@ then
 			sendCommand(Temp_parents_setpoint, chambres_nuit)
 		if(Zone_ami_outofschedule.state == OFF)
 			sendCommand(Temp_ami_setpoint, chambres_nuit)
-		if(Zone_thomas_outofschedule.state == OFF)
+		if(Zone_thomas_outofschedule.state == OFF) {
+                        logInfo("airzone","Thomas setpoint demande="+chambres_nuit.toString)
 			sendCommand(Temp_thomas_setpoint, chambres_nuit)
+		}
 		if(Zone_filles_outofschedule.state == OFF)
 			sendCommand(Temp_filles_setpoint, chambres_nuit)
 	}
@@ -582,7 +576,7 @@ end
 /******************************************* */
 /* Gestion des sondes de temperature Airzone  */
 /******************************************* */
-
+/*
 rule "az_temp_reprise_display"
 
 when
@@ -687,7 +681,7 @@ then
     postUpdate(Temp_chfilles, temp / 10.0)
 end
 
-
+*/
 
 
 /******************************************* */
@@ -1064,7 +1058,7 @@ then
         // On envoie une "fausse" commande afin de provoquer la réinitialisation du chauffage
         sendCommand(Temp_salon_setpoint_global, (Temp_salon_setpoint_global.state as DecimalType))
 end
-
+/*
 rule "az_temp_setpoint_salon_display"
 when
 	System started or
@@ -1157,6 +1151,7 @@ rule "az_temp_thomas_setpoint_update"
 when
 	Item Temp_thomas_setpoint received command
 then
+        logInfo("airzone","Thomas setpoint command received="+Temp_thomas_setpoint.state.toString)
 	sendCommand(AZ_temp_setpoint_thomas_tenths, (Temp_thomas_setpoint.state as DecimalType) * 10)
 end
 
@@ -1178,7 +1173,7 @@ when
 then
 	sendCommand(AZ_temp_setpoint_filles_tenths, (Temp_filles_setpoint.state as DecimalType) * 10)
 end
-
+*/
 
 
 /********************************************* */
