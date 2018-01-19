@@ -522,10 +522,8 @@ then
 			sendCommand(Temp_parents_setpoint, chambres_nuit)
 		if(Zone_ami_outofschedule.state == OFF)
 			sendCommand(Temp_ami_setpoint, chambres_nuit)
-		if(Zone_thomas_outofschedule.state == OFF) {
-                        logInfo("airzone","Thomas setpoint demande="+chambres_nuit.toString)
+		if(Zone_thomas_outofschedule.state == OFF)
 			sendCommand(Temp_thomas_setpoint, chambres_nuit)
-		}
 		if(Zone_filles_outofschedule.state == OFF)
 			sendCommand(Temp_filles_setpoint, chambres_nuit)
 	}
@@ -1945,6 +1943,12 @@ then
 	sendCommand(Portail_ouverture_fermeture, ON)  
 end
 
+rule "presence_lionel"
+when
+	Item Presence_Lionel changed
+then
+  pushover("Changement présence Lionel", 0)
+end
 
 /* Feu tricolore */
 /*rule "feu_auto"

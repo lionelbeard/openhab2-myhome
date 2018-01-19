@@ -236,7 +236,8 @@ Number Hygro_abs_outside
 Number Portail_button
 Switch Portail_ouverture_fermeture {channel="zwave:device:15f0d1da9dc:node12:switch_binary"}
 Switch Portail_ouverture_pieton {channel="zwave:device:15f0d1da9dc:node12:switch_binary2"}
-
+Switch Portail_retour_etat {channel="zwave:device:15f0d1da9dc:node14:alarm_general1"}
+Switch Presence_Lionel { mqttitude="mosquitto:owntracks/openhab/lionel/event:Maison" }
 
 /* Feu tricolore */
 /*Switch Feu_rouge {exec="OFF:/usr/bin/sudo /usr/local/bin/codesend-startstop.sh 1145678 stop, ON:/usr/bin/sudo /usr/local/bin/codesend-startstop.sh 1145678 start"}
