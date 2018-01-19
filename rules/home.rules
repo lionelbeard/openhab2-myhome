@@ -241,17 +241,12 @@ Aucune action automatique
 ** Semaine de travail
 Chambres toujours à chambres_nuit
 Pour le salon:
-Lundi-Mardi-Vendredi = 
+Lundi-Mardi = 
 	6h00-8h00 => salon_present
 	8h00-17h30 => salon_absent
 	17h30-23h00 => salon_present
 	23h00 => salon_nuit
-##Mercredi =
-##	6h30-8h30 => salon_present
-##	8h30-12h30 => salon_absent
-##	12h30-22h30 => salon_present
-##	22h30 => salon_nuit
-Mercredi-Jeudi-Samedi-Dimanche =
+Mercredi-Jeudi-Vendredi-Samedi-Dimanche =
 	7h00-23h00 => salon_present		
 	23h00 => salon_nuit
 
@@ -311,9 +306,9 @@ end
 
 
 /* Semaine de travail */
-rule "Semaine de travail - MON,TUE,FRI - 6h00"
+rule "Semaine de travail - MON,TUE - 6h00"
 when
-	Time cron "0 00 06 ? * MON,TUE,FRI"
+	Time cron "0 00 06 ? * MON,TUE"
 then
 	var Integer prog = (Programmation.state as DecimalType).intValue
 	if(prog == 1) // uniquement pour le programme "Semaine de travail"
@@ -334,9 +329,9 @@ then
 	}
 end
 
-rule "Semaine de travail - WED,THU,SAT,SUN - 7h00"
+rule "Semaine de travail - WED,THU,FRI,SAT,SUN - 7h00"
 when
-	Time cron "0 00 07 ? * WED,THU,SAT,SUN"
+	Time cron "0 00 07 ? * WED,THU,FRI,SAT,SUN"
 then
 	var Integer prog = (Programmation.state as DecimalType).intValue
 	if(prog == 1) // uniquement pour le programme "Semaine de travail"
@@ -357,9 +352,9 @@ then
 	}
 end
 
-rule "Semaine de travail - MON,TUE,FRI - 8h00"
+rule "Semaine de travail - MON,TUE - 8h00"
 when
-	Time cron "0 00 08 ? * MON,TUE,FRI"
+	Time cron "0 00 08 ? * MON,TUE"
 then
 	var Integer prog = (Programmation.state as DecimalType).intValue
 	if(prog == 1) // uniquement pour le programme "Semaine de travail"
@@ -383,9 +378,9 @@ then
 	}
 end
 
-rule "Semaine de travail - MON,TUE,FRI - 17h30"
+rule "Semaine de travail - MON,TUE - 17h30"
 when
-	Time cron "0 30 17 ? * MON,TUE,FRI"
+	Time cron "0 30 17 ? * MON,TUE"
 then
 	var Integer prog = (Programmation.state as DecimalType).intValue
 	if(prog == 1) // uniquement pour le programme "Semaine de travail"
@@ -407,9 +402,9 @@ then
 end
 
 
-rule "Semaine de travail - WED,THU,SAT,SUN - 17h30"
+rule "Semaine de travail - WED,THU,FRI,SAT,SUN - 17h30"
 when
-        Time cron "0 30 17 ? * WED,THU,SAT,SUN"
+        Time cron "0 30 17 ? * WED,THU,FRI,SAT,SUN"
 then
         var Integer prog = (Programmation.state as DecimalType).intValue
         if(prog == 1) // uniquement pour le programme "Semaine de travail"
