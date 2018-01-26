@@ -1952,7 +1952,16 @@ rule "presence_lionel"
 when
 	Item Presence_Lionel changed
 then
-  pushover("Changement présence Lionel", 0)
+  if(Presence_Lionel.state == ON)
+  {
+    sendCommand(Portail_button, 2)
+    pushover("Arrivée - Ouverture automatique du portail", 0)
+  }
+  if(Presence_Lionel.state == OFF)
+  {
+    sendCommand(Portail_button, 0)
+    pushover("Départ - Fermeture automatique du portail", 0)
+  }
 end
 
 /* Feu tricolore */
