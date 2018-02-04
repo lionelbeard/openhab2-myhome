@@ -26,6 +26,15 @@ sitemap home
 			Switch item=VMC_auto label="Mode automatique" icon="automatique"
 			Switch item=VMC_rapide label="Vitesse rapide" icon="fan"
 		}
+	        Text label="Portail"
+        	{
+          		Switch item=Portail_button label="Portail" mappings=[0="Fermé", 1="Piéton", 2="Ouvert"]
+          		Switch item=Portail_ouverture_fermeture
+		        Switch item=Portail_ouverture_pieton
+		        Text item=Portail_retour_etat label="Etat portail [%s]"
+		        Switch item=Presence_Lionel
+        	}
+
 	}
 	Text item=Temp_salon label="Salon [%.1f °C]" icon="sofa" valuecolor=[Zone_salon_OnOff=="OFF"="red", Zone_salon_volet_status=="Ouverte"="orange", Zone_salon_volet_status=="Fermée"="green"] {
 		//Text item=AZ_salon_OpMode visibility=[<0]
@@ -229,14 +238,7 @@ sitemap home
 			Text item=Filtration_anti_gel label="Mode anti-gel [%s]" icon="piscine"
 			Chart item=gPiscine icon="temperature" label="Historique" period=W refresh=60000
     	}
-	Text label="Portail"
-	{
-	  Switch item=Portail_button label="Portail" mappings=[0="Fermé", 1="Piéton", 2="Ouvert"]
-	  Switch item=Portail_ouverture_fermeture
-	  Switch item=Portail_ouverture_pieton
-	  Text item=Portail_retour_etat label="Etat portail [%s]"
-	  Switch item=Presence_Lionel
-	}
+	Switch item=Portail_button label="Portail" mappings=[0="Fermé", 1="Piéton", 2="Ouvert"]
     	Text item=Temp_outside label="Température [%.1f °C]" icon="temperature"
 		Text item=Hygro_outside label="Humidité [%.0f %%]" icon="temperature"
 		//Text item=Hygro_abs_outside label="Humidité absolue [%.2f g/m3]" icon="temperature"
