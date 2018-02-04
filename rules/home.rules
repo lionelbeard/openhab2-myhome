@@ -346,8 +346,8 @@ then
 			sendCommand(Temp_ami_setpoint, chambres_present)
 		if(Zone_thomas_outofschedule.state == OFF)
 			sendCommand(Temp_thomas_setpoint, chambres_present)
-		if(Zone_filles_outofschedule.state == OFF)
-			sendCommand(Temp_filles_setpoint, chambres_present)
+/*		if(Zone_filles_outofschedule.state == OFF)
+			sendCommand(Temp_filles_setpoint, chambres_present)*/
 		postUpdate(Programmation_phase, "7h-23h: salon à " + salon_present.toString() + "°C")
 	}
 end
@@ -500,8 +500,9 @@ then
 		        logInfo("airzone","Thomas setpoint demande="+chambres_present.toString)
 			sendCommand(Temp_thomas_setpoint, chambres_present)
 		}
-		if(Zone_filles_outofschedule.state == OFF)
-			sendCommand(Temp_filles_setpoint, chambres_present)
+		/* Pas tant qu'elles font toujours la sieste
+		 * if(Zone_filles_outofschedule.state == OFF)
+			sendCommand(Temp_filles_setpoint, chambres_present)*/
 	}
 end
 
@@ -1946,7 +1947,7 @@ then
   if(Portail_retour_etat.state == OFF)
 	postUpdate(Portail_button, 0)	
 end
-/*
+
 rule "presence_lionel"
 when
 	Item Presence_Lionel changed
@@ -1962,7 +1963,7 @@ then
     pushover("Départ - Fermeture automatique du portail", 0)
   }
 end
-*/
+
 /* Feu tricolore */
 /*rule "feu_auto"
 when

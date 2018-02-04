@@ -216,12 +216,9 @@ Number Inondation_garage_temperature {channel="zwave:device:15f0d1da9dc:node7:se
 Number Inondation_garage_batterie {channel="zwave:device:15f0d1da9dc:node7:battery-level"}
 
 /* Extérieur */
-//Number Temp_eau_piscine (gPiscine) {onewire="deviceId=eau_piscine;propertyName=temperature;ignore85CPowerOnResetValues"}
-//Number Temp_exterieur_piscine (gPiscine) {onewire="deviceId=ext_piscine;propertyName=temperature;ignore85CPowerOnResetValues"}
-//Number Temp_local_piscine {onewire="deviceId=local_piscine;propertyName=temperature;ignore85CPowerOnResetValues"}
-Number Temp_eau_piscine (gPiscine) {mqtt="<[mosquitto:eau_piscine/temperature:state:default]"}
-Number Temp_exterieur_piscine (gPiscine) {mqtt="<[mosquitto:ext_piscine/temperature:state:default]"}
-Number Temp_local_piscine {mqtt="<[mosquitto:local_piscine/temperature:state:default]"}
+Number Temp_eau_piscine (gPiscine) {onewire="deviceId=eau_piscine;propertyName=temperature;ignore85CPowerOnResetValues"}
+Number Temp_exterieur_piscine (gPiscine) {onewire="deviceId=ext_piscine;propertyName=temperature;ignore85CPowerOnResetValues"}
+Number Temp_local_piscine {onewire="deviceId=local_piscine;propertyName=temperature;ignore85CPowerOnResetValues"}
 Switch Filtration_piscine_auto
 String Filtration_heuredebut
 String Filtration_heurefin
