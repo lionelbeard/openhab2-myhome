@@ -2,5 +2,5 @@ Bridge rfxcom:bridge:rfxtrx433e [ serialPort="/dev/USBrfxcom", disableDiscovery=
   Thing lighting4 VMC_relay [deviceId="480576", subType="PT2262", onCommandId=3, offCommandId=3, pulse=537]
   Thing temperaturehumidity Oregon_sallebain [deviceId="33793", subType="TH1"]
   Thing temperaturehumidity Oregon_salledeau [deviceId="62722", subType="TH1"]
-  Thing temperaturehumidity Oregon_outside [deviceId="65284", subType="TH1"]
+  Thing temperaturehumidity Oregon_outside [deviceId="20484", subType="TH1"]
 }
