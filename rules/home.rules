@@ -1426,175 +1426,175 @@ end
 // Si t<=15° => temp de l'eau / 3, à partir de 12h
 // Si t>15° => temp de l'eau / 2, à partir de 10h
    	
-rule "piscine_create_daily_timers"
-when
-	Time cron "0 0 03 * * ?"   // Every day @ 03am, on calcule les heures et on crée les timers pour la filtration
-then
-	var year   = now.getYear
-	var month  = now.getMonthOfYear
-    var day    = now.getDayOfMonth
-    var Integer duree
-    var Integer heurefin	
-	var Integer temp_eau_moy
-	
-	logInfo("piscine", "Begin piscine_create_daily_timers rule...")
-	// on prend la t° max sur les 15 dernières heures (depuis la veille à midi)
-	temp_eau_moy = (Temp_eau_piscine.maximumSince(now.minusHours(15)).state as DecimalType).intValue
-    logInfo("piscine", temp_eau_moy.toString)
-
-   	if(temp_eau_moy < 10)
-   	{
-   		filtration_time_start = parse(year + "-" + month + "-" + day + "T" + "04:00:00")
-		filtration_time_end = parse(year + "-" + month + "-" + day + "T" + "06:00:00")
-		postUpdate(Filtration_heuredebut, "04h00")
-		postUpdate(Filtration_heurefin, "06h00")
-   	}
-   	else
-   		if(temp_eau_moy <= 15)
-   		{
-   			filtration_time_start = parse(year + "-" + month + "-" + day + "T" + "12:00:00")
-   			duree = temp_eau_moy / 3
-   			heurefin = 12 + duree
-   			filtration_time_end = parse(year + "-" + month + "-" + day + "T" + heurefin + ":00:00")
-   			postUpdate(Filtration_heuredebut, "12h00")
-			postUpdate(Filtration_heurefin, heurefin + "h00")
-   		}
-   		else
-   		{
-   			filtration_time_start = parse(year + "-" + month + "-" + day + "T" + "10:00:00")
-   			duree = temp_eau_moy / 2
-   			heurefin = 10 + duree
-   			if(heurefin >= 24) //cas rare, si t° eau >= 30°, mais on ne sait jamais...
-   			{
-   				day = now.plusDays(1).getDayOfMonth
-   				heurefin = 24 - heurefin
-   			}
-   			filtration_time_end = parse(year + "-" + month + "-" + day + "T" + heurefin + ":00:00")
-   			postUpdate(Filtration_heuredebut, "10h00")
-			postUpdate(Filtration_heurefin, heurefin + "h00")   							
-   		}
-   		
-   		postUpdate(Filtration_heuredebut_joda, filtration_time_start.toString)
-   		postUpdate(Filtration_heurefin_joda, filtration_time_end.toString)
-
-	    logInfo("piscine", Filtration_heuredebut_joda.toString)
-	    logInfo("piscine", Filtration_heurefin_joda.toString)	    
-
-		Tfiltration_start = createTimer(filtration_time_start) [| sendCommand(Filtration_piscine, ON)]
-        Tfiltration_end = createTimer(filtration_time_end) [| if ((Filtration_piscine_force.state as DecimalType).intValue == 0) sendCommand(Filtration_piscine, OFF)]
-        
-        logInfo("piscine", "End piscine_create_daily_timers rule.")
-        //sendMail("lionel@beard.fr", "[Piscine] Horaires de filtration", filtration_time_start.toString.concat(" ").concat(filtration_time_end.toString))
-
-end
+//rule "piscine_create_daily_timers"
+//when
+//	Time cron "0 0 03 * * ?"   // Every day @ 03am, on calcule les heures et on crée les timers pour la filtration
+//then
+//	var year   = now.getYear
+//	var month  = now.getMonthOfYear
+//    var day    = now.getDayOfMonth
+//    var Integer duree
+//    var Integer heurefin	
+//	var Integer temp_eau_moy
+//	
+//	logInfo("piscine", "Begin piscine_create_daily_timers rule...")
+//	// on prend la t° max sur les 15 dernières heures (depuis la veille à midi)
+//	temp_eau_moy = (Temp_eau_piscine.maximumSince(now.minusHours(15)).state as DecimalType).intValue
+//    logInfo("piscine", temp_eau_moy.toString)
+//
+//   	if(temp_eau_moy < 10)
+//   	{
+//   		filtration_time_start = parse(year + "-" + month + "-" + day + "T" + "04:00:00")
+//		filtration_time_end = parse(year + "-" + month + "-" + day + "T" + "06:00:00")
+//		postUpdate(Filtration_heuredebut, "04h00")
+//		postUpdate(Filtration_heurefin, "06h00")
+//   	}
+//   	else
+//   		if(temp_eau_moy <= 15)
+//   		{
+//   			filtration_time_start = parse(year + "-" + month + "-" + day + "T" + "12:00:00")
+//   			duree = temp_eau_moy / 3
+//   			heurefin = 12 + duree
+//   			filtration_time_end = parse(year + "-" + month + "-" + day + "T" + heurefin + ":00:00")
+//   			postUpdate(Filtration_heuredebut, "12h00")
+//			postUpdate(Filtration_heurefin, heurefin + "h00")
+//   		}
+//   		else
+//   		{
+//   			filtration_time_start = parse(year + "-" + month + "-" + day + "T" + "10:00:00")
+//   			duree = temp_eau_moy / 2
+//   			heurefin = 10 + duree
+//   			if(heurefin >= 24) //cas rare, si t° eau >= 30°, mais on ne sait jamais...
+//   			{
+//   				day = now.plusDays(1).getDayOfMonth
+//   				heurefin = 24 - heurefin
+//   			}
+//   			filtration_time_end = parse(year + "-" + month + "-" + day + "T" + heurefin + ":00:00")
+//   			postUpdate(Filtration_heuredebut, "10h00")
+//			postUpdate(Filtration_heurefin, heurefin + "h00")   							
+//   		}
+//   		
+//   		postUpdate(Filtration_heuredebut_joda, filtration_time_start.toString)
+//   		postUpdate(Filtration_heurefin_joda, filtration_time_end.toString)
+//
+//	    logInfo("piscine", Filtration_heuredebut_joda.toString)
+//	    logInfo("piscine", Filtration_heurefin_joda.toString)	    
+//
+//		Tfiltration_start = createTimer(filtration_time_start) [| sendCommand(Filtration_piscine, ON)]
+//        Tfiltration_end = createTimer(filtration_time_end) [| if ((Filtration_piscine_force.state as DecimalType).intValue == 0) sendCommand(Filtration_piscine, OFF)]
+//        
+//        logInfo("piscine", "End piscine_create_daily_timers rule.")
+//        //sendMail("lionel@beard.fr", "[Piscine] Horaires de filtration", filtration_time_start.toString.concat(" ").concat(filtration_time_end.toString))
+//
+//end
 
 /* créer règle pour démarrage openhab:
  * - faire de filtration_time_start et filtration_time_end des items non visibles
  * - mettre de la persistence
  * - au dméarrage, créer les timers nécessaires suivant où on est dans le temps (cf ci-dessous)
  */ 
-rule "piscine_init_on_start"
-when
-	Item Tempo_init_persist received command
-then
+//rule "piscine_init_on_start"
+//when
+//	Item Tempo_init_persist received command
+//then
+//
+//        logInfo("piscine", "Begin piscine_init_on_start rule...")
+//
+//		filtration_time_start = parse((Filtration_heuredebut_joda.state as StringType).toString)
+//		filtration_time_end = parse((Filtration_heurefin_joda.state as StringType).toString)
+//
+//	    logInfo("piscine", filtration_time_start.toString)
+//	    logInfo("piscine", filtration_time_end.toString)
+//	
+//		if(filtration_time_start.afterNow)
+//		{
+//			// on est avant l'heure de début => on crée les deux timers
+//			Tfiltration_start = createTimer(filtration_time_start) [| sendCommand(Filtration_piscine, ON)]
+//			Tfiltration_end = createTimer(filtration_time_end) [| if ((Filtration_piscine_force.state as DecimalType).intValue == 0) sendCommand(Filtration_piscine, OFF)]
+//		}
+//		else if((filtration_time_start.beforeNow) && (filtration_time_end.afterNow))
+//		{
+//			// on est entre les deux dates => on lance la filtration si besoin et on crée le timer de fin
+//			if(Filtration_piscine.state == OFF)
+//			{
+//				sendCommand(Filtration_piscine, ON)
+//			}
+//			Tfiltration_start = null
+//			Tfiltration_end = createTimer(filtration_time_end) [| if ((Filtration_piscine_force.state as DecimalType).intValue == 0) sendCommand(Filtration_piscine, OFF)]
+//		}
+//		else
+//		{
+//			// on est après la date de fin => on arrête la pompe si besoin
+//			if((Filtration_piscine.state == ON) && ((Filtration_piscine_force.state as DecimalType).intValue == 0))
+//			{
+//				sendCommand(Filtration_piscine, OFF)
+//			}
+//			Tfiltration_start = null
+//			Tfiltration_end = null
+//		}
+//	
+//        logInfo("piscine", "End piscine_init_on_start rule.")
+//
+//end
 
-        logInfo("piscine", "Begin piscine_init_on_start rule...")
-
-		filtration_time_start = parse((Filtration_heuredebut_joda.state as StringType).toString)
-		filtration_time_end = parse((Filtration_heurefin_joda.state as StringType).toString)
-
-	    logInfo("piscine", filtration_time_start.toString)
-	    logInfo("piscine", filtration_time_end.toString)
-	
-		if(filtration_time_start.afterNow)
-		{
-			// on est avant l'heure de début => on crée les deux timers
-			Tfiltration_start = createTimer(filtration_time_start) [| sendCommand(Filtration_piscine, ON)]
-			Tfiltration_end = createTimer(filtration_time_end) [| if ((Filtration_piscine_force.state as DecimalType).intValue == 0) sendCommand(Filtration_piscine, OFF)]
-		}
-		else if((filtration_time_start.beforeNow) && (filtration_time_end.afterNow))
-		{
-			// on est entre les deux dates => on lance la filtration si besoin et on crée le timer de fin
-			if(Filtration_piscine.state == OFF)
-			{
-				sendCommand(Filtration_piscine, ON)
-			}
-			Tfiltration_start = null
-			Tfiltration_end = createTimer(filtration_time_end) [| if ((Filtration_piscine_force.state as DecimalType).intValue == 0) sendCommand(Filtration_piscine, OFF)]
-		}
-		else
-		{
-			// on est après la date de fin => on arrête la pompe si besoin
-			if((Filtration_piscine.state == ON) && ((Filtration_piscine_force.state as DecimalType).intValue == 0))
-			{
-				sendCommand(Filtration_piscine, OFF)
-			}
-			Tfiltration_start = null
-			Tfiltration_end = null
-		}
-	
-        logInfo("piscine", "End piscine_init_on_start rule.")
-
-end
-
-rule "piscine_auto_mode_changed"
-when
-	Item Filtration_piscine_auto changed
-then
-
-        var Integer force_state = (Filtration_piscine_force.state as DecimalType).intValue
-
-	// si on quitte le mode auto, on annule les timers
-	if(Filtration_piscine_auto.state == OFF)
-	{
-		if(Tfiltration_start !== null)
-		{
-			Tfiltration_start.cancel
-			Tfiltration_start = null
-		}
-		if(Tfiltration_end !== null)
-		{
-			Tfiltration_end.cancel
-			Tfiltration_end = null
-		}
-		
-		// Si la filtration est en marche lorsqu'on enlève le mode auto
-		// il faut passer le swith à ON pour refléter l'état actuel de la filtration (et ne pas la modifier)
-		if((Filtration_piscine.state == ON) && (force_state == 0))
-			sendCommand(Filtration_piscine_force, 99)
-	}
-	
-	// Si le mode auto est enclenché, on crée les timers
-	if(Filtration_piscine_auto.state == ON)
-	{
-		if(filtration_time_start.afterNow)
-		{
-			// on est avant l'heure de début => on crée les deux timers
-			Tfiltration_start = createTimer(filtration_time_start) [| sendCommand(Filtration_piscine, ON)]
-			Tfiltration_end = createTimer(filtration_time_end) [| if ((Filtration_piscine_force.state as DecimalType).intValue == 0) sendCommand(Filtration_piscine, OFF)]
-		}
-		else if((filtration_time_start.beforeNow) && (filtration_time_end.afterNow))
-		{
-			// on est entre les deux dates => on lance la filtration si besoin et on crée le timer de fin
-			if(Filtration_piscine.state == OFF)
-			{
-				sendCommand(Filtration_piscine, ON)
-			}
-			Tfiltration_start = null
-			Tfiltration_end = createTimer(filtration_time_end) [| if ((Filtration_piscine_force.state as DecimalType).intValue == 0) sendCommand(Filtration_piscine, OFF)]
-		}
-		else
-		{
-			// on est après la date de fin => on arrête la pompe si besoin
-			if((Filtration_piscine.state == ON) && ((Filtration_piscine_force.state as DecimalType).intValue == 0))
-			{
-				sendCommand(Filtration_piscine, OFF)
-			}
-			Tfiltration_start = null
-			Tfiltration_end = null
-		}
-	}
-end
+//rule "piscine_auto_mode_changed"
+//when
+//	Item Filtration_piscine_auto changed
+//then
+//
+//        var Integer force_state = (Filtration_piscine_force.state as DecimalType).intValue
+//
+//	// si on quitte le mode auto, on annule les timers
+//	if(Filtration_piscine_auto.state == OFF)
+//	{
+//		if(Tfiltration_start !== null)
+//		{
+//			Tfiltration_start.cancel
+//			Tfiltration_start = null
+//		}
+//		if(Tfiltration_end !== null)
+//		{
+//			Tfiltration_end.cancel
+//			Tfiltration_end = null
+//		}
+//		
+//		// Si la filtration est en marche lorsqu'on enlève le mode auto
+//		// il faut passer le swith à ON pour refléter l'état actuel de la filtration (et ne pas la modifier)
+//		if((Filtration_piscine.state == ON) && (force_state == 0))
+//			sendCommand(Filtration_piscine_force, 99)
+//	}
+//	
+//	// Si le mode auto est enclenché, on crée les timers
+//	if(Filtration_piscine_auto.state == ON)
+//	{
+//		if(filtration_time_start.afterNow)
+//		{
+//			// on est avant l'heure de début => on crée les deux timers
+//			Tfiltration_start = createTimer(filtration_time_start) [| sendCommand(Filtration_piscine, ON)]
+//			Tfiltration_end = createTimer(filtration_time_end) [| if ((Filtration_piscine_force.state as DecimalType).intValue == 0) sendCommand(Filtration_piscine, OFF)]
+//		}
+//		else if((filtration_time_start.beforeNow) && (filtration_time_end.afterNow))
+//		{
+//			// on est entre les deux dates => on lance la filtration si besoin et on crée le timer de fin
+//			if(Filtration_piscine.state == OFF)
+//			{
+//				sendCommand(Filtration_piscine, ON)
+//			}
+//			Tfiltration_start = null
+//			Tfiltration_end = createTimer(filtration_time_end) [| if ((Filtration_piscine_force.state as DecimalType).intValue == 0) sendCommand(Filtration_piscine, OFF)]
+//		}
+//		else
+//		{
+//			// on est après la date de fin => on arrête la pompe si besoin
+//			if((Filtration_piscine.state == ON) && ((Filtration_piscine_force.state as DecimalType).intValue == 0))
+//			{
+//				sendCommand(Filtration_piscine, OFF)
+//			}
+//			Tfiltration_start = null
+//			Tfiltration_end = null
+//		}
+//	}
+//end
 
 rule "piscine_force_filtration"
 when

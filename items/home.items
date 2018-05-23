@@ -223,8 +223,8 @@ Number Temp_eau_piscine (gPiscine) {mqtt="<[mosquitto:eau_piscine/temperature:st
 Number Temp_exterieur_piscine (gPiscine) {mqtt="<[mosquitto:ext_piscine/temperature:state:default]"}
 Number Temp_local_piscine {mqtt="<[mosquitto:local_piscine/temperature:state:default]"}
 Switch Filtration_piscine_auto
-String Filtration_heuredebut
-String Filtration_heurefin
+String Filtration_heuredebut {mqtt="<[mosquitto:piscine/filtration/ontime:state:default]"}
+String Filtration_heurefin {mqtt="<[mosquitto:piscine/filtration/offtime:state:default]"}
 String Filtration_heuredebut_joda
 String Filtration_heurefin_joda
 //Switch Filtration_piscine {exec=">[OFF:/usr/bin/sudo /usr/bin/ssh pi@pi-stoch /usr/local/bin/relayControl -c 1 /dev/ttyUSB0] >[ON:/usr/bin/sudo /usr/bin/ssh pi@pi-stoch /usr/local/bin/relayControl -o 1 /dev/ttyUSB0] <[/usr/bin/sudo /usr/bin/ssh pi@pi-stoch /usr/local/bin/relayControl -s 1 /dev/ttyUSB0:60000:]"}
