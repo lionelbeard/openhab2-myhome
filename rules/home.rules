@@ -1596,57 +1596,57 @@ end
 //	}
 //end
 
-rule "piscine_force_filtration"
-when
-	Item Filtration_piscine_force received command
-then
-	// On joue sur le switch filtration auto
-	// Si force=ON: on démarre le moteur si besoin, on sauvegarde l'état du mode auto dans un item persistant et on désactive le mode auto si besoin
-	// Si force=OFF: on rétablit l'état de la filtration auto à partir de l'item persistant de sauvegarde. Si dernier état était OFF, on éteint le moteur
-
-	var Integer force_state = (Filtration_piscine_force.state as DecimalType).intValue
-
-	if (force_state != 0)
-	{
-		// On force le démarrage du moteur si besoin
-		if(Filtration_piscine.state == OFF)
-			sendCommand(Filtration_piscine, ON)
-			
-		// On sauvegarde l'état du mode auto
-		//!!!! Si on switche entre les différents modes de force sans passer par off, l'$état sauvegardé n'est plus l'initial!!!!
-		// on ne sauvegarde que si l'état précédent de l'item était OFF
-		if ((Filtration_piscine_force.previousState.state as DecimalType).intValue == 0)
-			sendCommand(Filtration_etat_auto_avant_force, Filtration_piscine_auto.state.toString)
-		
-		// On désactive le mode auto si ON => désactivation des timers
-		if(Filtration_piscine_auto.state == ON)
-			sendCommand(Filtration_piscine_auto, OFF)	
-
-                // On cree le timer si durée définie
-		//!!!!! il faut sauvegarder le timer pour le supprimer si le mode de force est modifié avant expiration du timer!!!
-		if(force_state != 99)
-		{
-               		Tfiltration_force = createTimer(now.plusHours(force_state)) [|
-                                sendCommand(Filtration_piscine_force, 0)]
-		}
-	}
-	else // OFF
-	{
-		// On rétablit l'état du mode auto, les timers sont rétablis si besoin
-		sendCommand(Filtration_piscine_auto, Filtration_etat_auto_avant_force.state.toString)
-	
-		// Si mode auto était positionné à OFF, on éteint le moteur
-		if (Filtration_etat_auto_avant_force.state == OFF)
-			sendCommand(Filtration_piscine, OFF)
-
-                // On annule le timer si besoin
-                if (Tfiltration_force !== null)
-                {
-                        Tfiltration_force.cancel
-                        Tfiltration_force = null
-                }
-	}
-end
+//rule "piscine_force_filtration"
+//when
+//	Item Filtration_piscine_force received command
+//then
+//	// On joue sur le switch filtration auto
+//	// Si force=ON: on démarre le moteur si besoin, on sauvegarde l'état du mode auto dans un item persistant et on désactive le mode auto si besoin
+//	// Si force=OFF: on rétablit l'état de la filtration auto à partir de l'item persistant de sauvegarde. Si dernier état était OFF, on éteint le moteur
+//
+//	var Integer force_state = (Filtration_piscine_force.state as DecimalType).intValue
+//
+//	if (force_state != 0)
+//	{
+//		// On force le démarrage du moteur si besoin
+//		if(Filtration_piscine.state == OFF)
+//			sendCommand(Filtration_piscine, ON)
+//			
+//		// On sauvegarde l'état du mode auto
+//		//!!!! Si on switche entre les différents modes de force sans passer par off, l'$état sauvegardé n'est plus l'initial!!!!
+//		// on ne sauvegarde que si l'état précédent de l'item était OFF
+//		if ((Filtration_piscine_force.previousState.state as DecimalType).intValue == 0)
+//			sendCommand(Filtration_etat_auto_avant_force, Filtration_piscine_auto.state.toString)
+//		
+//		// On désactive le mode auto si ON => désactivation des timers
+//		if(Filtration_piscine_auto.state == ON)
+//			sendCommand(Filtration_piscine_auto, OFF)	
+//
+//                // On cree le timer si durée définie
+//		//!!!!! il faut sauvegarder le timer pour le supprimer si le mode de force est modifié avant expiration du timer!!!
+//		if(force_state != 99)
+//		{
+//               		Tfiltration_force = createTimer(now.plusHours(force_state)) [|
+//                                sendCommand(Filtration_piscine_force, 0)]
+//		}
+//	}
+//	else // OFF
+//	{
+//		// On rétablit l'état du mode auto, les timers sont rétablis si besoin
+//		sendCommand(Filtration_piscine_auto, Filtration_etat_auto_avant_force.state.toString)
+//	
+//		// Si mode auto était positionné à OFF, on éteint le moteur
+//		if (Filtration_etat_auto_avant_force.state == OFF)
+//			sendCommand(Filtration_piscine, OFF)
+//
+//                // On annule le timer si besoin
+//                if (Tfiltration_force !== null)
+//                {
+//                        Tfiltration_force.cancel
+//                        Tfiltration_force = null
+//                }
+//	}
+//end
 
 // hors-gel (meilleure idée?) : si t°<X, mettre le switch force à ON. 
 //rule "piscine_hors_gel"
