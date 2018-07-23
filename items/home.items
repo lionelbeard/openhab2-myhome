@@ -25,7 +25,6 @@ Number Programmation	"Programmation"				<calendar>
 String Programmation_phase	"Etape de programmation [%s]" <calendar>
 
 /* Reglages VMC */
-//Switch VMC_rapide {rfxcom=">7689219.389:LIGHTING4.PT2262:Command"}
 Switch VMC_rapide {channel="rfxcom:lighting4:rfxtrx433e:VMC_relay:command"}
 Switch VMC_auto
 
@@ -33,9 +32,7 @@ Switch VMC_auto
 Number AZ_salon_OpMode {modbus="slaveZone1:0"}
 Switch Zone_salon_OnOff
 Switch Zone_salon_outofschedule
-//Number AZ_temp_salon_tenths {modbus="slaveZone1:8"}
 Number Temp_salon {modbus="<[slaveZone1:8:transformation=JS(divide10.js)]"}
-//Number AZ_temp_setpoint_salon_tenths {modbus="slaveZone1:3"}
 Number Temp_salon_setpoint {modbus=">[slaveZone1:3:transformation=JS(multiply10.js)], <[slaveZone1:3:transformation=JS(divide10.js)]"}
 Number Temp_salon_setpoint_global
 Number AZ_salon_status_register {modbus="slaveZone1:9"}
@@ -43,26 +40,17 @@ String Zone_salon_volet_status "Etat de la grille [%s]"
 
 Switch ChauffElec_salon_auto
 Number Temp_PAC_salon
-Dimmer ChauffElec_salon_command {channel="zwave:device:15f0d1da9dc:node2:switch_dimmer"}
+Dimmer ChauffElec_salon_command {mqtt=">[mosquitto:zway/salon/chauffelec/set:command:*:default], <[mosquitto:zway/salon/chauffelec:state:default]"}
+//Dimmer ChauffElec_salon_command {channel="zwave:device:15f0d1da9dc:node2:switch_dimmer"}
 
-Contact     FenetreDroite {channel="zwave:device:15f0d1da9dc:node17:sensor_door"}
-Number      FenetreDroiteBatterie {channel="zwave:device:15f0d1da9dc:node17:battery-level"}
-
-/*
-Contact Salon_FGSD_Smoke {zwave="9:command=sensor_alarm,alarm_type=1,respond_to_basic=true" }
-Contact Salon_FGSD_Heat {zwave="9:command=sensor_alarm,alarm_type=4,respond_to_basic=true" }
-Contact Salon_FGSD_Tamper {zwave="9:command=sensor_alarm,alarm_type=0,respond_to_basic=true" }
-Number  Salon_FGSD_Battery {zwave="9:command=battery" }
-Number  Salon_FGSD_Temp {zwave="9:command=sensor_multilevel,sensor_type=1" }
-*/
+Switch     FenetreDroite {mqtt="<[mosquitto:zway/salon/fenetre_droite/ouverture:state:MAP(mqtt_contact.map)]"}
+//Number      FenetreDroiteBatterie {channel="zwave:device:15f0d1da9dc:node17:battery-level"}
 
 /* Bureau */
 Number AZ_bureau_OpMode {modbus="slaveZone2:0"}
 Switch Zone_bureau_OnOff
 Switch Zone_bureau_outofschedule
-//Number AZ_temp_bureau_tenths {modbus="slaveZone2:8"}
 Number Temp_bureau {modbus="<[slaveZone2:8:transformation=JS(divide10.js)]"}
-//Number AZ_temp_setpoint_bureau_tenths {modbus="slaveZone2:3"}
 Number Temp_bureau_setpoint {modbus=">[slaveZone2:3:transformation=JS(multiply10.js)], <[slaveZone2:3:transformation=JS(divide10.js)]"}
 Number AZ_bureau_status_register {modbus="slaveZone2:9"}
 String Zone_bureau_volet_status "Etat de la grille [%s]"
@@ -71,9 +59,7 @@ String Zone_bureau_volet_status "Etat de la grille [%s]"
 Number AZ_parents_OpMode {modbus="slaveZone3:0"}
 Switch Zone_parents_OnOff
 Switch Zone_parents_outofschedule
-//Number AZ_temp_chparents_tenths {modbus="slaveZone3:8"}
 Number Temp_chparents {modbus="<[slaveZone3:8:transformation=JS(divide10.js)]"}
-//Number AZ_temp_setpoint_parents_tenths {modbus="slaveZone3:3"}
 Number Temp_parents_setpoint {modbus=">[slaveZone3:3:transformation=JS(multiply10.js)], <[slaveZone3:3:transformation=JS(divide10.js)]"}
 Number AZ_parents_status_register {modbus="slaveZone3:9"}
 String Zone_parents_volet_status "Etat de la grille [%s]"
@@ -89,9 +75,7 @@ Number  ChParents_FGSD_Temp {channel="zwave:device:15f0d1da9dc:node9:sensor_temp
 Number AZ_ami_OpMode {modbus="slaveZone4:0"}
 Switch Zone_ami_OnOff
 Switch Zone_ami_outofschedule
-//Number AZ_temp_chami_tenths {modbus="slaveZone4:8"}
 Number Temp_chami {modbus="<[slaveZone4:8:transformation=JS(divide10.js)]"}
-//Number AZ_temp_setpoint_ami_tenths {modbus="slaveZone4:3"}
 Number Temp_ami_setpoint {modbus=">[slaveZone4:3:transformation=JS(multiply10.js)], <[slaveZone4:3:transformation=JS(divide10.js)]"}
 Number AZ_ami_status_register {modbus="slaveZone4:9"}
 String Zone_ami_volet_status "Etat de la grille [%s]"
@@ -107,9 +91,7 @@ Number  ChAmi_FGSD_Temp {channel="zwave:device:15f0d1da9dc:node10:sensor_tempera
 Number AZ_thomas_OpMode {modbus="slaveZone5:0"}
 Switch Zone_thomas_OnOff
 Switch Zone_thomas_outofschedule
-//Number AZ_temp_chthomas_tenths {modbus="slaveZone5:8"}
 Number Temp_chthomas {modbus="<[slaveZone5:8:transformation=JS(divide10.js)]"}
-//Number AZ_temp_setpoint_thomas_tenths {modbus="slaveZone5:3"}
 Number Temp_thomas_setpoint {modbus=">[slaveZone5:3:transformation=JS(multiply10.js)], <[slaveZone5:3:transformation=JS(divide10.js)]"}
 Number AZ_thomas_status_register {modbus="slaveZone5:9"}
 String Zone_thomas_volet_status "Etat de la grille [%s]"
@@ -125,9 +107,7 @@ Number  ChThomas_FGSD_Temp {channel="zwave:device:15f0d1da9dc:node6:sensor_tempe
 Number AZ_filles_OpMode {modbus="slaveZone6:0"}
 Switch Zone_filles_OnOff
 Switch Zone_filles_outofschedule
-//Number AZ_temp_chfilles_tenths {modbus="slaveZone6:8"}
 Number Temp_chfilles {modbus="<[slaveZone6:8:transformation=JS(divide10.js)]"}
-//Number AZ_temp_setpoint_filles_tenths {modbus="slaveZone6:3"}
 Number Temp_filles_setpoint {modbus=">[slaveZone6:3:transformation=JS(multiply10.js)], <[slaveZone6:3:transformation=JS(divide10.js)]"}
 Number AZ_filles_status_register {modbus="slaveZone6:9"}
 String Zone_filles_volet_status "Etat de la grille [%s]"
@@ -140,34 +120,6 @@ Number  ChFilles_FGSD_Battery {channel="zwave:device:15f0d1da9dc:node13:battery-
 Number  ChFilles_FGSD_Temp {channel="zwave:device:15f0d1da9dc:node13:sensor_temperature"}
 
 /* Freebox */
-//// Wifi Entries
-////Switch freebox_wifi         "Wifi"                      (gfbCS)  {freebox="wifi_status"}
-//
-//// Call Entries
-//String freebox_call_lastnum     "Dernier appel [%s]"                (gfbCalls) {freebox="call_number"}
-//Number freebox_call_duration        "Durée [%d sec]"             (gfbCalls) {freebox="call_duration"}
-//DateTime freebox_call_ts        "Date [%1$tA, %1$td.%1$tm.%1$tY]"      (gfbCalls) {freebox="call_timestamp"}
-//String freebox_call_status      "Etat [%s]"                   (gfbCalls) {freebox="call_status"}
-//
-//// Connection Status Items
-//String freebox_cs_state         "Etat [%s]"                    (gfbCS) {freebox="line_status"}
-//String freebox_cs_ipv4          "Adresse IP [%s]"                     (gfbCS) {freebox="ipv4"}
-//Number freebox_cs_rate_up       "Upload rate [%d b/s]"              (gfbCS) {freebox="rate_up"}
-//Number freebox_cs_rate_down     "Download rate [%d b/s]"            (gfbCS) {freebox="rate_down"}
-//Number freebox_cs_bytes_up      "Uploaded [%d bytes]"               (gfbCS) {freebox="bytes_up"}
-//Number freebox_cs_bytes_down        "Downloaded [%d bytes]"             (gfbCS) {freebox="bytes_down"}
-//
-//// System Items
-//String freebox_sys_firmware_version     "Version [%s]"                  (gfbSys) {freebox="fw_version"}
-//Switch freebox_reboot           "Reboot freebox"                (gfbSys) {freebox="reboot"}
-//Number freebox_sys_uptime       "Uptime [%d sec]"               (gfbSys) {freebox="uptime"}
-//Number freebox_sys_temp_cpum        "Temp cpum [%d °C]"        <temperature>   (gfbSys) {freebox="temp_cpum"}
-//Number freebox_sys_temp_cpub        "Temp cpub [%d °C]"        <temperature>   (gfbSys) {freebox="temp_cpub"}
-//Number freebox_sys_temp_sw          "Temp sw [%d °C]"      <temperature>   (gfbSys) {freebox="temp_sw"}
-//Number freebox_sys_fan_rpm          "Fan [%d rpm]"          <fan>       (gfbSys) {freebox="fan"}
-//
-//// xDSL Status Items
-////String freebox_xdsl_status      "Statut ADSL [%s]"                   (gfbCS) {freebox="xdsl_status"}
 
 /* Salle de bain */
 Number Temp_sallebain (gSalleBain) {channel="rfxcom:temperaturehumidity:rfxtrx433e:Oregon_sallebain:temperature"}
@@ -175,7 +127,6 @@ Number Hygro_sallebain (gSalleBain) {channel="rfxcom:temperaturehumidity:rfxtrx4
 String HumStat_sallebain (gSalleBain) {channel="rfxcom:temperaturehumidity:rfxtrx433e:Oregon_sallebain:humidityStatus"}
 Number Hygro_abs_sallebain
 String High_hum_sallebain
-//Switch Batt_sallebain {channel="rfxcom:temperaturehumidity:rfxtrx433e:Oregon_sallebain:lowBattery"}
 
 /* Salle d'eau */
 Number Temp_salledeau (gSalleEau) {channel="rfxcom:temperaturehumidity:rfxtrx433e:Oregon_salledeau:temperature"}
@@ -183,7 +134,6 @@ Number Hygro_salledeau (gSalleEau) {channel="rfxcom:temperaturehumidity:rfxtrx43
 String HumStat_salledeau (gSalleEau) {channel="rfxcom:temperaturehumidity:rfxtrx433e:Oregon_salledeau:humidityStatus"}
 Number Hygro_abs_salledeau
 String High_hum_salledeau
-//Switch Batt_salledeau {channel="rfxcom:temperaturehumidity:rfxtrx433e:Oregon_salledeau:lowBattery"}
 
 /* Cuisine */
 Switch Inondation_cuisine_alarm {channel="zwave:device:15f0d1da9dc:node8:alarm_flood"}
@@ -216,9 +166,6 @@ Number Inondation_garage_temperature {channel="zwave:device:15f0d1da9dc:node7:se
 Number Inondation_garage_batterie {channel="zwave:device:15f0d1da9dc:node7:battery-level"}
 
 /* Extérieur */
-//Number Temp_eau_piscine (gPiscine) {onewire="deviceId=eau_piscine;propertyName=temperature;ignore85CPowerOnResetValues"}
-//Number Temp_exterieur_piscine (gPiscine) {onewire="deviceId=ext_piscine;propertyName=temperature;ignore85CPowerOnResetValues"}
-//Number Temp_local_piscine {onewire="deviceId=local_piscine;propertyName=temperature;ignore85CPowerOnResetValues"}
 Number Temp_eau_piscine (gPiscine) {mqtt="<[mosquitto:eau_piscine/temperature:state:default]"}
 Number Temp_exterieur_piscine (gPiscine) {mqtt="<[mosquitto:ext_piscine/temperature:state:default]"}
 Number Temp_local_piscine {mqtt="<[mosquitto:local_piscine/temperature:state:default]"}
@@ -227,9 +174,8 @@ String Filtration_heuredebut {mqtt="<[mosquitto:piscine/filtration/ontime:state:
 String Filtration_heurefin {mqtt="<[mosquitto:piscine/filtration/offtime:state:default]"}
 String Filtration_heuredebut_joda
 String Filtration_heurefin_joda
-//Switch Filtration_piscine {exec=">[OFF:/usr/bin/sudo /usr/bin/ssh pi@pi-stoch /usr/local/bin/relayControl -c 1 /dev/ttyUSB0] >[ON:/usr/bin/sudo /usr/bin/ssh pi@pi-stoch /usr/local/bin/relayControl -o 1 /dev/ttyUSB0] <[/usr/bin/sudo /usr/bin/ssh pi@pi-stoch /usr/local/bin/relayControl -s 1 /dev/ttyUSB0:60000:]"}
 Switch Filtration_piscine {mqtt=">[mosquitto:piscine/filtration/switch:command:*:default], <[mosquitto:piscine/filtration/status:state:default]"}
-Number Filtration_piscine_force
+Number Filtration_piscine_force {mqtt=">[mosquitto:piscine/filtration/force:command:*:default], <[mosquitto:piscine/filtration/force:state:default]"}
 Switch Filtration_etat_auto_avant_force
 Switch Filtration_anti_gel {mqtt="<[mosquitto:piscine/filtration/antigel:state:default]"}
 Number Temp_outside (gExterieur) {channel="rfxcom:temperaturehumidity:rfxtrx433e:Oregon_outside:temperature"}
@@ -242,10 +188,3 @@ Switch Portail_ouverture_fermeture {channel="zwave:device:15f0d1da9dc:node12:swi
 Switch Portail_ouverture_pieton {channel="zwave:device:15f0d1da9dc:node12:switch_binary2"}
 Switch Portail_retour_etat {channel="zwave:device:15f0d1da9dc:node14:sensor_binary1"}
 Switch Presence_Lionel { mqttitude="mosquitto:owntracks/openhab/lionel/event:Maison" }
-
-/* Feu tricolore */
-/*Switch Feu_rouge {exec="OFF:/usr/bin/sudo /usr/local/bin/codesend-startstop.sh 1145678 stop, ON:/usr/bin/sudo /usr/local/bin/codesend-startstop.sh 1145678 start"}
-Switch Feu_orange {exec="OFF:/usr/bin/sudo /usr/local/bin/codesend-startstop.sh 1245678 stop, ON:/usr/bin/sudo /usr/local/bin/codesend-startstop.sh 1245678 start"}
-Switch Feu_vert {exec="OFF:/usr/bin/sudo /usr/local/bin/codesend-startstop.sh 1345678 stop, ON:/usr/bin/sudo /usr/local/bin/codesend-startstop.sh 1345678 start"}
-Switch Feu_auto
-*/
