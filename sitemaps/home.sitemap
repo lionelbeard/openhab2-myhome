@@ -111,7 +111,7 @@ sitemap home
 				Text label="Détecteur d'incendie" icon="incendie" labelcolor=[ChParents_FGSD_Smoke=="OPEN"="red", ChParents_FGSD_Heat=="OPEN"="red", ChParents_FGSD_Tamper=="OPEN"="red", ChParents_FGSD_Battery<="10"="orange", ChParents_FGSD_Battery<="2"="red"] {
 					Text item=ChParents_FGSD_Smoke icon="incendie" label="Alarme fumée [MAP(fr.map):%s]"
 					Text item=ChParents_FGSD_Heat icon="incendie" label="Alarme chaleur [MAP(fr.map):%s]"
-					Text item=ChParents_FGSD_Tamper icon="incendie" label="Alarme intrusion [MAP(fr.map):%s]"
+			//		Text item=ChParents_FGSD_Tamper icon="incendie" label="Alarme intrusion [MAP(fr.map):%s]"
 					Text item=ChParents_FGSD_Battery icon="batterie" label="Batterie [%s %%]"
 					Text item=ChParents_FGSD_Temp icon="temperature" label="Température [%.1f°C]"
 				}
@@ -127,7 +127,7 @@ sitemap home
                                 Text label="Détecteur d'incendie" icon="incendie" labelcolor=[ChThomas_FGSD_Smoke=="OPEN"="red", ChThomas_FGSD_Heat=="OPEN"="red", ChThomas_FGSD_Tamper=="OPEN"="red", ChThomas_FGSD_Battery<="10"="orange", ChThomas_FGSD_Battery<="2"="red"] {
                                         Text item=ChThomas_FGSD_Smoke icon="incendie" label="Alarme fumée [MAP(fr.map):%s]"
                                         Text item=ChThomas_FGSD_Heat icon="incendie" label="Alarme chaleur [MAP(fr.map):%s]"
-                                        Text item=ChThomas_FGSD_Tamper icon="incendie" label="Alarme intrusion [MAP(fr.map):%s]"
+                         //               Text item=ChThomas_FGSD_Tamper icon="incendie" label="Alarme intrusion [MAP(fr.map):%s]"
                                         Text item=ChThomas_FGSD_Battery icon="batterie" label="Batterie [%s %%]"
                                         Text item=ChThomas_FGSD_Temp icon="temperature" label="Température [%.1f°C]"
                                 }
@@ -147,7 +147,7 @@ sitemap home
                                 Text label="Détecteur d'incendie" icon="incendie" labelcolor=[ChFilles_FGSD_Smoke=="OPEN"="red", ChFilles_FGSD_Heat=="OPEN"="red", ChFilles_FGSD_Tamper=="OPEN"="red", ChFilles_FGSD_Battery<="10"="orange", ChFilles_FGSD_Battery<="2"="red"] {
                                         Text item=ChFilles_FGSD_Smoke icon="incendie" label="Alarme fumée [MAP(fr.map):%s]"
                                         Text item=ChFilles_FGSD_Heat icon="incendie" label="Alarme chaleur [MAP(fr.map):%s]"
-                                        Text item=ChFilles_FGSD_Tamper icon="incendie" label="Alarme intrusion [MAP(fr.map):%s]"
+                          //              Text item=ChFilles_FGSD_Tamper icon="incendie" label="Alarme intrusion [MAP(fr.map):%s]"
                                         Text item=ChFilles_FGSD_Battery icon="batterie" label="Batterie [%s %%]"
                                         Text item=ChFilles_FGSD_Temp icon="temperature" label="Température [%.1f°C]"
                                 }
@@ -167,7 +167,7 @@ sitemap home
                                 Text label="Détecteur d'incendie" icon="incendie" labelcolor=[ChAmi_FGSD_Smoke=="OPEN"="red", ChAmi_FGSD_Heat=="OPEN"="red", ChAmi_FGSD_Tamper=="OPEN"="red", ChAmi_FGSD_Battery<="10"="orange", ChAmi_FGSD_Battery<="2"="red"] {
                                         Text item=ChAmi_FGSD_Smoke icon="incendie" label="Alarme fumée [MAP(fr.map):%s]"
                                         Text item=ChAmi_FGSD_Heat icon="incendie" label="Alarme chaleur [MAP(fr.map):%s]"
-                                        Text item=ChAmi_FGSD_Tamper icon="incendie" label="Alarme intrusion [MAP(fr.map):%s]"
+                           //             Text item=ChAmi_FGSD_Tamper icon="incendie" label="Alarme intrusion [MAP(fr.map):%s]"
                                         Text item=ChAmi_FGSD_Battery icon="batterie" label="Batterie [%s %%]"
                                         Text item=ChAmi_FGSD_Temp icon="temperature" label="Température [%.1f°C]"
                                 }
@@ -196,14 +196,14 @@ sitemap home
     }
     Text label="Cuisine" icon="cuisine" {
     		Text item=Inondation_cuisine_alarm label="Inondation - Alarme fuite d'eau [MAP(fr.map):%s]" icon="inondation"
-		Text item=Inondation_cuisine_intrusion label="Inondation - Alarme intrusion [MAP(fr.map):%s]" icon="inondation"
+//		Text item=Inondation_cuisine_intrusion label="Inondation - Alarme intrusion [MAP(fr.map):%s]" icon="inondation"
 		Text item=Inondation_cuisine_temperature label="Inondation - Température [%.1f °C]" icon="temperature"
 		Text item=Inondation_cuisine_batterie label="Inondation - Batterie [%.0f %%]" icon="batterie"
     }
     Text label="Arriere-Cuisine" icon="cuisine" labelcolor=[ACuisine_FGSD_Smoke=="OPEN"="red", ACuisine_FGSD_Heat=="OPEN"="red", ACuisine_FGSD_Tamper=="OPEN"="red", ACuisine_FGSD_Battery<="10"="orange", ACuisine_FGSD_Battery<="2"="red"] {
                 Text item=ACuisine_FGSD_Smoke icon="incendie" label="Alarme fumée [MAP(fr.map):%s]"
                 Text item=ACuisine_FGSD_Heat icon="incendie" label="Alarme chaleur [MAP(fr.map):%s]"
-                Text item=ACuisine_FGSD_Tamper icon="incendie" label="Alarme intrusion [MAP(fr.map):%s]"
+ //               Text item=ACuisine_FGSD_Tamper icon="incendie" label="Alarme intrusion [MAP(fr.map):%s]"
                 Text item=ACuisine_FGSD_Battery icon="batterie" label="Batterie [%s %%]"
                 Text item=ACuisine_FGSD_Temp icon="temperature" label="Température [%.1f°C]"
 		//Switch item=ACuisine_FGD_Switch label="Lumière" icon="light"
@@ -218,7 +218,7 @@ sitemap home
     }
     Text label="Garage" icon="garage" {
     		Text item=Inondation_garage_alarm label="Inondation - Alarme fuite d'eau [MAP(fr.map):%s]" icon="inondation" 
-		Text item=Inondation_garage_intrusion label="Inondation - Alarme intrusion [MAP(fr.map):%s]" icon="inondation"
+//		Text item=Inondation_garage_intrusion label="Inondation - Alarme intrusion [MAP(fr.map):%s]" icon="inondation"
 		Text item=Inondation_garage_temperature label="Inondation - Température [%.1f °C]" icon="temperature"
 		Text item=Inondation_garage_batterie label="Inondation - Batterie [%.0f %%]" icon="batterie"
     }

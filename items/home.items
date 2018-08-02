@@ -64,12 +64,12 @@ Number Temp_parents_setpoint {modbus=">[slaveZone3:3:transformation=JS(multiply1
 Number AZ_parents_status_register {modbus="slaveZone3:9"}
 String Zone_parents_volet_status "Etat de la grille [%s]"
 
-Switch ChParents_FGSD_Smoke {channel="zwave:device:15f0d1da9dc:node9:alarm_smoke"}
-Switch ChParents_FGSD_Heat {channel="zwave:device:15f0d1da9dc:node9:alarm_heat"}
+Switch ChParents_FGSD_Smoke {mqtt="<[mosquitto:zway/chambreParents/smoke/alarm:state:MAP(mqtt_contact.map)]"}
+Switch ChParents_FGSD_Heat {mqtt="<[mosquitto:zway/chambreParents/smoke/heat_alarm:state:MAP(mqtt_contact.map)]"}
 Switch ChParents_FGSD_Tamper {channel="zwave:device:15f0d1da9dc:node9:alarm_tamper"}
 Switch ChParents_FGSD_Battery_Alarm {channel="zwave:device:15f0d1da9dc:node9:alarm_battery"}
 Number  ChParents_FGSD_Battery {channel="zwave:device:15f0d1da9dc:node9:battery-level"}
-Number  ChParents_FGSD_Temp {channel="zwave:device:15f0d1da9dc:node9:sensor_temperature"}
+Number  ChParents_FGSD_Temp {mqtt="<[mosquitto:zway/chambreParents/smoke/temperature:state:default]"}
 
 /* Ch ami */
 Number AZ_ami_OpMode {modbus="slaveZone4:0"}
@@ -80,12 +80,12 @@ Number Temp_ami_setpoint {modbus=">[slaveZone4:3:transformation=JS(multiply10.js
 Number AZ_ami_status_register {modbus="slaveZone4:9"}
 String Zone_ami_volet_status "Etat de la grille [%s]"
 
-Switch ChAmi_FGSD_Smoke {channel="zwave:device:15f0d1da9dc:node10:alarm_smoke"}
-Switch ChAmi_FGSD_Heat {channel="zwave:device:15f0d1da9dc:node10:alarm_heat"}
+Switch ChAmi_FGSD_Smoke {mqtt="<[mosquitto:zway/chambreAmi/smoke/alarm:state:MAP(mqtt_contact.map)]"}
+Switch ChAmi_FGSD_Heat {mqtt="<[mosquitto:zway/chambreAmi/smoke/heat_alarm:state:MAP(mqtt_contact.map)]"}
 Switch ChAmi_FGSD_Tamper {channel="zwave:device:15f0d1da9dc:node10:alarm_tamper"}
 Switch ChAmi_FGSD_Battery_Alarm {channel="zwave:device:15f0d1da9dc:node10:alarm_battery"}
 Number  ChAmi_FGSD_Battery {channel="zwave:device:15f0d1da9dc:node10:battery-level"}
-Number  ChAmi_FGSD_Temp {channel="zwave:device:15f0d1da9dc:node10:sensor_temperature"}
+Number  ChAmi_FGSD_Temp {mqtt="<[mosquitto:zway/chambreAmi/smoke/temperature:state:default]"}
 
 /* Ch Thomas */
 Number AZ_thomas_OpMode {modbus="slaveZone5:0"}
@@ -136,18 +136,18 @@ Number Hygro_abs_salledeau
 String High_hum_salledeau
 
 /* Cuisine */
-Switch Inondation_cuisine_alarm {channel="zwave:device:15f0d1da9dc:node8:alarm_flood"}
+Switch Inondation_cuisine_alarm {mqtt="<[mosquitto:zway/cuisine/water/alarm:state:MAP(mqtt_contact.map)]"}
 Switch Inondation_cuisine_intrusion {channel="zwave:device:15f0d1da9dc:node8:alarm_tamper2"}
-Number Inondation_cuisine_temperature {channel="zwave:device:15f0d1da9dc:node8:sensor_temperature2"}
+Number Inondation_cuisine_temperature {mqtt="<[mosquitto:zway/cuisine/water/temperature:state:default]"}
 Number Inondation_cuisine_batterie {channel="zwave:device:15f0d1da9dc:node8:battery-level"}
 
 /* Arriere-Cuisine */
-Switch ACuisine_FGSD_Smoke {channel="zwave:device:15f0d1da9dc:node3:alarm_smoke"}
-Switch ACuisine_FGSD_Heat {channel="zwave:device:15f0d1da9dc:node3:alarm_heat"}
+Switch ACuisine_FGSD_Smoke {mqtt="<[mosquitto:zway/arrière-Cuisine/smoke/alarm:state:MAP(mqtt_contact.map)]"}
+Switch ACuisine_FGSD_Heat {mqtt="<[mosquitto:zway/arrière-Cuisine/smoke/heat_alarm:state:MAP(mqtt_contact.map)]"}
 Switch ACuisine_FGSD_Tamper {channel="zwave:device:15f0d1da9dc:node3:alarm_tamper"}
 Switch ACuisine_FGSD_Battery_Alarm {channel="zwave:device:15f0d1da9dc:node3:alarm_battery"}
 Number  ACuisine_FGSD_Battery {channel="zwave:device:15f0d1da9dc:node3:battery-level"}
-Number  ACuisine_FGSD_Temp {channel="zwave:device:15f0d1da9dc:node3:sensor_temperature"}
+Number  ACuisine_FGSD_Temp {mqtt="<[mosquitto:zway/arrière-Cuisine/smoke/temperature:state:default]"}
 
 Dimmer	ACuisine_FGD_Dimmer	{channel="zwave:device:15f0d1da9dc:node4:switch_dimmer"}
 Number	ACuisine_FGD_Power {channel="zwave:device:15f0d1da9dc:node4:sensor_power" }
@@ -160,9 +160,9 @@ Number  ACuisine_FGMS_Bat      {channel="zwave:device:15f0d1da9dc:node5:battery-
 Number  ACuisine_FGMS_Temp     {channel="zwave:device:15f0d1da9dc:node5:sensor_temperature" }
 
 /* Garage */
-Switch Inondation_garage_alarm {channel="zwave:device:15f0d1da9dc:node7:alarm_flood"}
+Switch Inondation_garage_alarm {mqtt="<[mosquitto:zway/garage/water/alarm:state:MAP(mqtt_contact.map)]"}
 Switch Inondation_garage_intrusion {channel="zwave:device:15f0d1da9dc:node7:alarm_tamper2"}
-Number Inondation_garage_temperature {channel="zwave:device:15f0d1da9dc:node7:sensor_temperature2"}
+Number Inondation_garage_temperature {mqtt="<[mosquitto:zway/garage/water/temperature:state:default]"}
 Number Inondation_garage_batterie {channel="zwave:device:15f0d1da9dc:node7:battery-level"}
 
 /* Extérieur */
@@ -186,5 +186,5 @@ Number Hygro_abs_outside
 Number Portail_button
 Switch Portail_ouverture_fermeture {channel="zwave:device:15f0d1da9dc:node12:switch_binary"}
 Switch Portail_ouverture_pieton {channel="zwave:device:15f0d1da9dc:node12:switch_binary2"}
-Switch Portail_retour_etat {channel="zwave:device:15f0d1da9dc:node14:sensor_binary1"}
+Switch Portail_retour_etat {mqtt="<[mosquitto:zway/portail/ouverture:state:MAP(mqtt_contact.map)]"}
 Switch Presence_Lionel { mqttitude="mosquitto:owntracks/openhab/lionel/event:Maison" }
