@@ -68,7 +68,7 @@ Switch ChParents_FGSD_Smoke {mqtt="<[mosquitto:zway/chambreParents/smoke/alarm:s
 Switch ChParents_FGSD_Heat {mqtt="<[mosquitto:zway/chambreParents/smoke/heat_alarm:state:MAP(mqtt_contact.map)]"}
 Switch ChParents_FGSD_Tamper {channel="zwave:device:15f0d1da9dc:node9:alarm_tamper"}
 Switch ChParents_FGSD_Battery_Alarm {channel="zwave:device:15f0d1da9dc:node9:alarm_battery"}
-Number  ChParents_FGSD_Battery {channel="zwave:device:15f0d1da9dc:node9:battery-level"}
+Number  ChParents_FGSD_Battery {mqtt="<[mosquitto:zway/chambreParents/smoke/battery:state:default]"}
 Number  ChParents_FGSD_Temp {mqtt="<[mosquitto:zway/chambreParents/smoke/temperature:state:default]"}
 
 /* Ch ami */
@@ -84,7 +84,7 @@ Switch ChAmi_FGSD_Smoke {mqtt="<[mosquitto:zway/chambreAmi/smoke/alarm:state:MAP
 Switch ChAmi_FGSD_Heat {mqtt="<[mosquitto:zway/chambreAmi/smoke/heat_alarm:state:MAP(mqtt_contact.map)]"}
 Switch ChAmi_FGSD_Tamper {channel="zwave:device:15f0d1da9dc:node10:alarm_tamper"}
 Switch ChAmi_FGSD_Battery_Alarm {channel="zwave:device:15f0d1da9dc:node10:alarm_battery"}
-Number  ChAmi_FGSD_Battery {channel="zwave:device:15f0d1da9dc:node10:battery-level"}
+Number  ChAmi_FGSD_Battery {mqtt="<[mosquitto:zway/chambreAmi/smoke/battery:state:default]"}
 Number  ChAmi_FGSD_Temp {mqtt="<[mosquitto:zway/chambreAmi/smoke/temperature:state:default]"}
 
 /* Ch Thomas */
@@ -96,12 +96,12 @@ Number Temp_thomas_setpoint {modbus=">[slaveZone5:3:transformation=JS(multiply10
 Number AZ_thomas_status_register {modbus="slaveZone5:9"}
 String Zone_thomas_volet_status "Etat de la grille [%s]"
 
-Switch ChThomas_FGSD_Smoke {channel="zwave:device:15f0d1da9dc:node6:alarm_smoke"}
-Switch ChThomas_FGSD_Heat {channel="zwave:device:15f0d1da9dc:node6:alarm_heat"}
+Switch ChThomas_FGSD_Smoke {mqtt="<[mosquitto:zway/chambreThomas/smoke/alarm:state:MAP(mqtt_contact.map)]"}
+Switch ChThomas_FGSD_Heat {mqtt="<[mosquitto:zway/chambreThomas/smoke/heat_alarm:state:MAP(mqtt_contact.map)]"}
 Switch ChThomas_FGSD_Tamper {channel="zwave:device:15f0d1da9dc:node6:alarm_tamper"}
 Switch ChThomas_FGSD_Battery_Alarm {channel="zwave:device:15f0d1da9dc:node6:alarm_battery"}
-Number  ChThomas_FGSD_Battery {channel="zwave:device:15f0d1da9dc:node6:battery-level"}
-Number  ChThomas_FGSD_Temp {channel="zwave:device:15f0d1da9dc:node6:sensor_temperature"}
+Number  ChThomas_FGSD_Battery {mqtt="<[mosquitto:zway/chambreThomas/smoke/battery:state:default]"}
+Number  ChThomas_FGSD_Temp {mqtt="<[mosquitto:zway/chambreThomas/smoke/temperature:state:default]"}
 
 /* Ch Jumelles */
 Number AZ_filles_OpMode {modbus="slaveZone6:0"}
@@ -112,12 +112,12 @@ Number Temp_filles_setpoint {modbus=">[slaveZone6:3:transformation=JS(multiply10
 Number AZ_filles_status_register {modbus="slaveZone6:9"}
 String Zone_filles_volet_status "Etat de la grille [%s]"
 
-Switch ChFilles_FGSD_Smoke {channel="zwave:device:15f0d1da9dc:node13:alarm_smoke"}
-Switch ChFilles_FGSD_Heat {channel="zwave:device:15f0d1da9dc:node13:alarm_heat"}
+Switch ChFilles_FGSD_Smoke {mqtt="<[mosquitto:zway/chambreFilles/smoke/alarm:state:MAP(mqtt_contact.map)]"}
+Switch ChFilles_FGSD_Heat {mqtt="<[mosquitto:zway/chambreFilles/smoke/heat_alarm:state:MAP(mqtt_contact.map)]"}
 Switch ChFilles_FGSD_Tamper {channel="zwave:device:15f0d1da9dc:node13:alarm_tamper"}
 Switch ChFilles_FGSD_Battery_Alarm {channel="zwave:device:15f0d1da9dc:node13:alarm_battery"}
-Number  ChFilles_FGSD_Battery {channel="zwave:device:15f0d1da9dc:node13:battery-level"}
-Number  ChFilles_FGSD_Temp {channel="zwave:device:15f0d1da9dc:node13:sensor_temperature"}
+Number  ChFilles_FGSD_Battery {mqtt="<[mosquitto:zway/chambreFilles/smoke/battery:state:default]"}
+Number  ChFilles_FGSD_Temp {mqtt="<[mosquitto:zway/chambreFilles/smoke/temperature:state:default]"}
 
 /* Freebox */
 
@@ -139,14 +139,14 @@ String High_hum_salledeau
 Switch Inondation_cuisine_alarm {mqtt="<[mosquitto:zway/cuisine/water/alarm:state:MAP(mqtt_contact.map)]"}
 Switch Inondation_cuisine_intrusion {channel="zwave:device:15f0d1da9dc:node8:alarm_tamper2"}
 Number Inondation_cuisine_temperature {mqtt="<[mosquitto:zway/cuisine/water/temperature:state:default]"}
-Number Inondation_cuisine_batterie {channel="zwave:device:15f0d1da9dc:node8:battery-level"}
+Number Inondation_cuisine_batterie {mqtt="<[mosquitto:zway/cuisine/water/battery:state:default]"}
 
 /* Arriere-Cuisine */
 Switch ACuisine_FGSD_Smoke {mqtt="<[mosquitto:zway/arrière-Cuisine/smoke/alarm:state:MAP(mqtt_contact.map)]"}
 Switch ACuisine_FGSD_Heat {mqtt="<[mosquitto:zway/arrière-Cuisine/smoke/heat_alarm:state:MAP(mqtt_contact.map)]"}
 Switch ACuisine_FGSD_Tamper {channel="zwave:device:15f0d1da9dc:node3:alarm_tamper"}
 Switch ACuisine_FGSD_Battery_Alarm {channel="zwave:device:15f0d1da9dc:node3:alarm_battery"}
-Number  ACuisine_FGSD_Battery {channel="zwave:device:15f0d1da9dc:node3:battery-level"}
+Number  ACuisine_FGSD_Battery {mqtt="<[mosquitto:zway/arrière-Cuisine/smoke/battery:state:default]"}
 Number  ACuisine_FGSD_Temp {mqtt="<[mosquitto:zway/arrière-Cuisine/smoke/temperature:state:default]"}
 
 Dimmer	ACuisine_FGD_Dimmer	{channel="zwave:device:15f0d1da9dc:node4:switch_dimmer"}
@@ -163,7 +163,7 @@ Number  ACuisine_FGMS_Temp     {channel="zwave:device:15f0d1da9dc:node5:sensor_t
 Switch Inondation_garage_alarm {mqtt="<[mosquitto:zway/garage/water/alarm:state:MAP(mqtt_contact.map)]"}
 Switch Inondation_garage_intrusion {channel="zwave:device:15f0d1da9dc:node7:alarm_tamper2"}
 Number Inondation_garage_temperature {mqtt="<[mosquitto:zway/garage/water/temperature:state:default]"}
-Number Inondation_garage_batterie {channel="zwave:device:15f0d1da9dc:node7:battery-level"}
+Number Inondation_garage_batterie {mqtt="<[mosquitto:zway/garage/water/battery:state:default]"}
 
 /* Extérieur */
 Number Temp_eau_piscine (gPiscine) {mqtt="<[mosquitto:eau_piscine/temperature:state:default]"}
