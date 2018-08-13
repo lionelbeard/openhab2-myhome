@@ -16,11 +16,17 @@ sitemap home
 			//Text item=AZ_temp_reprise_tenths visibility=[<0]			
 			Text item=Temp_reprise label="Température de reprise [%.1f °C]" icon="temperature"
 			Switch item=Zone_salon_OnOff label="Zone salon"
+			Setpoint item=Temp_salon_setpoint_global label="Temperature souhaitée [%.1f °C]" icon="temperature" minValue=17 maxValue=28 step=0.5
 			Switch item=Zone_bureau_OnOff label="Zone bureau"
+			Setpoint item=Temp_bureau_setpoint label="Température souhaitée [%.1f °C]" icon="temperature" minValue=17 maxValue=28 step=0.5
 			Switch item=Zone_parents_OnOff label="Zone chambre parentale"
+			Setpoint item=Temp_parents_setpoint label="Température souhaitée [%.1f °C]" icon="temperature" minValue=17 maxValue=28 step=0.5
 			Switch item=Zone_thomas_OnOff label="Zone chambre Thomas"
+			Setpoint item=Temp_thomas_setpoint label="Température souhaitée [%.1f °C]" icon="temperature" minValue=17 maxValue=28 step=0.5
 			Switch item=Zone_filles_OnOff label="Zone chambre des filles"
-			Switch item=Zone_ami_OnOff label="Zone chambre d'ami"		
+			Setpoint item=Temp_filles_setpoint label="Température souhaitée [%.1f °C]" icon="temperature" minValue=17 maxValue=28 step=0.5
+			Switch item=Zone_ami_OnOff label="Zone chambre d'ami"
+			Setpoint item=Temp_ami_setpoint label="Température souhaitée [%.1f °C]" icon="temperature" minValue=17 maxValue=28 step=0.5
 		}
 		Text label="VMC" icon="fan" {
 			Switch item=VMC_auto label="Mode automatique" icon="automatique"
