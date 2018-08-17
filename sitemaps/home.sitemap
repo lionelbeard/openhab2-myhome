@@ -5,15 +5,10 @@ sitemap home
     Frame label="Intérieur" {
     	Text label="Réglages généraux" icon="settings" {
 		Text label="Chauffage/Clim" icon="heat" {
-			//Text item=AZ_OpMode visibility=[<0]
 			Selection item=Mode label="Mode" mappings=[0=Off, 1=Froid, 3=Ventilation, 4=Chaud, 6="Déshumidification"]
-			//Selection item=Fanspeed label="Vitesse" mappings=[0=Automatique, 1=Basse, 2=Moyenne, 3="Elevée"]
-			//Text item=AZ_ConfRegister visibility=[<0]
 			Selection item=QAdapt label="Q-Adapt" mappings=[0=Standard, 1=Power, 2=Silence, 3=Minimum]
-			//Selection item=EcoAdapt label="Eco-Adapt" mappings=[0=Off, 1=Manuel, 2=A, 3="A+", 4="A++"]
 			Selection item=Programmation label="Programmation" mappings=[0="Aucune", 1="Semaine de travail", 2="Toujours présent", 3="Absence prolongée"]
 			Text item=Programmation_phase
-			//Text item=AZ_temp_reprise_tenths visibility=[<0]			
 			Text item=Temp_reprise label="Température de reprise [%.1f °C]" icon="temperature"
 			Switch item=Zone_salon_OnOff label="Zone salon"
 			Setpoint item=Temp_salon_setpoint_global label="Temperature souhaitée [%.1f °C]" icon="temperature" minValue=17 maxValue=28 step=0.5
@@ -38,20 +33,15 @@ sitemap home
           		Switch item=Portail_ouverture_fermeture
 		        Switch item=Portail_ouverture_pieton
 		        Text item=Portail_retour_etat label="Etat portail [%s]"
-		        Switch item=Presence_Lionel
         	}
 
 	}
 	Text item=Temp_salon label="Salon [%.1f °C]" icon="sofa" valuecolor=[Zone_salon_OnOff=="OFF"="red", Zone_salon_volet_status=="Ouverte"="orange", Zone_salon_volet_status=="Fermée"="green"] {
-		//Text item=AZ_salon_OpMode visibility=[<0]
 		Switch item=Zone_salon_OnOff label="Zone activée"
 		Switch item=Zone_salon_outofschedule label="Exclure de la programmation" visibility=[Programmation!=0]
-		//Text item=AZ_temp_salon_tenths visibility=[<0]
 		Text item=Temp_salon label="Température actuelle [%.1f °C]" icon="temperature"
-		//Text item=AZ_temp_setpoint_salon_tenths visibility=[<0]
 		Setpoint item=Temp_salon_setpoint_global label="Temperature souhaitée [%.1f °C]" icon="temperature" minValue=17 maxValue=28 step=0.5
 		Text item=Temp_salon_setpoint label="Temperature consigne PAC [%.1f °C]" icon="temperature"
-		//Text item=AZ_salon_status_register visibility=[<0]
 		Text item=Zone_salon_volet_status icon="grille"
 		Text label="Chauffage électrique" icon="heat" valuecolor=[ChauffElec_salon_auto=="OFF"="red", ChauffElec_salon_auto=="ON"="green"] {
 			Switch item=ChauffElec_salon_auto label="Mode automatique"
@@ -93,31 +83,22 @@ sitemap home
 		Chart item=Temp_salon icon="temperature" label="Historique température" period=W refresh=60000		
 		}
 	Text item=Temp_bureau label="Bureau [%.1f °C]" icon="office" valuecolor=[Zone_bureau_OnOff=="OFF"="red", Zone_bureau_volet_status=="Ouverte"="orange", Zone_bureau_volet_status=="Fermée"="green"] {
-				//Text item=AZ_bureau_OpMode visibility=[<0]
 				Switch item=Zone_bureau_OnOff label="Zone activée"
 				Switch item=Zone_bureau_outofschedule label="Exclure de la programmation" visibility=[Programmation!=0]
-                //Text item=AZ_temp_bureau_tenths visibility=[<0]
                 Text item=Temp_bureau label="Température actuelle [%.1f °C]" icon="temperature"
-                //Text item=AZ_temp_setpoint_bureau_tenths visibility=[<0]
 				Setpoint item=Temp_bureau_setpoint label="Température souhaitée [%.1f °C]" icon="temperature" minValue=17 maxValue=28 step=0.5
-				//Text item=AZ_bureau_status_register visibility=[<0]
 				Text item=Zone_bureau_volet_status icon="grille"
 				Chart item=Temp_bureau icon="temperature" label="Historique température" period=W refresh=60000		
         }       
 	Text item=Temp_chparents label="Chambre des parents [%.1f °C]" icon="parents" valuecolor=[Zone_parents_OnOff=="OFF"="red", Zone_parents_volet_status=="Ouverte"="orange", Zone_parents_volet_status=="Fermée"="green"]	{
-				//Text item=AZ_parents_OpMode visibility=[<0]
 				Switch item=Zone_parents_OnOff label="Zone activée"
 				Switch item=Zone_parents_outofschedule label="Exclure de la programmation" visibility=[Programmation!=0]
-                //Text item=AZ_temp_chparents_tenths visibility=[<0]
                 Text item=Temp_chparents label="Température actuelle [%.1f °C]" icon="temperature"
-                //Text item=AZ_temp_setpoint_parents_tenths visibility=[<0]
 				Setpoint item=Temp_parents_setpoint label="Température souhaitée [%.1f °C]" icon="temperature" minValue=17 maxValue=28 step=0.5
-				//Text item=AZ_parents_status_register visibility=[<0]
 				Text item=Zone_parents_volet_status icon="grille"
 				Text label="Détecteur d'incendie" icon="incendie" labelcolor=[ChParents_FGSD_Smoke=="OPEN"="red", ChParents_FGSD_Heat=="OPEN"="red", ChParents_FGSD_Tamper=="OPEN"="red", ChParents_FGSD_Battery<="10"="orange", ChParents_FGSD_Battery<="2"="red"] {
 					Text item=ChParents_FGSD_Smoke icon="incendie" label="Alarme fumée [MAP(fr.map):%s]"
 					Text item=ChParents_FGSD_Heat icon="incendie" label="Alarme chaleur [MAP(fr.map):%s]"
-			//		Text item=ChParents_FGSD_Tamper icon="incendie" label="Alarme intrusion [MAP(fr.map):%s]"
 					Text item=ChParents_FGSD_Battery icon="batterie" label="Batterie [%s %%]"
 					Text item=ChParents_FGSD_Temp icon="temperature" label="Température [%.1f°C]"
 				}
@@ -133,7 +114,6 @@ sitemap home
                                 Text label="Détecteur d'incendie" icon="incendie" labelcolor=[ChThomas_FGSD_Smoke=="OPEN"="red", ChThomas_FGSD_Heat=="OPEN"="red", ChThomas_FGSD_Tamper=="OPEN"="red", ChThomas_FGSD_Battery<="10"="orange", ChThomas_FGSD_Battery<="2"="red"] {
                                         Text item=ChThomas_FGSD_Smoke icon="incendie" label="Alarme fumée [MAP(fr.map):%s]"
                                         Text item=ChThomas_FGSD_Heat icon="incendie" label="Alarme chaleur [MAP(fr.map):%s]"
-                         //               Text item=ChThomas_FGSD_Tamper icon="incendie" label="Alarme intrusion [MAP(fr.map):%s]"
                                         Text item=ChThomas_FGSD_Battery icon="batterie" label="Batterie [%s %%]"
                                         Text item=ChThomas_FGSD_Temp icon="temperature" label="Température [%.1f°C]"
                                 }
@@ -141,19 +121,14 @@ sitemap home
 				Chart item=Temp_chthomas icon="temperature" label="Historique température" period=W refresh=60000				
         }
 	Text item=Temp_chfilles label="Chambre des filles [%.1f °C]" icon="bedroom" valuecolor=[Zone_filles_OnOff=="OFF"="red", Zone_filles_volet_status=="Ouverte"="orange", Zone_filles_volet_status=="Fermée"="green"] {
-				//Text item=AZ_filles_OpMode visibility=[<0]
 				Switch item=Zone_filles_OnOff label="Zone activée"
 				Switch item=Zone_filles_outofschedule label="Exclure de la programmation" visibility=[Programmation!=0]
-                //Text item=AZ_temp_chfilles_tenths visibility=[<0]
                 Text item=Temp_chfilles label="Température actuelle [%.1f °C]" icon="temperature"
-                //Text item=AZ_temp_setpoint_filles_tenths visibility=[<0]
 				Setpoint item=Temp_filles_setpoint label="Température souhaitée [%.1f °C]" icon="temperature" minValue=17 maxValue=28 step=0.5
-				//Text item=AZ_filles_status_register visibility=[<0]
 				Text item=Zone_filles_volet_status icon="grille"
                                 Text label="Détecteur d'incendie" icon="incendie" labelcolor=[ChFilles_FGSD_Smoke=="OPEN"="red", ChFilles_FGSD_Heat=="OPEN"="red", ChFilles_FGSD_Tamper=="OPEN"="red", ChFilles_FGSD_Battery<="10"="orange", ChFilles_FGSD_Battery<="2"="red"] {
                                         Text item=ChFilles_FGSD_Smoke icon="incendie" label="Alarme fumée [MAP(fr.map):%s]"
                                         Text item=ChFilles_FGSD_Heat icon="incendie" label="Alarme chaleur [MAP(fr.map):%s]"
-                          //              Text item=ChFilles_FGSD_Tamper icon="incendie" label="Alarme intrusion [MAP(fr.map):%s]"
                                         Text item=ChFilles_FGSD_Battery icon="batterie" label="Batterie [%s %%]"
                                         Text item=ChFilles_FGSD_Temp icon="temperature" label="Température [%.1f°C]"
                                 }
@@ -161,19 +136,14 @@ sitemap home
 				Chart item=Temp_chfilles icon="temperature" label="Historique température" period=W refresh=60000				
         }
 	Text item=Temp_chami label="Chambre d'ami [%.1f °C]" icon="bedroom" valuecolor=[Zone_ami_OnOff=="OFF"="red", Zone_ami_volet_status=="Ouverte"="orange", Zone_ami_volet_status=="Fermée"="green"] {
-				//Text item=AZ_ami_OpMode visibility=[<0]
 				Switch item=Zone_ami_OnOff label="Zone activée"
 				Switch item=Zone_ami_outofschedule label="Exclure de la programmation" visibility=[Programmation!=0]
-                //Text item=AZ_temp_chami_tenths visibility=[<0]
                 Text item=Temp_chami label="Température actuelle [%.1f °C]" icon="temperature"
-                //Text item=AZ_temp_setpoint_ami_tenths visibility=[<0]
 				Setpoint item=Temp_ami_setpoint label="Température souhaitée [%.1f °C]" icon="temperature" minValue=17 maxValue=28 step=0.5
-				//Text item=AZ_ami_status_register visibility=[<0]
 				Text item=Zone_ami_volet_status icon="grille"
                                 Text label="Détecteur d'incendie" icon="incendie" labelcolor=[ChAmi_FGSD_Smoke=="OPEN"="red", ChAmi_FGSD_Heat=="OPEN"="red", ChAmi_FGSD_Tamper=="OPEN"="red", ChAmi_FGSD_Battery<="10"="orange", ChAmi_FGSD_Battery<="2"="red"] {
                                         Text item=ChAmi_FGSD_Smoke icon="incendie" label="Alarme fumée [MAP(fr.map):%s]"
                                         Text item=ChAmi_FGSD_Heat icon="incendie" label="Alarme chaleur [MAP(fr.map):%s]"
-                           //             Text item=ChAmi_FGSD_Tamper icon="incendie" label="Alarme intrusion [MAP(fr.map):%s]"
                                         Text item=ChAmi_FGSD_Battery icon="batterie" label="Batterie [%s %%]"
                                         Text item=ChAmi_FGSD_Temp icon="temperature" label="Température [%.1f°C]"
                                 }
@@ -183,48 +153,39 @@ sitemap home
 	Text item=HumStat_sallebain label="Salle de bains [%s]" icon="bath" valuecolor=[High_hum_sallebain=="OUI"="red", High_hum_sallebain=="NON"="green"] {
 		Text item=Temp_sallebain label="Température [%.1f °C]" icon="temperature"
 		Text item=Hygro_sallebain label="Humidité [%.0f %%]" icon="temperature"
-		//Text item=Hygro_abs_sallebain label="Humidité absolue [%.2f g/m3]" icon="temperature"
                 Text item=HumStat_sallebain label="Niveau d'Humidité [%s]" icon="temperature"
 		Text item=High_hum_sallebain label="Trop humide? [%s]" icon="temperature"
         	Switch item=VMC_rapide label="VMC - Vitesse rapide" icon="fan"
 		Chart item=gSalleBain icon="temperature" label="Historique" period=3D refresh=60000
-//		Text item=Batt_sallebain label="Batterie faible [%s]"
 	} 
     Text item=HumStat_salledeau label="Salle d'eau [%s]" icon="shower" valuecolor=[High_hum_salledeau=="OUI"="red", High_hum_salledeau=="NON"="green"] {
         	Text item=Temp_salledeau label="Température [%.1f °C]" icon="temperature"
 	        Text item=Hygro_salledeau label="Humidité [%.0f %%]" icon="temperature"
-        	//Text item=Hygro_abs_salledeau label="Humidité absolue [%.2f g/m3]" icon="temperature"
                 Text item=HumStat_salledeau label="Niveau d'Humidité [%s]" icon="temperature"
 		Text item=High_hum_salledeau label="Trop humide? [%s]" icon="temperature"
 		Switch item=VMC_rapide label="VMC - Vitesse rapide" icon="fan"
 		Chart item=gSalleEau icon="temperature" label="Historique" period=3D refresh=60000
-//		Text item=Batt_salledeau label="Batterie faible [%s]"
     }
     Text label="Cuisine" icon="cuisine" {
     		Text item=Inondation_cuisine_alarm label="Inondation - Alarme fuite d'eau [MAP(fr.map):%s]" icon="inondation"
-//		Text item=Inondation_cuisine_intrusion label="Inondation - Alarme intrusion [MAP(fr.map):%s]" icon="inondation"
 		Text item=Inondation_cuisine_temperature label="Inondation - Température [%.1f °C]" icon="temperature"
 		Text item=Inondation_cuisine_batterie label="Inondation - Batterie [%.0f %%]" icon="batterie"
     }
     Text label="Arriere-Cuisine" icon="cuisine" labelcolor=[ACuisine_FGSD_Smoke=="OPEN"="red", ACuisine_FGSD_Heat=="OPEN"="red", ACuisine_FGSD_Tamper=="OPEN"="red", ACuisine_FGSD_Battery<="10"="orange", ACuisine_FGSD_Battery<="2"="red"] {
                 Text item=ACuisine_FGSD_Smoke icon="incendie" label="Alarme fumée [MAP(fr.map):%s]"
                 Text item=ACuisine_FGSD_Heat icon="incendie" label="Alarme chaleur [MAP(fr.map):%s]"
- //               Text item=ACuisine_FGSD_Tamper icon="incendie" label="Alarme intrusion [MAP(fr.map):%s]"
                 Text item=ACuisine_FGSD_Battery icon="batterie" label="Batterie [%s %%]"
                 Text item=ACuisine_FGSD_Temp icon="temperature" label="Température [%.1f°C]"
-		//Switch item=ACuisine_FGD_Switch label="Lumière" icon="light"
 		Slider item=ACuisine_FGD_Dimmer label="Lumière - intensité [%d %%]" icon="slider"
 		Text item=ACuisine_FGD_Power label="Lumière - conso instantanée [%.2f W]" icon="light"
 		Text item=ACuisine_FGD_Energy label="Lumière - conso totale [%.2f KWh]" icon="light"
 		Text item=ACuisine_FGMS_Movement label="Mouvement [%s]" icon="present"
-		Text item=ACuisine_FGMS_Alarm label="Mouvement - alarme [%s]" icon="fire"
 		Text item=ACuisine_FGMS_Lux label="Luminosité [%.2f Lux]" icon="sun"
 		Text item=ACuisine_FGMS_Bat label="Mouvement - batterie [%d %%]" icon="batterie"
 		Text item=ACuisine_FGMS_Temp label="Mouvement - température [%.1f °C]" icon="temperature"
     }
     Text label="Garage" icon="garage" {
     		Text item=Inondation_garage_alarm label="Inondation - Alarme fuite d'eau [MAP(fr.map):%s]" icon="inondation" 
-//		Text item=Inondation_garage_intrusion label="Inondation - Alarme intrusion [MAP(fr.map):%s]" icon="inondation"
 		Text item=Inondation_garage_temperature label="Inondation - Température [%.1f °C]" icon="temperature"
 		Text item=Inondation_garage_batterie label="Inondation - Batterie [%.0f %%]" icon="batterie"
     }
@@ -239,17 +200,13 @@ sitemap home
 			Text item=Filtration_heuredebut label="Heure de début [%s]" icon="calendar"
 			Text item=Filtration_heurefin label="Heure de fin [%s]" icon="calendar"
 			Selection item=Filtration_piscine_force label="Forcer la filtration" mappings=[0=OFF,2=2h,4=4h,99=Continue] icon="piscine"
-			//Switch item=Filtration_piscine_force label="Forcer la filtration" icon="piscine"
-//			Switch item=Filtration_piscine_2h label="Filtration pendant 2H" icon="piscine" visibility=[Filtration_piscine_force=="OFF"]
 			Text item=Filtration_anti_gel label="Mode anti-gel [%s]" icon="piscine"
 			Chart item=gPiscine icon="temperature" label="Historique" period=W refresh=60000
     	}
 	Switch item=Portail_button label="Portail" mappings=[0="Fermé", 2="Ouvert"]
     	Text item=Temp_outside label="Température [%.1f °C]" icon="temperature"
 		Text item=Hygro_outside label="Humidité [%.0f %%]" icon="temperature"
-		//Text item=Hygro_abs_outside label="Humidité absolue [%.2f g/m3]" icon="temperature"
 		Text item=HumStat_outside label="Niveau d'Humidité [%s]" icon="temperature"
-		//Text item=Batt_outside label="Batterie faible [%s]"
 		Chart item=Temp_outside icon="temperature" label="Historique" period=3D refresh=60000
 		Chart item=Hygro_outside icon="temperature" label="Historique" period=3D refresh=60000
     }
