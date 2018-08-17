@@ -149,15 +149,15 @@ Switch ACuisine_FGSD_Battery_Alarm {channel="zwave:device:15f0d1da9dc:node3:alar
 Number  ACuisine_FGSD_Battery {mqtt="<[mosquitto:zway/arrière-Cuisine/smoke/battery:state:default]"}
 Number  ACuisine_FGSD_Temp {mqtt="<[mosquitto:zway/arrière-Cuisine/smoke/temperature:state:default]"}
 
-Dimmer	ACuisine_FGD_Dimmer	{channel="zwave:device:15f0d1da9dc:node4:switch_dimmer"}
-Number	ACuisine_FGD_Power {channel="zwave:device:15f0d1da9dc:node4:sensor_power" }
-Number	ACuisine_FGD_Energy {channel="zwave:device:15f0d1da9dc:node4:meter_kwh" }
+Dimmer	ACuisine_FGD_Dimmer	{mqtt=">[mosquitto:zway/arrière-Cuisine/dimmer/level/set:command:*:default], <[mosquitto:zway/arrière-Cuisine/dimmer/level:state:default]"}
+Number	ACuisine_FGD_Power {mqtt="<[mosquitto:zway/arrière-Cuisine/dimmer/current_consumption:state:default]"}
+Number	ACuisine_FGD_Energy {mqtt="<[mosquitto:zway/arrière-Cuisine/dimmer/total_consumption:state:default]"}
 
-Switch  ACuisine_FGMS_Movement {channel="zwave:device:15f0d1da9dc:node5:alarm_motion" }
+Switch  ACuisine_FGMS_Movement {mqtt="<[mosquitto:zway/arrière-Cuisine/presence/detection:state:MAP(mqtt_contact.map)]"}
 Switch  ACuisine_FGMS_Alarm    {channel="zwave:device:15f0d1da9dc:node5:alarm_tamper" }
-Number  ACuisine_FGMS_Lux      {channel="zwave:device:15f0d1da9dc:node5:sensor_luminance" }
-Number  ACuisine_FGMS_Bat      {channel="zwave:device:15f0d1da9dc:node5:battery-level"}
-Number  ACuisine_FGMS_Temp     {channel="zwave:device:15f0d1da9dc:node5:sensor_temperature" }
+Number  ACuisine_FGMS_Lux      {mqtt="<[mosquitto:zway/arrière-Cuisine/presence/lux:state:default]"}
+Number  ACuisine_FGMS_Bat      {mqtt="<[mosquitto:zway/arrière-Cuisine/presence/battery:state:default]"}
+Number  ACuisine_FGMS_Temp     {mqtt="<[mosquitto:zway/arrière-Cuisine/presence/temperature:state:default]"}
 
 /* Garage */
 Switch Inondation_garage_alarm {mqtt="<[mosquitto:zway/garage/water/alarm:state:MAP(mqtt_contact.map)]"}
