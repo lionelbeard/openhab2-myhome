@@ -169,7 +169,7 @@ Number Inondation_garage_batterie {mqtt="<[mosquitto:zway/garage/water/battery:s
 Number Temp_eau_piscine (gPiscine) {mqtt="<[mosquitto:eau_piscine/temperature:state:default]"}
 Number Temp_exterieur_piscine (gPiscine) {mqtt="<[mosquitto:ext_piscine/temperature:state:default]"}
 Number Temp_local_piscine {mqtt="<[mosquitto:local_piscine/temperature:state:default]"}
-Switch Filtration_piscine_auto
+Switch Filtration_piscine_auto {mqtt=">[mosquitto:piscine/filtration/auto:command:*:default], <[mosquitto:piscine/filtration/auto:state:default]"}
 String Filtration_heuredebut {mqtt="<[mosquitto:piscine/filtration/ontime:state:default]"}
 String Filtration_heurefin {mqtt="<[mosquitto:piscine/filtration/offtime:state:default]"}
 String Filtration_heuredebut_joda
