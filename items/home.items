@@ -184,7 +184,7 @@ String HumStat_outside (gExterieur) {channel="rfxcom:temperaturehumidity:rfxtrx4
 Number Hygro_abs_outside
 
 Number Portail_button
-Switch Portail_ouverture_fermeture {channel="zwave:device:15f0d1da9dc:node12:switch_binary"}
-Switch Portail_ouverture_pieton {channel="zwave:device:15f0d1da9dc:node12:switch_binary2"}
-Switch Portail_retour_etat {mqtt="<[mosquitto:zway/portail/ouverture:state:MAP(mqtt_contact.map)]"}
+Switch Portail_ouverture_fermeture {mqtt=">[mosquitto:zway/portail/ouverture_totale/set:command:*:MAP(to_mqtt_contact.map)], <[mosquitto:zway/portail/ouverture_totale:state:MAP(mqtt_contact.map)]"}
+Switch Portail_ouverture_pieton {mqtt=">[mosquitto:zway/portail/ouverture_pieton/set:command:*:MAP(to_mqtt_contact.map)], <[mosquitto:zway/portail/ouverture_pieton:state:MAP(mqtt_contact.map)]"}
+Switch Portail_retour_etat {mqtt="<[mosquitto:zway/portail/etat:state:MAP(mqtt_contact.map)]"}
 Switch Presence_Lionel { mqttitude="mosquitto:owntracks/openhab/lionel/event:Maison" }
