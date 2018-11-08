@@ -44,7 +44,7 @@ Dimmer ChauffElec_salon_command {mqtt=">[mosquitto:zway/salon/chauffelec/set:com
 //Dimmer ChauffElec_salon_command {channel="zwave:device:15f0d1da9dc:node2:switch_dimmer"}
 
 Switch     FenetreDroite {mqtt="<[mosquitto:zway/salon/fenetre_droite/ouverture:state:MAP(mqtt_contact.map)]"}
-//Number      FenetreDroiteBatterie {channel="zwave:device:15f0d1da9dc:node17:battery-level"}
+Number      FenetreDroiteBatterie {mqtt="<[mosquitto:zway/salon/fenetre_droite/battery:state:default]"}
 
 /* Bureau */
 Number AZ_bureau_OpMode {modbus="slaveZone2:0"}
