@@ -952,8 +952,10 @@ then
 	if ((ChauffElec_salon_auto.state == ON) && (pac_mode.compareTo(4) == 0) && (Zone_salon_OnOff.state == ON))
 	{
 		logInfo("radiateurs","AUTO = ON")
-		if (Temp_setpoint > PAC_temp_limite)
-		{
+		// On essaie en supprimant le test suivant: on aura donc un fonctionnement
+		// simultanéde la PAC et des radiateurs
+		//if (Temp_setpoint > PAC_temp_limite)
+		//{
 			logInfo("radiateurs", "Temp_setpoint > PAC_temp_limite")
 		        // Requested beyond current temp, starting radiators
         		if ((Temp_setpoint > Temp_salon_var) && (ChauffElec_salon_command.state != 100))
@@ -969,12 +971,12 @@ then
 			}
                         // Fix PAC temperature
                         Temp_setpoint = PAC_temp_limite
-		}
+		/*}
 		else if (ChauffElec_salon_command.state != 0)
 		{
                 	logInfo("radiateurs", "Extinction radiateurs")
                         sendCommand(ChauffElec_salon_command, 0)
-		}
+		}*/
 	}
 	// Set PAC requested temperature
 	sendCommand(Temp_salon_setpoint, Temp_setpoint)
@@ -998,7 +1000,7 @@ then
         	logInfo("radiateurs", "=> Setpoint="+Temp_setpoint.toString)
         	logInfo("radiateurs", "=> PAC_temp_limite="+PAC_temp_limite.toString)
 
-		if ((ChauffElec_salon_auto.state == ON) && (Temp_setpoint > PAC_temp_limite))
+		if ((ChauffElec_salon_auto.state == ON) //&& (Temp_setpoint > PAC_temp_limite))
 		{
 			logInfo("radiateurs","Setpoint="+Temp_setpoint.toString)
 	        	logInfo("radiateurs","Temp="+Temp_salon_var.toString)
