@@ -1000,7 +1000,7 @@ then
         	logInfo("radiateurs", "=> Setpoint="+Temp_setpoint.toString)
         	logInfo("radiateurs", "=> PAC_temp_limite="+PAC_temp_limite.toString)
 
-		if ((ChauffElec_salon_auto.state == ON) //&& (Temp_setpoint > PAC_temp_limite))
+		if ((ChauffElec_salon_auto.state == ON)) //&& (Temp_setpoint > PAC_temp_limite))
 		{
 			logInfo("radiateurs","Setpoint="+Temp_setpoint.toString)
 	        	logInfo("radiateurs","Temp="+Temp_salon_var.toString)
