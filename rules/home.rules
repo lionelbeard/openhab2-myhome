@@ -17,16 +17,16 @@ var Integer AZ_filles_status_register_lastvalue = -1
 
 // Température de consigne
 var Integer chambres_present = 18
-var Integer chambres_absent = 17
+var Integer chambres_absent = 18
 var Float chambres_nuit = 19.5
 var Integer chambres_absence_prolongee = 17
-var Integer salon_soiree = 23
+var Float salon_soiree = 22.5
 var Integer salon_present = 21
-var Integer salon_absent = 17
+var Integer salon_absent = 18
 var Integer salon_nuit = 19
 var Integer salon_absence_prolongee = 17
 var Integer bureau_present = 21
-var Integer bureau_absent = 17
+var Integer bureau_absent = 18
 var Integer bureau_nuit = 18
 var Integer bureau_absence_prolongee = 17
 
@@ -954,8 +954,7 @@ then
 		logInfo("radiateurs","AUTO = ON")
 		// On essaie en supprimant le test suivant: on aura donc un fonctionnement
 		// simultanéde la PAC et des radiateurs
-		//if (Temp_setpoint > PAC_temp_limite)
-		//{
+                        // Fix PAC temperature
 			logInfo("radiateurs", "Temp_setpoint > PAC_temp_limite")
 		        // Requested beyond current temp, starting radiators
         		if ((Temp_setpoint > Temp_salon_var) && (ChauffElec_salon_command.state != 100))
@@ -969,8 +968,10 @@ then
 				logInfo("radiateurs", "Extinction radiateurs")
                 	        sendCommand(ChauffElec_salon_command, 0)
 			}
-                        // Fix PAC temperature
+		if (Temp_setpoint > PAC_temp_limite)
+		{
                         Temp_setpoint = PAC_temp_limite
+		}
 		/*}
 		else if (ChauffElec_salon_command.state != 0)
 		{
