@@ -25,7 +25,7 @@ Number Programmation	"Programmation"				<calendar>
 String Programmation_phase	"Etape de programmation [%s]" <calendar>
 
 /* Reglages VMC */
-Switch VMC_rapide {channel="rfxcom:lighting4:rfxtrx433e:VMC_relay:command"}
+Switch VMC_rapide {mqtt=">[mosquitto:VMC/status:command:*:default], <[mosquitto:VMC/status:state:default]"}
 Switch VMC_auto
 
 /* Salon */
@@ -122,16 +122,16 @@ Number  ChFilles_FGSD_Temp {mqtt="<[mosquitto:zway/chambreFilles/smoke/temperatu
 /* Freebox */
 
 /* Salle de bain */
-Number Temp_sallebain (gSalleBain) {channel="rfxcom:temperaturehumidity:rfxtrx433e:Oregon_sallebain:temperature"}
-Number Hygro_sallebain (gSalleBain) {channel="rfxcom:temperaturehumidity:rfxtrx433e:Oregon_sallebain:humidity"}
-String HumStat_sallebain (gSalleBain) {channel="rfxcom:temperaturehumidity:rfxtrx433e:Oregon_sallebain:humidityStatus"}
+Number Temp_sallebain (gSalleBain) {mqtt="<[mosquitto:salledebain/temperature:state:default]"}
+Number Hygro_sallebain (gSalleBain) {mqtt="<[mosquitto:salledebain/humidity:state:default]"}
+String HumStat_sallebain (gSalleBain) {mqtt="<[mosquitto:salledebain/humidityStatus:state:default]"}
 Number Hygro_abs_sallebain
 String High_hum_sallebain
 
 /* Salle d'eau */
-Number Temp_salledeau (gSalleEau) {channel="rfxcom:temperaturehumidity:rfxtrx433e:Oregon_salledeau:temperature"}
-Number Hygro_salledeau (gSalleEau) {channel="rfxcom:temperaturehumidity:rfxtrx433e:Oregon_salledeau:humidity"}
-String HumStat_salledeau (gSalleEau) {channel="rfxcom:temperaturehumidity:rfxtrx433e:Oregon_salledeau:humidityStatus"}
+Number Temp_salledeau (gSalleEau) {mqtt="<[mosquitto:salledeau/temperature:state:default]"}
+Number Hygro_salledeau (gSalleEau) {mqtt="<[mosquitto:salledeau/humidity:state:default]"}
+String HumStat_salledeau (gSalleEau) {mqtt="<[mosquitto:salledeau/humidityStatus:state:default]"}
 Number Hygro_abs_salledeau
 String High_hum_salledeau
 
@@ -178,9 +178,9 @@ Switch Filtration_piscine {mqtt=">[mosquitto:piscine/filtration/switch:command:*
 Number Filtration_piscine_force {mqtt=">[mosquitto:piscine/filtration/force:command:*:default], <[mosquitto:piscine/filtration/force:state:default]"}
 Switch Filtration_etat_auto_avant_force
 Switch Filtration_anti_gel {mqtt="<[mosquitto:piscine/filtration/antigel:state:default]"}
-Number Temp_outside (gExterieur) {channel="rfxcom:temperaturehumidity:rfxtrx433e:Oregon_outside:temperature"}
-Number Hygro_outside (gExterieur) {channel="rfxcom:temperaturehumidity:rfxtrx433e:Oregon_outside:humidity"}
-String HumStat_outside (gExterieur) {channel="rfxcom:temperaturehumidity:rfxtrx433e:Oregon_outside:humidityStatus"}
+Number Temp_outside (gExterieur) {mqtt="<[mosquitto:exterieur/temperature:state:default]"}
+Number Hygro_outside (gExterieur) {mqtt="<[mosquitto:exterieur/humidity:state:default]"}
+String HumStat_outside (gExterieur) {mqtt="<[mosquitto:exterieur/humidityStatus:state:default]"}
 Number Hygro_abs_outside
 
 Number Portail_button

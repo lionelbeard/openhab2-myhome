@@ -1307,7 +1307,7 @@ then
 	if(VMC_auto_allowed == 1)
 	{
 	  if(VMC_rapide.state == OFF) {
-            if((HumStat_sallebain.state.toString == "WET") && (HumStat_outside.state.toString != "WET")) {
+            if((HumStat_sallebain.state.toString == "HUMIDE") && (HumStat_outside.state.toString != "HUMIDE")) {
               postUpdate(High_hum_sallebain, "OUI")
 	      if(VMC_auto.state == ON) {
                 pushover("VMC (salle de bain): passage en mode rapide", -1)
@@ -1316,9 +1316,9 @@ then
             }
 	  }
 	  else {
-            if(HumStat_sallebain.state.toString != "WET") {
+            if(HumStat_sallebain.state.toString != "HUMIDE") {
               postUpdate(High_hum_sallebain,"NON")
-              if((VMC_auto.state == ON) && (HumStat_salledeau.state.toString != "WET")) {
+              if((VMC_auto.state == ON) && (HumStat_salledeau.state.toString != "HUMIDE")) {
 		pushover("VMC (salle de bain): passage en mode lent", -1)
               	sendCommand(VMC_rapide, OFF)
 	      }
@@ -1334,7 +1334,7 @@ then
         if(VMC_auto_allowed == 1)
         {
           if(VMC_rapide.state == OFF) {
-            if((HumStat_salledeau.state.toString == "WET") && (HumStat_outside.state.toString != "WET")) {
+            if((HumStat_salledeau.state.toString == "HUMIDE") && (HumStat_outside.state.toString != "HUMIDE")) {
               postUpdate(High_hum_salledeau, "OUI")
               if(VMC_auto.state == ON) {
 	        pushover("VMC (salle d'eau): passage en mode rapide", -1)
@@ -1343,9 +1343,9 @@ then
             }
           }
           else {
-            if(HumStat_salledeau.state.toString != "WET") {
+            if(HumStat_salledeau.state.toString != "HUMIDE") {
               postUpdate(High_hum_salledeau,"NON")
-              if((VMC_auto.state == ON) && (HumStat_sallebain.state.toString != "WET")) {
+              if((VMC_auto.state == ON) && (HumStat_sallebain.state.toString != "HUMIDE")) {
                 pushover("VMC (salle d'eau): passage en mode lent", -1)
                 sendCommand(VMC_rapide, OFF)
 	      }
@@ -1362,7 +1362,7 @@ then
 	{	
           if(VMC_rapide.state == ON)
           {
-                if(HumStat_outside.state.toString == "WET")
+                if(HumStat_outside.state.toString == "HUMIDE")
                 {
                         postUpdate(High_hum_sallebain,"NON")
                         postUpdate(High_hum_salledeau,"NON")
@@ -1372,9 +1372,9 @@ then
 			}
                 }
           } else {
-		if(HumStat_outside.state.toString != "WET")
+		if(HumStat_outside.state.toString != "HUMIDE")
 		{
-		  if(HumStat_sallebain.state.toString == "WET") {
+		  if(HumStat_sallebain.state.toString == "HUMIDE") {
                     postUpdate(High_hum_sallebain,"OUI")
                     if(VMC_auto.state == ON) {
                       pushover("VMC (salle de bain): passage en mode rapide", -1)
@@ -1382,7 +1382,7 @@ then
 		    }
                   }
 		  else
-                    if(HumStat_salledeau.state.toString == "WET") {
+                    if(HumStat_salledeau.state.toString == "HUMIDE") {
                       postUpdate(High_hum_salledeau,"OUI")
                       if(VMC_auto.state == ON) {
 			pushover("VMC en mode rapide", -1)
