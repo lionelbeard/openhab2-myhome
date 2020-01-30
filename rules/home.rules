@@ -20,7 +20,7 @@ var Integer chambres_present = 18
 var Integer chambres_absent = 18
 var Float chambres_nuit = 19.5
 var Integer chambres_absence_prolongee = 17
-var Integer salon_soiree = 22
+var Float salon_soiree = 21.5
 var Integer salon_present = 21
 var Integer salon_absent = 18
 var Integer salon_nuit = 19
@@ -935,7 +935,8 @@ end
 
 rule "temp_salon_setpoint_update"
 when
-	Item Temp_salon_setpoint_global received command
+//	Item Temp_salon_setpoint_global received command
+	Item Temp_salon_setpoint_global received update
 then
 	var Float PAC_temp_limite = (Temp_PAC_salon.state as DecimalType).floatValue
 	var Float Temp_setpoint = (Temp_salon_setpoint_global.state as DecimalType).floatValue
@@ -988,9 +989,9 @@ when
 	Item Tempo_init_persist received command or
 	Item Temp_salon changed
 then
-	var Number PAC_temp_limite = Temp_PAC_salon.state as DecimalType
-        var Number Temp_setpoint = Temp_salon_setpoint_global.state as DecimalType
-	var Number Temp_salon_var = Temp_salon.state as DecimalType
+	var Float PAC_temp_limite = (Temp_PAC_salon.state as DecimalType).floatValue
+        var Float Temp_setpoint = (Temp_salon_setpoint_global.state as DecimalType).floatValue
+	var Float Temp_salon_var = (Temp_salon.state as DecimalType).floatValue
 
         var Integer pac_mode = (Mode.state as DecimalType).intValue
 

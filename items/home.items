@@ -34,7 +34,7 @@ Switch Zone_salon_OnOff
 Switch Zone_salon_outofschedule
 Number Temp_salon {modbus="<[slaveZone1:8:transformation=JS(divide10.js)]"}
 Number Temp_salon_setpoint {modbus=">[slaveZone1:3:transformation=JS(multiply10.js)], <[slaveZone1:3:transformation=JS(divide10.js)]"}
-Number Temp_salon_setpoint_global
+Number Temp_salon_setpoint_global {mqtt=">[mosquitto:airzone/salon/temp_setpoint:command:*:default], <[mosquitto:airzone/salon/temp_setpoint:state:default]"}
 Number AZ_salon_status_register {modbus="slaveZone1:9"}
 String Zone_salon_volet_status "Etat de la grille [%s]"
 
