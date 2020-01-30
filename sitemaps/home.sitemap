@@ -120,7 +120,7 @@ sitemap home
 
 				Chart item=Temp_chthomas icon="temperature" label="Historique température" period=W refresh=60000				
         }
-	Text item=Temp_chfilles label="Chambre des filles [%.1f °C]" icon="bedroom" valuecolor=[Zone_filles_OnOff=="OFF"="red", Zone_filles_volet_status=="Ouverte"="orange", Zone_filles_volet_status=="Fermée"="green"] {
+	Text item=Temp_chfilles label="Chambre de Marion [%.1f °C]" icon="bedroom" valuecolor=[Zone_filles_OnOff=="OFF"="red", Zone_filles_volet_status=="Ouverte"="orange", Zone_filles_volet_status=="Fermée"="green"] {
 				Switch item=Zone_filles_OnOff label="Zone activée"
 				Switch item=Zone_filles_outofschedule label="Exclure de la programmation" visibility=[Programmation!=0]
                 Text item=Temp_chfilles label="Température actuelle [%.1f °C]" icon="temperature"
@@ -135,7 +135,7 @@ sitemap home
 				
 				Chart item=Temp_chfilles icon="temperature" label="Historique température" period=W refresh=60000				
         }
-	Text item=Temp_chami label="Chambre d'ami [%.1f °C]" icon="bedroom" valuecolor=[Zone_ami_OnOff=="OFF"="red", Zone_ami_volet_status=="Ouverte"="orange", Zone_ami_volet_status=="Fermée"="green"] {
+	Text item=Temp_chami label="Chambre de Chloé [%.1f °C]" icon="bedroom" valuecolor=[Zone_ami_OnOff=="OFF"="red", Zone_ami_volet_status=="Ouverte"="orange", Zone_ami_volet_status=="Fermée"="green"] {
 				Switch item=Zone_ami_OnOff label="Zone activée"
 				Switch item=Zone_ami_outofschedule label="Exclure de la programmation" visibility=[Programmation!=0]
                 Text item=Temp_chami label="Température actuelle [%.1f °C]" icon="temperature"
