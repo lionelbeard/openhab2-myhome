@@ -3,39 +3,6 @@ sitemap home
 {
 	//Switch item=Tempo_init_persist visibility=[<0]
     Frame label="Intérieur" {
-    	Text label="Réglages généraux" icon="settings" {
-		Text label="Chauffage/Clim" icon="heat" {
-			Selection item=Mode label="Mode" mappings=[0=Off, 1=Froid, 3=Ventilation, 4=Chaud, 6="Déshumidification"]
-			Selection item=QAdapt label="Q-Adapt" mappings=[0=Standard, 1=Power, 2=Silence, 3=Minimum]
-			Selection item=Programmation label="Programmation" mappings=[0="Aucune", 1="Semaine de travail", 2="Toujours présent", 3="Absence prolongée"]
-			Text item=Programmation_phase
-			Text item=Temp_reprise label="Température de reprise [%.1f °C]" icon="temperature"
-			Switch item=Zone_salon_OnOff label="Zone salon"
-			Setpoint item=Temp_salon_setpoint_global label="Temperature souhaitée [%.1f °C]" icon="temperature" minValue=17 maxValue=28 step=0.5
-			Switch item=Zone_bureau_OnOff label="Zone bureau"
-			Setpoint item=Temp_bureau_setpoint label="Température souhaitée [%.1f °C]" icon="temperature" minValue=17 maxValue=28 step=0.5
-			Switch item=Zone_parents_OnOff label="Zone chambre parentale"
-			Setpoint item=Temp_parents_setpoint label="Température souhaitée [%.1f °C]" icon="temperature" minValue=17 maxValue=28 step=0.5
-			Switch item=Zone_thomas_OnOff label="Zone chambre Thomas"
-			Setpoint item=Temp_thomas_setpoint label="Température souhaitée [%.1f °C]" icon="temperature" minValue=17 maxValue=28 step=0.5
-			Switch item=Zone_filles_OnOff label="Zone chambre des filles"
-			Setpoint item=Temp_filles_setpoint label="Température souhaitée [%.1f °C]" icon="temperature" minValue=17 maxValue=28 step=0.5
-			Switch item=Zone_ami_OnOff label="Zone chambre d'ami"
-			Setpoint item=Temp_ami_setpoint label="Température souhaitée [%.1f °C]" icon="temperature" minValue=17 maxValue=28 step=0.5
-		}
-		Text label="VMC" icon="fan" {
-			Switch item=VMC_auto label="Mode automatique" icon="automatique"
-			Switch item=VMC_rapide label="Vitesse rapide" icon="fan"
-		}
-	        Text label="Portail"
-        	{
-          		Switch item=Portail_button label="Portail" mappings=[0="Fermé", 1="Piéton", 2="Ouvert"]
-          		Switch item=Portail_ouverture_fermeture
-		        Switch item=Portail_ouverture_pieton
-		        Text item=Portail_retour_etat label="Etat portail [%s]"
-        	}
-
-	}
 	Text item=Temp_salon label="Salon [%.1f °C]" icon="sofa" valuecolor=[Zone_salon_OnOff=="OFF"="red", Zone_salon_volet_status=="Ouverte"="orange", Zone_salon_volet_status=="Fermée"="green"] {
 		Switch item=Zone_salon_OnOff label="Zone activée"
 		Switch item=Zone_salon_outofschedule label="Exclure de la programmation" visibility=[Programmation!=0]
@@ -209,5 +176,40 @@ sitemap home
 		Text item=HumStat_outside label="Niveau d'Humidité [%s]" icon="temperature"
 		Chart item=Temp_outside icon="temperature" label="Historique" period=3D refresh=60000
 		Chart item=Hygro_outside icon="temperature" label="Historique" period=3D refresh=60000
+    }
+    Frame label="Configuration" {
+        Text label="Réglages généraux" icon="settings" {
+                Text label="Chauffage/Clim" icon="heat" {
+                        Selection item=Mode label="Mode" mappings=[0=Off, 1=Froid, 3=Ventilation, 4=Chaud, 6="Déshumidification"]
+                        Selection item=QAdapt label="Q-Adapt" mappings=[0=Standard, 1=Power, 2=Silence, 3=Minimum]
+                        Selection item=Programmation label="Programmation" mappings=[0="Aucune", 1="Semaine de travail", 2="Toujours présent", 3="Absence prolongée"]
+                        Text item=Programmation_phase
+                        Text item=Temp_reprise label="Température de reprise [%.1f °C]" icon="temperature"
+                        Switch item=Zone_salon_OnOff label="Zone salon"
+                        Setpoint item=Temp_salon_setpoint_global label="Temperature souhaitée [%.1f °C]" icon="temperature" minValue=17 maxValue=28 step=0.5
+                        Switch item=Zone_bureau_OnOff label="Zone bureau"
+                        Setpoint item=Temp_bureau_setpoint label="Température souhaitée [%.1f °C]" icon="temperature" minValue=17 maxValue=28 step=0.5
+                        Switch item=Zone_parents_OnOff label="Zone chambre parentale"
+                        Setpoint item=Temp_parents_setpoint label="Température souhaitée [%.1f °C]" icon="temperature" minValue=17 maxValue=28 step=0.5
+                        Switch item=Zone_thomas_OnOff label="Zone chambre Thomas"
+                        Setpoint item=Temp_thomas_setpoint label="Température souhaitée [%.1f °C]" icon="temperature" minValue=17 maxValue=28 step=0.5
+                        Switch item=Zone_filles_OnOff label="Zone chambre des filles"
+                        Setpoint item=Temp_filles_setpoint label="Température souhaitée [%.1f °C]" icon="temperature" minValue=17 maxValue=28 step=0.5
+                        Switch item=Zone_ami_OnOff label="Zone chambre d'ami"
+                        Setpoint item=Temp_ami_setpoint label="Température souhaitée [%.1f °C]" icon="temperature" minValue=17 maxValue=28 step=0.5
+                }
+                Text label="VMC" icon="fan" {
+                        Switch item=VMC_auto label="Mode automatique" icon="automatique"
+                        Switch item=VMC_rapide label="Vitesse rapide" icon="fan"
+                }
+                Text label="Portail"
+                {
+                        Switch item=Portail_button label="Portail" mappings=[0="Fermé", 1="Piéton", 2="Ouvert"]
+                        Switch item=Portail_ouverture_fermeture
+                        Switch item=Portail_ouverture_pieton
+                        Text item=Portail_retour_etat label="Etat portail [%s]"
+                }
+
+        }
     }
 } 
