@@ -10,11 +10,11 @@ sitemap home
 		Setpoint item=Temp_salon_setpoint_global label="Temperature souhaitée [%.1f °C]" icon="temperature" minValue=17 maxValue=28 step=0.5
 		Text item=Temp_salon_setpoint label="Temperature consigne PAC [%.1f °C]" icon="temperature"
 		Text item=Zone_salon_volet_status icon="grille"
-		Text label="Chauffage électrique" icon="heat" valuecolor=[ChauffElec_salon_auto=="OFF"="red", ChauffElec_salon_auto=="ON"="green"] {
+	/*	Text label="Chauffage électrique" icon="heat" valuecolor=[ChauffElec_salon_auto=="OFF"="red", ChauffElec_salon_auto=="ON"="green"] {
 			Switch item=ChauffElec_salon_auto label="Mode automatique"
 			Setpoint item=Temp_PAC_salon label="Température max PAC [%.1f °C]" icon="temperature" minValue=17 maxValue=28 step=0.5
 			Selection item=ChauffElec_salon_command label="Consigne chauffage" icon="dimmablelight" mappings=[0="Arret", 15="Hors gel", 25="Eco", 35="Confort -2°C", 45="Confort -1°C", 99="Confort"]
-		}
+		}*/
                 Text item=FenetreDroite label="Ouverture fenêtre [MAP(fr_contact.map):%s]" icon="window" valuecolor=[FenetreDroite=="OPEN"="red", FenetreDroite=="CLOSED"="green", FenetreDroiteBatterie<="10"="orange", FenetreDroiteBatterie<="2"="red"] {
                        Text item=FenetreDroite label="Fenêtre droite [MAP(fr_contact.map):%s]" icon="window"
                        Text item=FenetreDroiteBatterie icon="batterie" label="Fenêtre droite - Batterie [%s %%]"
