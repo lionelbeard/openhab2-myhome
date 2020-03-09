@@ -46,6 +46,10 @@ Dimmer ChauffElec_salon_command {mqtt=">[mosquitto:zway/salon/chauffelec/set:com
 Switch     FenetreDroite {mqtt="<[mosquitto:zway/salon/fenetre_droite/ouverture:state:MAP(mqtt_contact.map)]"}
 Number      FenetreDroiteBatterie {mqtt="<[mosquitto:zway/salon/fenetre_droite/battery:state:default]"}
 
+Switch Salon_FGCD_CO {mqtt="<[mosquitto:zway/salon/co/alarm:state:MAP(mqtt_contact.map)]"}
+Number Salon_FGCD_COLevel {mqtt="<[mosquitto:zway/salon/co/level:state:default]"}
+Number Salon_FGCD_Battery {mqtt="<[mosquitto:zway/salon/co/battery:state:default]"}
+
 /* Bureau */
 Number AZ_bureau_OpMode {modbus="slaveZone2:0"}
 Switch Zone_bureau_OnOff
@@ -54,6 +58,11 @@ Number Temp_bureau {modbus="<[slaveZone2:8:transformation=JS(divide10.js)]"}
 Number Temp_bureau_setpoint {modbus=">[slaveZone2:3:transformation=JS(multiply10.js)], <[slaveZone2:3:transformation=JS(divide10.js)]"}
 Number AZ_bureau_status_register {modbus="slaveZone2:9"}
 String Zone_bureau_volet_status "Etat de la grille [%s]"
+
+/* Couloir */
+Switch Couloir_FGCD_CO {mqtt="<[mosquitto:zway/couloir/co/alarm:state:MAP(mqtt_contact.map)]"}
+Number Couloir_FGCD_COLevel {mqtt="<[mosquitto:zway/couloir/co/level:state:default]"}
+Number Couloir_FGCD_Battery {mqtt="<[mosquitto:zway/couloir/co/battery:state:default]"}
 
 /* Ch Parents */
 Number AZ_parents_OpMode {modbus="slaveZone3:0"}

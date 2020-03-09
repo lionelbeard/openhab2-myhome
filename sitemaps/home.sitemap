@@ -19,34 +19,12 @@ sitemap home
                        Text item=FenetreDroite label="Fenêtre droite [MAP(fr_contact.map):%s]" icon="window"
                        Text item=FenetreDroiteBatterie icon="batterie" label="Fenêtre droite - Batterie [%s %%]"
                 }
+	        Text label="Détecteur CO" icon="incendie" labelcolor=[Salon_FGCD_CO=="OPEN"="red", Salon_FGCD_Battery<="10"="orange", Salon_FGCD_Battery<="2"="red"] {
+        	        Text item=Salon_FGCD_CO icon="incendie" label="Alarme CO [MAP(fr.map):%s]"
+                	Text item=Salon_FGCD_COLevel icon="incendie" label="Niveau CO [%d ppm]"
+                	Text item=Salon_FGCD_Battery icon="batterie" label="Batterie [%s %%]"
+        	}
 
-/*		Group item=gFreebox label="Freebox" icon="freebox-player2" {
-			Group item=gfbCalls label="Appels téléphoniques" icon="phone" {
-				Text item=freebox_call_lastnum
-				Text item=freebox_call_duration
-				Text item=freebox_call_ts
-				Text item=freebox_call_status
-			}
-			Group item=gfbSys label="Système" icon="system" {
-				Text item=freebox_sys_firmware_version
-				Switch item=freebox_reboot icon="reboot"
-				Text item=freebox_sys_uptime
-				Text item=freebox_sys_temp_cpum
-				Text item=freebox_sys_temp_cpub
-				Text item=freebox_sys_temp_sw
-				Text item=freebox_sys_fan_rpm
-			}
-			Group item=gfbCS label="Infos connexion" icon="connexion" {
-				Text item=freebox_cs_state
-				//Text item=freebox_xdsl_status
-				//Text item=freebox_wifi
-				Text item=freebox_cs_ipv4
-				Text item=freebox_cs_rate_up
-				Text item=freebox_cs_rate_down
-				Text item=freebox_cs_bytes_up
-				Text item=freebox_cs_bytes_down
-			}
-		}*/
 		Chart item=Temp_salon icon="temperature" label="Historique température" period=W refresh=60000		
 		}
 	Text item=Temp_bureau label="Bureau [%.1f °C]" icon="office" valuecolor=[Zone_bureau_OnOff=="OFF"="red", Zone_bureau_volet_status=="Ouverte"="orange", Zone_bureau_volet_status=="Fermée"="green"] {
@@ -56,7 +34,8 @@ sitemap home
 				Setpoint item=Temp_bureau_setpoint label="Température souhaitée [%.1f °C]" icon="temperature" minValue=17 maxValue=28 step=0.5
 				Text item=Zone_bureau_volet_status icon="grille"
 				Chart item=Temp_bureau icon="temperature" label="Historique température" period=W refresh=60000		
-        }       
+        }
+
 	Text item=Temp_chparents label="Chambre des parents [%.1f °C]" icon="parents" valuecolor=[Zone_parents_OnOff=="OFF"="red", Zone_parents_volet_status=="Ouverte"="orange", Zone_parents_volet_status=="Fermée"="green"]	{
 				Switch item=Zone_parents_OnOff label="Zone activée"
 				Switch item=Zone_parents_outofschedule label="Exclure de la programmation" visibility=[Programmation!=0]
@@ -117,6 +96,12 @@ sitemap home
 
  				Chart item=Temp_chami icon="temperature" label="Historique température" period=W refresh=60000				
         }
+        Text label="Couloir" icon="bedroom" labelcolor=[Couloir_FGCD_CO=="OPEN"="red", Couloir_FGCD_Battery<="10"="orange", Couloir_FGCD_Battery<="2"="red"] {
+                Text item=Couloir_FGCD_CO icon="incendie" label="Alarme CO [MAP(fr.map):%s]"
+                Text item=Couloir_FGCD_COLevel icon="incendie" label="Niveau CO [%d ppm]"
+                Text item=Couloir_FGCD_Battery icon="batterie" label="Batterie [%s %%]"
+        }
+
 	Text item=HumStat_sallebain label="Salle de bains [%s]" icon="bath" valuecolor=[High_hum_sallebain=="OUI"="red", High_hum_sallebain=="NON"="green"] {
 		Text item=Temp_sallebain label="Température [%.1f °C]" icon="temperature"
 		Text item=Hygro_sallebain label="Humidité [%.0f %%]" icon="temperature"
