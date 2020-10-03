@@ -149,6 +149,7 @@ sitemap home
     		Text item=Temp_local_piscine label="Température local technique [%.1f °C]" icon="temperature"
 			Switch item=Filtration_piscine_auto label="Filtration automatique" icon="piscine"
 			Text item=Filtration_piscine label="Etat filtration [%s]" icon="piscine"
+		Switch item=Salt_piscine label="Electrolyseur" icon="piscine"
 			Text item=Filtration_heuredebut label="Heure de début [%s]" icon="calendar"
 			Text item=Filtration_heurefin label="Heure de fin [%s]" icon="calendar"
 			Selection item=Filtration_piscine_force label="Forcer la filtration" mappings=[0=OFF,2=2h,4=4h,12=12h,24=24h,99=Continue] icon="piscine"
