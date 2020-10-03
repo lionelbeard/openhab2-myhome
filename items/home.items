@@ -198,3 +198,6 @@ Switch Portail_ouverture_fermeture {mqtt=">[mosquitto:zway/portail/ouverture_tot
 Switch Portail_ouverture_pieton {mqtt=">[mosquitto:zway/portail/ouverture_pieton/set:command:*:MAP(to_mqtt_contact.map)], <[mosquitto:zway/portail/ouverture_pieton:state:MAP(mqtt_contact.map)]"}
 Switch Portail_retour_etat {mqtt="<[mosquitto:zway/portail/etat:state:MAP(mqtt_contact.map)]"}
 Switch Presence_Lionel { mqttitude="mosquitto:owntracks/openhab/lionel/event:Maison" }
+
+/* Ioniq */
+Number Ioniq_soc {mqtt="<[mosquitto:voiture/ioniq/soc:state:default]"}

@@ -163,6 +163,11 @@ sitemap home
 		Chart item=Temp_outside icon="temperature" label="Historique" period=3D refresh=60000
 		Chart item=Hygro_outside icon="temperature" label="Historique" period=3D refresh=60000
     }
+    Frame label="Voitures" {
+	Text item=Ioniq_soc label="Hyundai Ioniq [%.0f %%]" icon="electricvehicle" valuecolor=[Ioniq_soc<="10"="red", Ioniq_soc<="30"="orange", Ioniq_soc<="100"="green"]  {
+		Text item=Ioniq_soc label="Charge de la batterie [%.0f %%]" icon="batterie"
+	}
+    }
     Frame label="Configuration" {
         Text label="Réglages généraux" icon="settings" {
                 Text label="Chauffage/Clim" icon="heat" {
