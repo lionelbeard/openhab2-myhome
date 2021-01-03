@@ -106,6 +106,7 @@ sitemap home
 		Text item=Temp_sallebain label="Température [%.1f °C]" icon="temperature"
 		Text item=Hygro_sallebain label="Humidité [%.0f %%]" icon="temperature"
                 Text item=HumStat_sallebain label="Niveau d'Humidité [%s]" icon="temperature"
+		Text item=Batt_sallebain label="Batterie [%.0f/9]" icon="batterie" valuecolor=[Batt_sallebain==0="red"]
 		Text item=High_hum_sallebain label="Trop humide? [%s]" icon="temperature"
         	Switch item=VMC_rapide label="VMC - Vitesse rapide" icon="fan"
 		Chart item=gSalleBain icon="temperature" label="Historique" period=3D refresh=60000
@@ -114,6 +115,7 @@ sitemap home
         	Text item=Temp_salledeau label="Température [%.1f °C]" icon="temperature"
 	        Text item=Hygro_salledeau label="Humidité [%.0f %%]" icon="temperature"
                 Text item=HumStat_salledeau label="Niveau d'Humidité [%s]" icon="temperature"
+		Text item=Batt_salledeau label="Batterie [%.0f/9]" icon="batterie" valuecolor=[Batt_salledeau==0="red"]
 		Text item=High_hum_salledeau label="Trop humide? [%s]" icon="temperature"
 		Switch item=VMC_rapide label="VMC - Vitesse rapide" icon="fan"
 		Chart item=gSalleEau icon="temperature" label="Historique" period=3D refresh=60000
@@ -160,6 +162,7 @@ sitemap home
     	Text item=Temp_outside label="Température [%.1f °C]" icon="temperature"
 		Text item=Hygro_outside label="Humidité [%.0f %%]" icon="temperature"
 		Text item=HumStat_outside label="Niveau d'Humidité [%s]" icon="temperature"
+		Text item=Batt_outside label="Batterie [%.0f/9]" icon="batterie" valuecolor=[Batt_outside==0="red"]
 		Chart item=Temp_outside icon="temperature" label="Historique" period=3D refresh=60000
 		Chart item=Hygro_outside icon="temperature" label="Historique" period=3D refresh=60000
     }

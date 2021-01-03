@@ -134,6 +134,7 @@ Number  ChFilles_FGSD_Temp {mqtt="<[mosquitto:zway/chambreFilles/smoke/temperatu
 Number Temp_sallebain (gSalleBain) {mqtt="<[mosquitto:salledebain/temperature:state:default]"}
 Number Hygro_sallebain (gSalleBain) {mqtt="<[mosquitto:salledebain/humidity:state:default]"}
 String HumStat_sallebain (gSalleBain) {mqtt="<[mosquitto:salledebain/humidityStatus:state:default]"}
+Number Batt_sallebain (gSalleBain) {mqtt="<[mosquitto:salledebain/battery:state:default]"}
 Number Hygro_abs_sallebain
 String High_hum_sallebain
 
@@ -141,6 +142,7 @@ String High_hum_sallebain
 Number Temp_salledeau (gSalleEau) {mqtt="<[mosquitto:salledeau/temperature:state:default]"}
 Number Hygro_salledeau (gSalleEau) {mqtt="<[mosquitto:salledeau/humidity:state:default]"}
 String HumStat_salledeau (gSalleEau) {mqtt="<[mosquitto:salledeau/humidityStatus:state:default]"}
+Number Batt_salledeau (gSalleEau) {mqtt="<[mosquitto:salledeau/battery:state:default]"}
 Number Hygro_abs_salledeau
 String High_hum_salledeau
 
@@ -191,6 +193,7 @@ Switch Salt_piscine {mqtt=">[mosquitto:piscine/salt/switch:command:*:default], <
 Number Temp_outside (gExterieur) {mqtt="<[mosquitto:exterieur/temperature:state:default]"}
 Number Hygro_outside (gExterieur) {mqtt="<[mosquitto:exterieur/humidity:state:default]"}
 String HumStat_outside (gExterieur) {mqtt="<[mosquitto:exterieur/humidityStatus:state:default]"}
+Number Batt_outside (gExterieur) {mqtt="<[mosquitto:exterieur/battery:state:default]"}
 Number Hygro_abs_outside
 
 Number Portail_button
