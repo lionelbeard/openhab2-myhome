@@ -201,3 +201,6 @@ Switch Presence_Lionel { mqttitude="mosquitto:owntracks/openhab/lionel/event:Mai
 
 /* Ioniq */
 Number Ioniq_soc {mqtt="<[mosquitto:voiture/ioniq/soc:state:default]"}
+Number Ioniq_pijuicebatt {mqtt="<[mosquitto:voiture/ioniq/pijuice_batt:state:default]"}
+String Ioniq_lastupdate {mqtt="<[mosquitto:voiture/ioniq/lastupdate:state:default]"}
+Switch Ioniq_piautohalt {mqtt="<[mosquitto:voiture/ioniq/pi-auto-halt:state:MAP(mqtt_contact.map)], >[mosquitto:voiture/ioniq/pi-auto-halt:command:*:MAP(to_mqtt_contact.map)]"}

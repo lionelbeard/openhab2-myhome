@@ -166,6 +166,9 @@ sitemap home
     Frame label="Voitures" {
 	Text item=Ioniq_soc label="Hyundai Ioniq [%.0f %%]" icon="electricvehicle" valuecolor=[Ioniq_soc<="10"="red", Ioniq_soc<="30"="orange", Ioniq_soc<="100"="green"]  {
 		Text item=Ioniq_soc label="Charge de la batterie [%.0f %%]" icon="batterie"
+		Text item=Ioniq_pijuicebatt label="Charge PiJuice [%.0f %%]" icon="batterie"
+		Text item=Ioniq_lastupdate label="Date mise à jour [%s]" icon="calendar"
+		Switch item=Ioniq_piautohalt label="Arrêt auto pioniq"
 	}
     }
     Frame label="Configuration" {
