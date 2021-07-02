@@ -145,7 +145,7 @@ sitemap home
     }
     }
     Frame label="Extérieur" {
-    	Text item=Temp_eau_piscine label="Piscine [%.1f °C]" icon="piscine" valuecolor=[Filtration_piscine=="ON"="green", Filtration_anti_gel=="ON"="red"] {
+    	Text item=Temp_eau_piscine label="Piscine [%.1f °C]" icon="piscine" valuecolor=[Filtration_piscine=="ON"="green", Filtration_anti_gel=="ON"="orange", Pistoch_status=="OFFLINE"="red"] {
     		Text item=Temp_eau_piscine label="Température de l'eau [%.1f °C]" icon="temperature"
     		Text item=Temp_exterieur_piscine label="Température extérieure [%.1f °C]" icon="temperature"
     		Text item=Temp_local_piscine label="Température local technique [%.1f °C]" icon="temperature"
@@ -157,6 +157,7 @@ sitemap home
 			Selection item=Filtration_piscine_force label="Forcer la filtration" mappings=[0=OFF,2=2h,4=4h,12=12h,24=24h,99=Continue] icon="piscine"
 			Text item=Filtration_anti_gel label="Mode anti-gel [%s]" icon="piscine"
 			Chart item=gPiscine icon="temperature" label="Historique" period=W refresh=60000
+		Text item=Pistoch_status label="Etat pi-stoch [%s]" icon="minicomputer"
     	}
 	Switch item=Portail_button label="Portail" mappings=[0="Fermé", 2="Ouvert"]
     	Text item=Temp_outside label="Température [%.1f °C]" icon="temperature"

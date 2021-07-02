@@ -190,6 +190,7 @@ Number Filtration_piscine_force {mqtt=">[mosquitto:piscine/filtration/force:comm
 Switch Filtration_etat_auto_avant_force
 Switch Filtration_anti_gel {mqtt="<[mosquitto:piscine/filtration/antigel:state:default]"}
 Switch Salt_piscine {mqtt=">[mosquitto:piscine/salt/switch:command:*:default], <[mosquitto:piscine/salt/status:state:default]"}
+String Pistoch_status {mqtt="<[mosquitto:piscine/pi-stoch/status:state:default]"}
 Number Temp_outside (gExterieur) {mqtt="<[mosquitto:exterieur/temperature:state:default]"}
 Number Hygro_outside (gExterieur) {mqtt="<[mosquitto:exterieur/humidity:state:default]"}
 String HumStat_outside (gExterieur) {mqtt="<[mosquitto:exterieur/humidityStatus:state:default]"}
